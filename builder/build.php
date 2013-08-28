@@ -134,13 +134,13 @@
 		}
 		
 		if (file_exists($dir_style)){
-			File::buildMakeDir($dir_output.'/style');
 			
 			//less
 			$less = new lessc;
 			foreach (glob($dir_style.'/*.less') as $path_less){
 				$basename_less = basename($path_less);
 				if (substr($basename_less,0,1) !== '_'){
+					File::buildMakeDir($dir_output.'/style');
 					$filepath = '/style/'.$basename_less.'.css';
 					$less->checkedCompile($path_less,$dir_output.$filepath);
 					$bmsg->add('create','<a href="'.$yaml_vars['_home'].$filepath.'" target="_blank">'.$filepath.'</a>');
