@@ -3,3 +3,4 @@ home:
  production:"http://www.{{site}}.com"
 sitemap:1
 robotstxt:1
+compilejs:1
