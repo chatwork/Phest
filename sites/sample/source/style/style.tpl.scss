@@ -1,0 +1,19 @@
+.navigation {
+    ul {
+        line-height: 20px;
+        color: blue;
+        a {
+            color: red;
+        }
+    }
+}
+
+p {
+    background: url('./sample.jpg?{time}');
+}
+
+.footer {
+    .copyright {
+        color: silver;
+    }
+}

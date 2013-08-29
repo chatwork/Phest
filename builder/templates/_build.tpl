@@ -22,6 +22,14 @@ body {
 	text-align: center;
 }
 </style>
+<script type="text/javascript">
+$(function(){
+  $('#_createSite').click(function(){
+    var sitename = prompt("Input new site's name",'');
+    document.location.href = '?create_site=' + sitename;
+  });
+})
+</script>
 </head>
 <body>
 <form method="get" action="build.php" class="form-horizontal" role="form">
@@ -41,6 +49,7 @@ body {
       <option value="{$site_val}"{if $site_val == $site} selected{/if}>{$site_val}</option>
      {/foreach}
     </select>
+    <a id="_createSite">Create new site</a>
    </td>
    <td>
     <input type="submit" name="build_local" class="btn btn-primary" value="Local">

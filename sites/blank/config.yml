@@ -1,8 +1,0 @@
-options:
-vars:
- common:
- local:
-  _home:"http://localhost/SmartBuilder/sites/blank/htdocs"
- production:
-  _home:"http://www.example.com"
- 

@@ -1,0 +1,7 @@
+home:
+ local:"http://localhost/SmartBuilder/sites/sample_htmlmail/htdocs"
+ production:"http://www.sample.com"
+encode:"jis"
+sitemap:0
+robotstxt:0
+compilejs:0

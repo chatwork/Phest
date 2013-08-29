@@ -1,0 +1,7 @@
+common:
+ title:"no title"
+path:
+ index:
+  title:"index page"
+ feature/index:
+  title:"feature page"

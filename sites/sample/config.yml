@@ -1,8 +1,6 @@
-options:
-vars:
- common:
- local:
-  _home:"http://localhost/SmartBuilder/sites/sample/htdocs"
- production:
-  _home:"http://www.sample.com"
- 
+home:
+ local:"http://localhost/SmartBuilder/sites/sample/htdocs"
+ production:"http://www.sample.com"
+sitemap:1
+robotstxt:1
+compilejs:1
