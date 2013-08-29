@@ -183,6 +183,7 @@
 		
 		$smarty->clearAllAssign();
 		$smarty->assign('_home',$home);
+		$smarty->assign($vars_yaml['common']);
 		
 		if (file_exists($dir_style)){
 			//css
