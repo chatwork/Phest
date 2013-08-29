@@ -49,7 +49,7 @@ encodeオプションでJISコードに変換して生成させることもで�
 
 というフォルダ構成になっています。
 
-`SmartBuilder` をphpを処理できるパスにコピーし、
+`SmartBuilder/` をphpを処理できるパスにコピーし、
 `builder/build.php` をブラウザから実行するとビルドツールが表示されます。
 
 
