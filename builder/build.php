@@ -28,12 +28,9 @@
 	}
 	$bsmarty->assign('site',$site);
 	
-	if (!empty($_GET['build_local'])){
+	if (!empty($_GET['build'])){
 		$build = true;
-		$buildtype = 'local';
-	}else if (!empty($_GET['build_production'])){
-		$build = true;
-		$buildtype = 'production';
+		$buildtype = $_GET['build'];
 	}else{
 		$build = false;
 	}
@@ -107,7 +104,7 @@
 		$bmsg->add('build','home path: <a href="'.$home.'" target="_blank">'.$home.'</a>');
 		$bmsg->add('build','site filepath: '.realpath($dir_site));
 		
-		$bmsg->registerSection('create','File created:');
+		$bmsg->registerSection('create','File created:','info');
 		
 		$smarty = new Smarty;
 		$smarty->template_dir = array($dir_source,'./templates');
@@ -119,7 +116,11 @@
 		
 		//ページをスキャン
 		$urls = array();
-		$ite = new RecursiveDirectoryIterator($dir_pages);
+		if (class_exists('FilesystemIterator',false)){
+			$ite = new RecursiveDirectoryIterator($dir_pages,FilesystemIterator::SKIP_DOTS);
+		}else{
+			$ite = new RecursiveDirectoryIterator($dir_pages);
+		}
 		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
 			$pagepath = pathinfo($pathname);
 			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
@@ -206,7 +207,7 @@
 				}
 				
 				File::buildPutFile($dir_output.$filepath,$source);
-				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
+				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a><code>'.$create_option.'</code>');
 			}
 			
 			
@@ -227,7 +228,7 @@
 					
 					File::buildPutFile($dir_output.$filepath,$less->compile($source));
 					$create_option .= ' (less)';
-					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
+					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a><code>'.$create_option.'</code>');
 				}
 			}
 			
@@ -249,14 +250,14 @@
 					$filepath = '/style/'.$basename_scss.'.css';
 					File::buildPutFile($dir_output.$filepath,$scss->compile($source));
 					$create_option .= ' (scss)';
-					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
+					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a><code>'.$create_option.'</code>');
 				}
 			}
 		}
 		
 		//javascript
 		if (file_exists($dir_javascript)){
-			$bmsg->registerSection('jslint','JavaScript Lint');
+			$bmsg->registerSection('jslint','<strong>JavaScript lint error!</strong>','danger');
 			foreach (glob($dir_javascript.'/*.js') as $path_js){
 				$basename_js = basename($path_js);
 				
@@ -288,7 +289,7 @@
 				}else{
 					rename($dir_output.$filepath.'.tmp',$dir_output.$filepath);
 				}
-				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
+				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a><code>'.$create_option.'</code>');
 			}
 		}
 		
@@ -315,8 +316,8 @@
 class BuildMessage {
 	protected $message_data = array();
 	
-	public function registerSection($section,$title){
-		$this->message_data[$section] = array('title' => $title,'list' => array());
+	public function registerSection($section,$title,$type="success"){
+		$this->message_data[$section] = array('title' => $title,'list' => array(),'type' => $type);
 	}
 	
 	public function add($section,$message){
