@@ -1,5 +1,9 @@
 common:
  title:"no title"
+local:
+ title:'local'
+production:
+ title:'production'
 path:
  index:
   title:"index page"

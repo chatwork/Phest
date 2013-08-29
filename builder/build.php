@@ -89,6 +89,14 @@
 		}
 		$config_yaml = spyc_load_file($path_config_yml);
 		$vars_yaml = spyc_load_file($path_vars_yml);
+
+		if (!isset($vars_yaml['common']) or !is_array($vars_yaml['common'])){
+			$vars_yaml['common'] = array();
+		}
+		if (!isset($vars_yaml[$buildtype]) or !is_array($vars_yaml[$buildtype])){
+			$vars_yaml[$buildtype] = array();
+		}
+		$core_vars_yaml = array_merge_recursive_distinct($vars_yaml['common'],$vars_yaml[$buildtype]);
 		
 		$home = $config_yaml['home'][$buildtype];
 		$home_local = $config_yaml['home']['local'];
@@ -115,7 +123,7 @@
 		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
 			$pagepath = pathinfo($pathname);
 			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
-				$dirname = ltrim(substr($pagepath['dirname'],strlen($dir_pages)),'\\/');
+				$dirname = strtr(ltrim(substr($pagepath['dirname'],strlen($dir_pages)),'\\/'),'\\','/');
 			
 				if ($dirname){
 					$rpath = $dirname.'/'.$pagepath['filename'];
@@ -155,12 +163,10 @@
 				
 				$smarty->assign('_home',$home);
 				$smarty->assign('_path',ltrim($dirname.'/'.$pagepath['filename'],'\\/'));
+				$smarty->assign('_folder',ltrim($dirname.'/','\\/'));
 				$smarty->assign('_content_tpl','pages'.$dirname.'/'.$pagepath['basename']);
 				
-				$page_vars = $vars_yaml['common'];
-				if (!is_array($page_vars)){
-					$page_vars = array();
-				}
+				$page_vars = $core_vars_yaml;
 				foreach ($pages_section as $psect){
 					if (isset($vars_yaml['path'][$psect]) and is_array($vars_yaml['path'][$psect])){
 						$page_vars = array_merge_recursive_distinct($page_vars,$vars_yaml['path'][$psect]);
@@ -183,7 +189,7 @@
 		
 		$smarty->clearAllAssign();
 		$smarty->assign('_home',$home);
-		$smarty->assign($vars_yaml['common']);
+		$smarty->assign($core_vars_yaml);
 		
 		if (file_exists($dir_style)){
 			//css

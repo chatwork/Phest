@@ -26,7 +26,9 @@ body {
 $(function(){
   $('#_createSite').click(function(){
     var sitename = prompt("Input new site's name",'');
-    document.location.href = '?create_site=' + sitename;
+    if (sitename){
+      document.location.href = '?create_site=' + sitename;
+    }
   });
 })
 </script>
