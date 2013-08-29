@@ -43,7 +43,7 @@ encodeオプションでJISコードに変換して生成させることもで�
 ファイル構成
 ---------------
 
- - SmartBuilder
+ - SmartBuilder/
   - builder/       (ビルドツール)
   - sites/         (作成するサイトデータ)
 
@@ -58,7 +58,7 @@ encodeオプションでJISコードに変換して生成させることもで�
 ビルドツールを表示し、`Create new site`リンクをクリックします。
 作成したいサイト名を半角英数で入力します。 (例:mysite)
 
- - SmartBuilder
+ - SmartBuilder/
   - builder/       (ビルドツール)
   - sites/         (作成するサイトデータ)
 
@@ -69,7 +69,7 @@ encodeオプションでJISコードに変換して生成させることもで�
 ---------------
 `mysite` というサイトを作成したものとして説明します。
 
- - SmartBuilder
+ - SmartBuilder/
   - builder/       (ビルドツール)
   - sites/         (作成するサイトデータ)
    - mysite/
