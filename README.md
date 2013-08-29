@@ -142,15 +142,23 @@ vars.yml の設定方法
 下記の内容がデフォルトで入っています。
 
 	common:
+	local:
+	production:
 	path:
 
 `common` 以下には、全ページ共通でアサインされる変数を定義します。
+`local` 以下には、ローカル環境でビルドしたときのみアサインされる変数を定義します。
+`production` 以下には、本番環境でビルドしたときのみアサインされる変数を定義します。
 `path` 以下には、ページごとにアサインされる変数を定義します。
 
 例えば、
 
 	common:
 	 title:"no title"
+	local:
+	 title:"local"
+	production:
+	 title:"production"
 	path:
 	 index:
 	  title:"index page"
@@ -161,7 +169,7 @@ vars.yml の設定方法
 
 `/index.html` では `index page` とアサインされ、
 `/feature/index.html` では `feature page` とアサインされます。
-それ以外のページでは、 `no title` とアサインされます。
+それ以外のページでは、ローカル環境でビルドすると `local` が、本番環境でビルドすると `production` がアサインされます。
 
 
 style/ のファイル作成方法
@@ -203,6 +211,8 @@ javascript/ のファイル作成方法
   - ルートパスからのページパスを表します。拡張子は省略される形式になります。
   - 例：www.sample.com/feature/index.html なら `feature/index`
   - これを使って、特定のパスだけレイアウトを変えるなどが可能です。
+ - {$_folder}
+  - `{$_path}` のフォルダ名部分のみが入ります。
  - {$_content_tpl}
   - 表示対象ファイルのテンプレートファイルパスです。システムが内部的に使用しています。
 
