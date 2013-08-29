@@ -104,7 +104,7 @@
 		$bmsg->add('build','home path: <a href="'.$home.'" target="_blank">'.$home.'</a>');
 		$bmsg->add('build','site filepath: '.realpath($dir_site));
 		
-		$bmsg->registerSection('create','File created:','info');
+		$bmsg->registerSection('create','File created:',array('type' => 'info','sort' => true));
 		
 		$smarty = new Smarty;
 		$smarty->template_dir = array($dir_source,'./templates');
@@ -257,7 +257,7 @@
 		
 		//javascript
 		if (file_exists($dir_javascript)){
-			$bmsg->registerSection('jslint','<strong>JavaScript lint error!</strong>','danger');
+			$bmsg->registerSection('jslint','<strong>JavaScript lint error!</strong>',array('type' => 'danger'));
 			foreach (glob($dir_javascript.'/*.js') as $path_js){
 				$basename_js = basename($path_js);
 				
@@ -316,8 +316,8 @@
 class BuildMessage {
 	protected $message_data = array();
 	
-	public function registerSection($section,$title,$type="success"){
-		$this->message_data[$section] = array('title' => $title,'list' => array(),'type' => $type);
+	public function registerSection($section,$title,array $options = array('type' => 'success','sort' => false)){
+		$this->message_data[$section] = array_merge(array('title' => $title,'list' => array()),$options);
 	}
 	
 	public function add($section,$message){
@@ -326,9 +326,12 @@ class BuildMessage {
 	
 	public function getData(){
 		$msg_data = array();
-		
+
 		foreach ($this->message_data as $section => $mdat){
 			if (count($mdat['list'])){
+				if (!empty($mdat['sort'])){
+					asort($mdat['list']);
+				}
 				$msg_data[$section] = $mdat;
 			}
 		}
