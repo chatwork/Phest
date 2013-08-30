@@ -278,7 +278,7 @@
 					$source = $smarty->fetch('style/'.$basename_js);
 					$create_option = ' (smarty)';
 				}else{
-					$source = file_get_contents($path_scss);
+					$source = file_get_contents($path_js);
 				}
 				File::buildPutFile($dir_output.$filepath.'.tmp',file_get_contents($path_js));
 				
