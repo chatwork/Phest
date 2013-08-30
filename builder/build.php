@@ -213,6 +213,7 @@
 			
 			//less
 			$less = new lessc;
+			$less->setImportDir($dir_style);
 			foreach (glob($dir_style.'/*.less') as $path_less){
 				$basename_less = basename($path_less);
 				if (substr($basename_less,0,1) !== '_'){

@@ -11,9 +11,11 @@
 <!--<![endif]-->
 <script type="text/javascript" src="./lib/bootstrap/js/bootstrap.js"></script>
 <style type="text/css">
-body {
-	padding: 0px 10px;
+section {
+  padding:0px 10px;
+  max-width:700px;
 }
+
 .toolBar {
 	width: 500px;
 	margin: 10px 10px;
@@ -74,7 +76,7 @@ $(function(){
 
 
 
-<section id="result">
+<section id="result" class="resultSection">
 {foreach $message_list as $section => $section_dat}
 <div class="panel panel-{$section_dat.type}">
  <div class="panel-heading">
