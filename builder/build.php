@@ -207,7 +207,7 @@
 				}
 				
 				File::buildPutFile($dir_output.$filepath,$source);
-				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a><code>'.$create_option.'</code>');
+				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
 			}
 			
 			
@@ -229,7 +229,7 @@
 					
 					File::buildPutFile($dir_output.$filepath,$less->compile($source));
 					$create_option .= ' (less)';
-					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a><code>'.$create_option.'</code>');
+					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
 				}
 			}
 			
@@ -251,7 +251,7 @@
 					$filepath = '/style/'.$basename_scss.'.css';
 					File::buildPutFile($dir_output.$filepath,$scss->compile($source));
 					$create_option .= ' (scss)';
-					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a><code>'.$create_option.'</code>');
+					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
 				}
 			}
 		}
@@ -290,7 +290,7 @@
 				}else{
 					rename($dir_output.$filepath.'.tmp',$dir_output.$filepath);
 				}
-				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a><code>'.$create_option.'</code>');
+				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
 			}
 		}
 		
