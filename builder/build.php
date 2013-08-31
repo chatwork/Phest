@@ -1,5 +1,7 @@
 <?php
-	$dir_sites = '../sites';
+	define('DIR_BUILDER',dirname(__FILE__));
+	require(DIR_BUILDER.'/config.php');
+	
 	$ver = 'v0.2';
 	
 	ini_set('display_errors','On');
@@ -7,15 +9,15 @@
 	require('./lib/smarty/Smarty.class.php');
 	require('./lib/File.php');
 	
-	if (!is_dir($dir_sites)){
+	if (!is_dir(DIR_SITES)){
 		die('dir_sites がディレクトリではありません');
 	}
 	
 	$bsmarty = new Smarty;
-	$bmsg = new BuildMessage;;
+	$bmsg = new BuildMessage;
 	
 	$site_list = array();
-	foreach (glob($dir_sites.'/*') as $site_dir){
+	foreach (glob(DIR_SITES.'/*') as $site_dir){
 		if (is_dir($site_dir)){
 			$site_list[] = basename($site_dir);
 		}
@@ -39,8 +41,8 @@
 	if (!empty($_GET['create_site'])){
 		$create_site = trim($_GET['create_site']);
 		
-		File::copyDir('./blanksite/',$dir_sites.'/'.$create_site);
-		$path_config_yml = $dir_sites.'/'.$create_site.'/config.yml';
+		File::copyDir('./blanksite/',DIR_SITES.'/'.$create_site);
+		$path_config_yml = DIR_SITES.'/'.$create_site.'/config.yml';
 		file_put_contents($path_config_yml,strtr(file_get_contents($path_config_yml),array('{{site}}' => $create_site)));
 		
 		header('Location: ?site='.$create_site);
@@ -64,7 +66,7 @@
 		}
 		$bmsg->registerSection('build','Build <strong>'.$site.'</strong> for <strong class="'.$build_class.'">'.$buildtype.'</strong> at '.date('H:i:s'));
 		
-		$dir_site = $dir_sites.'/'.$site;
+		$dir_site = DIR_SITES.'/'.$site;
 		$dir_source = $dir_site.'/source';
 		$dir_pages = $dir_source.'/pages';
 		$dir_style = $dir_source.'/style';

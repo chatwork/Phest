@@ -38,6 +38,11 @@ $(function(){
     document.location.href = '?build=local&site=' + $('#site').val();
   });
 
+  $('#buildLocalWatch').click(function(){
+    $('#result').fadeOut();
+    $('#result').load('?build=local&site=' + $('#site').val());
+  });
+
   $('#buildProduction').click(function(){
     $('#result').fadeOut();
     document.location.href = '?build=production&site=' + $('#site').val();
@@ -66,6 +71,7 @@ $(function(){
    </td>
    <td>
     <button id="buildLocal" class="btn btn-primary">Local</button>
+    <button id="buildLocalWatch" class="btn btn-primary">Local watch</button>
     <button id="buildProduction" class="btn btn-success">Production</button>
    </td>
   </tr>
