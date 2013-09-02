@@ -43,7 +43,7 @@ $(function(){
   var watch_timer = null;
   $('#buildLocalWatch').click(function(){
     //デスクトップ通知
-    if (NotificationAPI.checkPermission() == 0){
+    if (NotificationAPI.checkPermission() != 0){
       NotificationAPI.requestPermission();
     }
     
