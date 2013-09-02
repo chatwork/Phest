@@ -30,11 +30,9 @@
 	}
 	$bsmarty->assign('site',$site);
 	
+	$buildtype = '';
 	if (!empty($_GET['build'])){
-		$build = true;
 		$buildtype = $_GET['build'];
-	}else{
-		$build = false;
 	}
 	
 	//site作成
@@ -55,21 +53,24 @@
 		$watch = 1;
 	}
 	
+	$build = true;
+	switch ($buildtype){
+		case 'local':
+			$build_class = 'text-primary';
+			break;
+		case 'production':
+			$build_class = 'text-success';
+			break;
+		default:
+			$build = false;
+			break;
+	}
 	
 	//build実行
 	if ($build and $site){
 		define('SMARTBUILDER_BUILTTYPE',$buildtype);
 		
 		$build_class = '';
-		switch ($buildtype){
-			case 'local':
-				$build_class = 'text-primary';
-				break;
-			case 'production':
-				$build_class = 'text-success';
-				break;
-				
-		}
 		$bmsg->registerSection('build','Build <strong>'.$site.'</strong> for <strong class="'.$build_class.'">'.$buildtype.'</strong> at '.date('H:i:s'));
 		
 		$dir_site = DIR_SITES.'/'.$site;
@@ -376,7 +377,6 @@
 		echo json_encode(array('code' => 200,'message_list' => $bmsg->getData()));
 		exit;
 	}else{
-		header('Content-type:text/html;charset=UTF-8');
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$bmsg->getData());
 		$bsmarty->display('_build.tpl');

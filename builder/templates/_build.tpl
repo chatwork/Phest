@@ -12,6 +12,7 @@
 <script type="text/javascript" src="./assets/bootstrap/js/bootstrap.js"></script>
 <script type="text/javascript" src="./assets/underscore-min.js"></script>
 <script type="text/javascript" src="./assets/NotificationAPI.js"></script>
+<script type="text/javascript" src="./assets/common.js"></script>
 <style type="text/css">
 section {
   padding:0px 10px;
@@ -28,6 +29,18 @@ section {
 </style>
 <script type="text/javascript">
 $(function(){
+  var query = {};
+  parse_str(window.location.search.substr(1),query);
+  
+  var build = '';
+  if (query.build){
+    build = query.build;
+  }
+  
+  $('#site').change(function(){
+    document.location.href = '?site=' + $(this).val();
+  });
+  
   $('#createSite').click(function(){
     var sitename = prompt("Input new site's name",'');
     if (sitename){
@@ -47,11 +60,16 @@ $(function(){
       NotificationAPI.requestPermission();
     }
     
+    if (build != 'watch'){
+      document.location.href = '?build=watch&site=' + $('#site').val();
+    }
+    
     $('#result').fadeOut();
     
     var popup = null;
     if (watch_timer){
       $('#watchStatus').hide();
+      
       clearInterval(watch_timer);
       watch_timer = null;
       $(this).text('Local watch');
@@ -59,6 +77,7 @@ $(function(){
       $('#buildProduction').removeClass('disabled');
     }else{
       $('#watchStatus').fadeIn();
+      
       watch_timer = setInterval(function(){
         $.getJSON('?build=local&watch=1&site=' + $('#site').val(),function(data){
           if (data){
@@ -109,6 +128,10 @@ $(function(){
   
   if (message_list){
     build_result(message_list);
+  }
+  
+  if (build == 'watch'){
+     $('#buildLocalWatch').click();
   }
 });
 </script>
