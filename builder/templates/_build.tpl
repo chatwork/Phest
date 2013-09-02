@@ -2,14 +2,15 @@
 <html>
 <head>
  <title>SmartBuilder {$ver}</title>
- <link href="./lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+ <link href="./assets/bootstrap/css/bootstrap.css" rel="stylesheet">
 <!--[if lt IE 9]>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+<script type="text/javascript" src="./assets/jquery-1.10.2.min.js"></script>
 <![endif]-->
 <!--[if gte IE 9]><!-->
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
+<script type="text/javascript" src="./assets/jquery-2.0.3.min.js"></script>
 <!--<![endif]-->
-<script type="text/javascript" src="./lib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./assets/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./assets/underscore-min.js"></script>
 <style type="text/css">
 section {
   padding:0px 10px;
@@ -38,15 +39,50 @@ $(function(){
     document.location.href = '?build=local&site=' + $('#site').val();
   });
 
+  var watch_timer = null;
   $('#buildLocalWatch').click(function(){
     $('#result').fadeOut();
-    $('#result').load('?build=local&site=' + $('#site').val());
+    
+    if (watch_timer){
+      $('#watchStatus').hide();
+      clearInterval(watch_timer);
+      watch_timer = null;
+      $(this).text('Local watch');
+      $('#buildLocal').removeClass('disabled');
+      $('#buildProduction').removeClass('disabled');
+    }else{
+      $('#watchStatus').fadeIn();
+      watch_timer = setInterval(function(){
+        $.getJSON('?build=local&watch=1&site=' + $('#site').val(),function(data){
+          if (data){
+            build_result(data.message_list);
+          }
+        });
+      },1000);
+      $(this).text('pause');
+      $('#buildLocal').addClass('disabled');
+      $('#buildProduction').addClass('disabled');
+    }
   });
 
   $('#buildProduction').click(function(){
     $('#result').fadeOut();
     document.location.href = '?build=production&site=' + $('#site').val();
   });
+  
+  var message_list_tpl = _.template($('#messageListTemplate').html());
+  
+  var build_result = function(message_list){
+    $('#result').html(message_list_tpl({
+      message_list:message_list
+    })).show();
+  };
+  
+  var message_list = {if isset($message_list)}{$message_list|json_encode}{else}null{/if};
+  
+  if (message_list){
+    build_result(message_list);
+  }
 })
 </script>
 </head>
@@ -81,20 +117,22 @@ $(function(){
 
 
 
+<div id="watchStatus" style="padding:5px;display:none"><img src="./assets/image/ajax-loader.gif" style="width:25px;height:25px"/>Watching....</div>
+<section id="result" class="resultSection"></section>
 
-<section id="result" class="resultSection">
-{foreach $message_list as $section => $section_dat}
-<div class="panel panel-{$section_dat.type}">
- <div class="panel-heading">
-  <h3 class="panel-title">{$section_dat.title}</h3>
- </div>
- <div class="panel-body">
-  <ul>
-   {foreach $section_dat.list as $msg}
-   <li>{$msg}</li>
-   {/foreach}
-  </ul>
- </div>
-</div>
-{/foreach}
-</section>
+<script id="messageListTemplate" type="text/template">
+ <% _.each(message_list,function(section_dat){ %>
+  <div class="panel panel-<%= section_dat.type %>">
+   <div class="panel-heading">
+    <h3 class="panel-title"><%= section_dat.title %></h3>
+   </div>
+   <div class="panel-body">
+    <ul>
+     <% _.each(section_dat.list,function(msg){ %>
+      <li><%= msg %></li>
+     <% }); %>
+    </ul>
+   </div>
+  </div>
+ <% }); %>
+</script>

@@ -49,6 +49,12 @@
 		exit;
 	}
 	
+	//watch mode
+	$watch = 0;
+	if (!empty($_GET['watch'])){
+		$watch = 1;
+	}
+	
 	
 	//build実行
 	if ($build and $site){
@@ -75,9 +81,9 @@
 		$path_config_yml = $dir_site.'/config.yml';
 		$path_vars_yml = $dir_site.'/vars.yml';
 		
-		require('./lib/spyc.php');
-		require('./lib/lessphp/lessc.inc.php');
-		require('./lib/scssphp/scss.inc.php');
+		require(DIR_BUILDER.'/lib/spyc.php');
+		require(DIR_BUILDER.'/lib/lessphp/lessc.inc.php');
+		require(DIR_BUILDER.'/lib/scssphp/scss.inc.php');
 		
 		//yaml load
 		if (!file_exists($path_config_yml)){
@@ -106,23 +112,56 @@
 		$bmsg->add('build','home path: <a href="'.$home.'" target="_blank">'.$home.'</a>');
 		$bmsg->add('build','site filepath: '.realpath($dir_site));
 		
-		$bmsg->registerSection('create','File created:',array('type' => 'info','sort' => true));
+		$bmsg->registerSection('create','Created files',array('type' => 'info','sort' => true));
 		
 		$smarty = new Smarty;
-		$smarty->template_dir = array($dir_source,'./templates');
-		$smarty->addPluginsDir('./plugins');
+		$smarty->template_dir = array($dir_source,DIR_BUILDER.'/templates');
+		$smarty->addPluginsDir(DIR_BUILDER.'/plugins');
 		
-		$dir_compile = './templates_c/'.$site;
+		$dir_compile = DIR_BUILDER.'/templates_c/'.$site;
 		File::buildMakeDir($dir_compile);
 		$smarty->compile_dir = $dir_compile;
 		
+		
 		//ページをスキャン
-		$urls = array();
+		$dir_buildstatus = DIR_BUILDER.'/buildstatus';
+		$path_buildstatus_site = $dir_buildstatus.'/'.$site.'.dat';
+		
+		if ($watch){
+			//ソースフォルダの全ファイルをスキャン。新しいファイルがあればビルドする。
+			$buildtime = 0;
+			if (file_exists($path_buildstatus_site)){
+				$buildtime = filemtime($path_buildstatus_site);
+			}
+			
+			if (class_exists('FilesystemIterator',false)){
+				$ite = new RecursiveDirectoryIterator($dir_source,FilesystemIterator::SKIP_DOTS);
+			}else{
+				$ite = new RecursiveDirectoryIterator($dir_source);
+			}
+			
+			$has_new = false;
+			foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
+				if ($buildtime < filemtime($pathname)){
+					$has_new = true;
+					break;
+				}
+			}
+			
+			if (!$has_new){
+				header('HTTP/1.1 304 Not Modified');
+				exit;
+			}
+		}
+		
 		if (class_exists('FilesystemIterator',false)){
 			$ite = new RecursiveDirectoryIterator($dir_pages,FilesystemIterator::SKIP_DOTS);
 		}else{
 			$ite = new RecursiveDirectoryIterator($dir_pages);
 		}
+		
+		$bmsg->registerSection('smartyerror','Smarty compile error',array('type' => 'danger'));
+		$urls = array();
 		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
 			$pagepath = pathinfo($pathname);
 			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
@@ -164,10 +203,11 @@
 				//smartyのアサイン変数をクリア
 				$smarty->clearAllAssign();
 				
+				$content_tpl = 'pages'.$dirname.'/'.$pagepath['basename'];
 				$smarty->assign('_home',$home);
 				$smarty->assign('_path',ltrim($dirname.'/'.$pagepath['filename'],'\\/'));
 				$smarty->assign('_folder',ltrim($dirname.'/','\\/'));
-				$smarty->assign('_content_tpl','pages'.$dirname.'/'.$pagepath['basename']);
+				$smarty->assign('_content_tpl',$content_tpl);
 				
 				$page_vars = $core_vars_yaml;
 				foreach ($pages_section as $psect){
@@ -180,13 +220,18 @@
 				
 				$filepath = $dirname.'/'.$pagepath['filename'].'.html';
 				
-				$output_html = $smarty->fetch('parts/base.tpl');
-				
-				if (!empty($config_yaml['encode'])){
-					$output_html = mb_convert_encoding($output_html, $config_yaml['encode']);
+				try {
+					$output_html = $smarty->fetch('parts/base.tpl');
+					
+					if (!empty($config_yaml['encode'])){
+						$output_html = mb_convert_encoding($output_html, $config_yaml['encode']);
+					}
+					File::buildPutFile($dir_output.$filepath,$output_html);
+					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a>');
+				} catch (SmartyCompilerException $e){
+					$bmsg->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 				}
-				File::buildPutFile($dir_output.$filepath,$output_html);
-				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a>');
+				
 			}
 		}
 		
@@ -216,6 +261,7 @@
 			//less
 			$less = new lessc;
 			$less->setImportDir($dir_style);
+			$bmsg->registerSection('lesserror','LESS parse error',array('type' => 'danger'));
 			foreach (glob($dir_style.'/*.less') as $path_less){
 				$basename_less = basename($path_less);
 				if (substr($basename_less,0,1) !== '_'){
@@ -229,19 +275,23 @@
 						$source = file_get_contents($path_less);
 					}
 					
-					File::buildPutFile($dir_output.$filepath,$less->compile($source));
-					$create_option .= ' (less)';
-					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
+					try {
+						File::buildPutFile($dir_output.$filepath,$less->compile($source));
+						$create_option .= ' (less)';
+						$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
+					} catch (Exception $e){
+						$bmsg->add('lesserror','<strong>'.$basename_less.'</strong>: '.$e->getMessage());
+					}
 				}
 			}
 			
 			//scss
 			$scss = new scssc;
 			$scss->setImportPaths($dir_style);
+			$bmsg->registerSection('scsserror','SCSS parse error',array('type' => 'danger'));
 			foreach (glob($dir_style.'/*.scss') as $path_scss){
 				$basename_scss = basename($path_scss);
 				if (substr($basename_scss,0,1) !== '_'){
-					
 					$create_option = '';
 					if (strpos($basename_scss,'.tpl') !== false){
 						$source = $smarty->fetch('style/'.$basename_scss);
@@ -251,16 +301,20 @@
 					}
 					
 					$filepath = '/style/'.$basename_scss.'.css';
-					File::buildPutFile($dir_output.$filepath,$scss->compile($source));
-					$create_option .= ' (scss)';
-					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
+					try {
+						File::buildPutFile($dir_output.$filepath,$scss->compile($source));
+						$create_option .= ' (scss)';
+						$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
+					} catch (Exception $e){
+						$bmsg->add('scsserror','<strong>'.$basename_scss.'</strong>: '.$e->getMessage());
+					}
 				}
 			}
 		}
 		
 		//javascript
 		if (file_exists($dir_javascript)){
-			$bmsg->registerSection('jslint','<strong>JavaScript lint error!</strong>',array('type' => 'danger'));
+			$bmsg->registerSection('jslint','<strong>JavaScript lint warning</strong>',array('type' => 'danger'));
 			foreach (glob($dir_javascript.'/*.js') as $path_js){
 				$basename_js = basename($path_js);
 				
@@ -310,17 +364,32 @@
 			file_put_contents($dir_output.$filepath,$smarty->fetch('_robots_txt.tpl'));
 			$bmsg->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
+		
+		
+		//ビルド時間を記録
+		File::buildTouch($path_buildstatus_site);
 	}
 	
-	$bsmarty->assign('ver',$ver);
-	$bsmarty->assign('message_list',$bmsg->getData());
-	$bsmarty->display('_build.tpl');
+	if ($watch){
+		header('HTTP/1.1 200 OK');
+		echo json_encode(array('code' => 200,'message_list' => $bmsg->getData()));
+		exit;
+	}else{
+		$bsmarty->assign('ver',$ver);
+		$bsmarty->assign('message_list',$bmsg->getData());
+		$bsmarty->display('_build.tpl');
+	}
 
 class BuildMessage {
 	protected $message_data = array();
 	
+	/**
+	 * 
+	 * @
+	 */
 	public function registerSection($section,$title,array $options = array('type' => 'success','sort' => false)){
 		$this->message_data[$section] = array_merge(array('title' => $title,'list' => array()),$options);
+		$this->section_order_list[] = $section;
 	}
 	
 	public function add($section,$message){
@@ -329,13 +398,20 @@ class BuildMessage {
 	
 	public function getData(){
 		$msg_data = array();
-
-		foreach ($this->message_data as $section => $mdat){
-			if (count($mdat['list'])){
-				if (!empty($mdat['sort'])){
-					asort($mdat['list']);
+		
+		$type_list = array('success','danger','primary','info');
+		
+		foreach ($type_list as $type){
+			foreach ($this->message_data as $section => $mdat){
+				if ($mdat['type'] != $type){
+					continue;
 				}
-				$msg_data[$section] = $mdat;
+				if (count($mdat['list'])){
+					if (!empty($mdat['sort'])){
+						asort($mdat['list']);
+					}
+					$msg_data[$section] = $mdat;
+				}
 			}
 		}
 		
@@ -361,7 +437,6 @@ function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 
   return $merged;
 }
-
 
 /**
  * コンパイルを実行
