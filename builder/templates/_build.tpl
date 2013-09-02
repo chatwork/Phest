@@ -11,6 +11,7 @@
 <!--<![endif]-->
 <script type="text/javascript" src="./assets/bootstrap/js/bootstrap.js"></script>
 <script type="text/javascript" src="./assets/underscore-min.js"></script>
+<script type="text/javascript" src="./assets/NotificationAPI.js"></script>
 <style type="text/css">
 section {
   padding:0px 10px;
@@ -41,8 +42,14 @@ $(function(){
 
   var watch_timer = null;
   $('#buildLocalWatch').click(function(){
+    //デスクトップ通知
+    if (NotificationAPI.checkPermission() == 0){
+      NotificationAPI.requestPermission();
+    }
+    
     $('#result').fadeOut();
     
+    var popup = null;
     if (watch_timer){
       $('#watchStatus').hide();
       clearInterval(watch_timer);
@@ -56,6 +63,22 @@ $(function(){
         $.getJSON('?build=local&watch=1&site=' + $('#site').val(),function(data){
           if (data){
             build_result(data.message_list);
+            
+            for (var i = 0,sec_len = data.message_list.length;i < sec_len;i++){
+              var section = data.message_list[i];
+              console.log(section);
+              if (section.type == 'danger'){
+                if (popup){
+                  popup.close();
+                }
+                popup = NotificationAPI.createNotification('./assets/error.png',section.title,section.list.length + ' errors');
+                popup.show();
+                
+                setTimeout(function(){
+                  popup.close();
+                },3000);
+              }
+            }
           }
         });
       },1000);
@@ -83,7 +106,7 @@ $(function(){
   if (message_list){
     build_result(message_list);
   }
-})
+});
 </script>
 </head>
 <body>

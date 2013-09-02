@@ -2,12 +2,12 @@
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.2';
+	$ver = 'v0.3';
 	
 	ini_set('display_errors','On');
-	require('./lib/debuglib.php');
-	require('./lib/smarty/Smarty.class.php');
-	require('./lib/File.php');
+	require(DIR_BUILDER.'/lib/debuglib.php');
+	require(DIR_BUILDER.'/lib/smarty/Smarty.class.php');
+	require(DIR_BUILDER.'/lib/File.php');
 	
 	if (!is_dir(DIR_SITES)){
 		die('dir_sites がディレクトリではありません');
@@ -410,7 +410,7 @@ class BuildMessage {
 					if (!empty($mdat['sort'])){
 						asort($mdat['list']);
 					}
-					$msg_data[$section] = $mdat;
+					$msg_data[] = $mdat;
 				}
 			}
 		}
