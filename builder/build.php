@@ -372,9 +372,11 @@
 	
 	if ($watch){
 		header('HTTP/1.1 200 OK');
+		header('Content-type:application/json;charset=UTF-8');
 		echo json_encode(array('code' => 200,'message_list' => $bmsg->getData()));
 		exit;
 	}else{
+		header('Content-type:text/html;charset=UTF-8');
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$bmsg->getData());
 		$bsmarty->display('_build.tpl');

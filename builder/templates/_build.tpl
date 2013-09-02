@@ -72,6 +72,10 @@ $(function(){
                   popup.close();
                 }
                 popup = NotificationAPI.createNotification('./assets/error.png',section.title,section.list.length + ' errors');
+                popup.onclick = function(){
+                  window.focus();
+                  this.cancel();
+                };
                 popup.show();
                 
                 setTimeout(function(){
