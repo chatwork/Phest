@@ -74,10 +74,10 @@ encodeオプションでJISコードに変換して生成させることもで�
     - builder/       (ビルドツール)
     - sites/
         - mysite/
-            - config.yml   (設定ファイル)
-            - vars.yml     (サイトの変数定義ファイル)
             - htdocs/      (静的ファイルの生成先)
             - source/
+                - config.yml   (設定ファイル)
+                - vars.yml     (サイトの変数定義ファイル)
                 - javascript/
                 - pages/
                 - parts/
@@ -85,10 +85,10 @@ encodeオプションでJISコードに変換して生成させることもで�
 
 というフォルダ構成になっています。
 
-`mysite/config.yml` が設定ファイルになっているので、
+`mysite/source/config.yml` が設定ファイルになっているので、
 サイトの情報やオプションなどを設定できます。
 
-`mysite/vars.yml` は変数定義ファイルになっていて、
+`mysite/source/vars.yml` は変数定義ファイルになっていて、
 サイト全体で使用するテンプレート変数や、パスに応じて
 変数の内容を変化させることもできます。
 
