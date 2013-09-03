@@ -78,9 +78,9 @@
 		$dir_pages = $dir_source.'/pages';
 		$dir_style = $dir_source.'/style';
 		$dir_javascript = $dir_source.'/javascript';
+		$path_config_yml = $dir_source.'/config.yml';
+		$path_vars_yml = $dir_source.'/vars.yml';
 		$dir_output = $dir_site.'/htdocs';
-		$path_config_yml = $dir_site.'/config.yml';
-		$path_vars_yml = $dir_site.'/vars.yml';
 		
 		require(DIR_BUILDER.'/lib/spyc.php');
 		require(DIR_BUILDER.'/lib/lessphp/lessc.inc.php');
