@@ -67,6 +67,7 @@ $(function(){
     $('#result').fadeOut();
     
     var popup = null;
+    var watching = false;
     if (watch_timer){
       $('#watchStatus').hide();
       
@@ -79,31 +80,35 @@ $(function(){
       $('#watchStatus').fadeIn();
       
       watch_timer = setInterval(function(){
-        $.getJSON('?build=local&watch=1&site=' + $('#site').val(),function(data){
-          if (data){
-            build_result(data.message_list);
-            
-            for (var i = 0,sec_len = data.message_list.length;i < sec_len;i++){
-              var section = data.message_list[i];
-              console.log(section);
-              if (section.type == 'danger'){
-                if (popup){
-                  popup.close();
+        if (!watching){
+          watching = true;
+          $.getJSON('?build=local&watch=1&site=' + $('#site').val(),function(data){
+            if (data){
+              build_result(data.message_list);
+              
+              for (var i = 0,sec_len = data.message_list.length;i < sec_len;i++){
+                var section = data.message_list[i];
+                console.log(section);
+                if (section.type == 'danger'){
+                  if (popup){
+                    popup.close();
+                  }
+                  popup = NotificationAPI.createNotification('./assets/error.png',section.title,section.list.length + ' errors');
+                  popup.onclick = function(){
+                    window.focus();
+                    this.cancel();
+                  };
+                  popup.show();
+                  
+                  setTimeout(function(){
+                    popup.close();
+                  },3000);
                 }
-                popup = NotificationAPI.createNotification('./assets/error.png',section.title,section.list.length + ' errors');
-                popup.onclick = function(){
-                  window.focus();
-                  this.cancel();
-                };
-                popup.show();
-                
-                setTimeout(function(){
-                  popup.close();
-                },3000);
               }
             }
-          }
-        });
+            watching = false;
+          });
+        }
       },1000);
       $(this).text('pause');
       $('#buildLocal').addClass('disabled');
