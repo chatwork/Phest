@@ -1,4 +1,6 @@
 <?php
+	use \Michelf\Markdown;
+	
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
@@ -81,7 +83,8 @@
 		$path_config_yml = $dir_source.'/config.yml';
 		$path_vars_yml = $dir_source.'/vars.yml';
 		$dir_output = $dir_site.'/htdocs';
-		
+
+		require(DIR_BUILDER.'/lib/phpmarkdown/Michelf/Markdown.php');		
 		require(DIR_BUILDER.'/lib/spyc.php');
 		require(DIR_BUILDER.'/lib/lessphp/lessc.inc.php');
 		require(DIR_BUILDER.'/lib/scssphp/scss.inc.php');
@@ -446,6 +449,10 @@ class BuildMessage {
 		
 		return $msg_data;
 	}
+}
+
+function markdown($text){
+	return Markdown::defaultTransform($text);
 }
 
 function array_merge_recursive_distinct ( array &$array1, array &$array2 )
