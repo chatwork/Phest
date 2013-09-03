@@ -66,7 +66,6 @@ $(function(){
     
     $('#result').fadeOut();
     
-    var popup = null;
     var watching = false;
     if (watch_timer){
       $('#watchStatus').hide();
@@ -88,21 +87,27 @@ $(function(){
               
               for (var i = 0,sec_len = data.message_list.length;i < sec_len;i++){
                 var section = data.message_list[i];
-                console.log(section);
-                if (section.type == 'danger'){
-                  if (popup){
-                    popup.close();
-                  }
-                  popup = NotificationAPI.createNotification('./assets/error.png',section.title,section.list.length + ' errors');
-                  popup.onclick = function(){
-                    window.focus();
-                    this.cancel();
-                  };
-                  popup.show();
-                  
-                  setTimeout(function(){
-                    popup.close();
-                  },3000);
+                
+                var body = '';
+                switch (section.type){
+                  case 'danger':
+                    var body = section.list.length + ' errors';
+                  case 'success':
+                    (function(){
+                      var popup = NotificationAPI.createNotification('./assets/image/' + section.type + '.png',strip_tags(section.title),body);
+                      popup.onclick = function(){
+                        window.focus();
+                        this.cancel();
+                      };
+                      popup.show();
+                      
+                      setTimeout(function(){
+                        popup.close();
+                      },3000);
+                    })();
+                    break;
+                  default:
+                    break;
                 }
               }
             }
