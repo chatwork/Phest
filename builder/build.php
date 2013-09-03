@@ -54,6 +54,7 @@
 	}
 	
 	$build = true;
+	$build_class = '';
 	switch ($buildtype){
 		case 'local':
 			$build_class = 'text-primary';
@@ -70,7 +71,6 @@
 	if ($build and $site){
 		define('SMARTBUILDER_BUILTTYPE',$buildtype);
 		
-		$build_class = '';
 		$bmsg->registerSection('build','Build <strong>'.$site.'</strong> for <strong class="'.$build_class.'">'.$buildtype.'</strong> at '.date('H:i:s'));
 		
 		$dir_site = DIR_SITES.'/'.$site;
@@ -382,22 +382,49 @@
 		$bsmarty->display('_build.tpl');
 	}
 
+/**
+ * 出力メッセージの管理
+ */
 class BuildMessage {
 	protected $message_data = array();
 	
 	/**
+	 * セクションを登録
 	 * 
-	 * @
+	 * @method registerSection
+	 * @param string $section セクション名
+	 * @param string $title セクションタイトル
+	 * @param array [$options] セクション表示オプション
+	 * @param enum(success|primary|info|danger) [$option.type=success] 表示種類
+	 * @param bool [$option.sort=false] メッセージをソートするか
+	 * @chainable
 	 */
 	public function registerSection($section,$title,array $options = array('type' => 'success','sort' => false)){
 		$this->message_data[$section] = array_merge(array('title' => $title,'list' => array()),$options);
 		$this->section_order_list[] = $section;
+		
+		return $this;
 	}
 	
+	/**
+	 * セクションにメッセージを追加
+	 * @method add
+	 * @param string $section セクション名 (registerSectionで登録した値)
+	 * @param string $message メッセージ内容
+	 * @chainable
+	 */
 	public function add($section,$message){
 		$this->message_data[$section]['list'][] = $message;
+		
+		return $this;
 	}
 	
+	/**
+	 * メッセージデータを取得
+	 * 
+	 * @method getData
+	 * @return array メッセージデータの配列
+	 */
 	public function getData(){
 		$msg_data = array();
 		
@@ -474,7 +501,7 @@ function compile($source_from,$output_to){
 }
 
 /**
- * JavaScript構文チェック
+ * JavaScriptの構文チェック
  */
 function jslint($jspath){
 	//OS判定
