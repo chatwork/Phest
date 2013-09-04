@@ -78,8 +78,6 @@
 		$dir_site = DIR_SITES.'/'.$site;
 		$dir_source = $dir_site.'/source';
 		$dir_pages = $dir_source.'/pages';
-		$dir_style = $dir_source.'/style';
-		$dir_javascript = $dir_source.'/javascript';
 		$path_config_yml = $dir_source.'/config.yml';
 		$path_vars_yml = $dir_source.'/vars.yml';
 		$dir_output = $dir_site.'/htdocs';
@@ -118,16 +116,39 @@
 		
 		$bmsg->registerSection('create','Created files',array('type' => 'info','sort' => true));
 		
+		//Smarty
 		$smarty = new Smarty;
 		$smarty->template_dir = array($dir_source,DIR_BUILDER.'/templates');
+		$smarty->compile_dir = DIR_BUILDER.'/templates_c/'.$site;
 		$smarty->addPluginsDir(DIR_BUILDER.'/plugins');
+		File::buildMakeDir($smarty->compile_dir);
+		$bmsg->registerSection('smartyerror','Smarty compile error',array('type' => 'danger'));
 		
-		$dir_compile = DIR_BUILDER.'/templates_c/'.$site;
-		File::buildMakeDir($dir_compile);
-		$smarty->compile_dir = $dir_compile;
+		//less
+		$less = new lessc;
+		$bmsg->registerSection('lesserror','LESS parse error',array('type' => 'danger'));
 		
+		//scss
+		$scss = new scssc;
+		$bmsg->registerSection('scsserror','SCSS parse error',array('type' => 'danger'));
+		
+		//jslint
+		$bmsg->registerSection('jslint','<strong>JavaScript lint warning</strong>',array('type' => 'danger'));
 		
 		//ページをスキャン
+		
+		//htdocsをスキャン
+		if (class_exists('FilesystemIterator',false)){
+			$ite = new RecursiveDirectoryIterator($dir_output,FilesystemIterator::SKIP_DOTS);
+		}else{
+			$ite = new RecursiveDirectoryIterator($dir_output);
+		}
+		$htdocs_files = array();
+		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
+			$filepath = strtr(ltrim(substr($pathname,strlen($dir_output)),'\\/'),'\\','/');
+			$htdocs_files[$filepath] = true; //ファイルのフィンガープリントをとる	
+		}
+		
 		$dir_buildstatus = DIR_BUILDER.'/buildstatus';
 		$path_buildstatus_site = $dir_buildstatus.'/'.$site.'.dat';
 		
@@ -146,7 +167,8 @@
 			
 			$has_new = false;
 			foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
-				if ($buildtime < filemtime($pathname)){
+				$filepath = strtr(ltrim(substr($pathname,strlen($dir_source)),'\\/'),'\\','/');
+				if (!isset($htdocs_files[$filepath]) or ($buildtime < filemtime($pathname))){
 					$has_new = true;
 					break;
 				}
@@ -158,25 +180,49 @@
 			}
 		}
 		
+		File::removeDir($dir_output);
+		mkdir($dir_output,0777);
+		
 		if (class_exists('FilesystemIterator',false)){
 			$ite = new RecursiveDirectoryIterator($dir_pages,FilesystemIterator::SKIP_DOTS);
 		}else{
 			$ite = new RecursiveDirectoryIterator($dir_pages);
 		}
 		
-		$bmsg->registerSection('smartyerror','Smarty compile error',array('type' => 'danger'));
 		$urls = array();
 		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
+			$create_option = '';
 			$pagepath = pathinfo($pathname);
-			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
-				$dirname = strtr(ltrim(substr($pagepath['dirname'],strlen($dir_pages)),'\\/'),'\\','/');
+			$dirname = strtr(ltrim(substr($pagepath['dirname'],strlen($dir_pages)),'\\/'),'\\','/');
 			
-				if ($dirname){
-					$rpath = $dirname.'/'.$pagepath['filename'];
-					$dirname = '/'.$dirname;
-				}else{
-					$rpath = $pagepath['filename'];
-				}
+			//OSの隠しファイルはスキップ
+			switch (strtolower($pagepath['basename'])){
+				case 'thumbs.db':
+				case '.ds_store':
+					continue 2;
+			}
+			
+			if ($dirname){
+				$rpath = $dirname.'/'.$pagepath['filename'];
+				$_path = $dirname.'/'.$pagepath['filename'];
+				$_folder = $dirname.'/';
+				$content_tpl = 'pages/'.$dirname.'/'.$pagepath['basename'];
+			}else{
+				$rpath = $pagepath['filename'];
+				$_path = $pagepath['filename'];
+				$_folder = '';
+				$content_tpl = 'pages/'.$pagepath['basename'];
+			}
+			
+			//smartyのアサイン変数をクリア
+			$smarty->clearAllAssign();
+			
+			$smarty->assign('_home',$home);
+			$smarty->assign('_path',$_path);
+			$smarty->assign('_folder',$_folder);
+			$smarty->assign('_content_tpl',$content_tpl);
+			
+			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
 				$smarty->assign('_pagename',$pagepath['filename']);
 				
 				//for canonical
@@ -203,16 +249,6 @@
 				}
 				$pages_section[] = $page_tmp.$pagepath['filename'];
 				
-				
-				//smartyのアサイン変数をクリア
-				$smarty->clearAllAssign();
-				
-				$content_tpl = 'pages'.$dirname.'/'.$pagepath['basename'];
-				$smarty->assign('_home',$home);
-				$smarty->assign('_path',ltrim($dirname.'/'.$pagepath['filename'],'\\/'));
-				$smarty->assign('_folder',ltrim($dirname.'/','\\/'));
-				$smarty->assign('_content_tpl',$content_tpl);
-				
 				$page_vars = $core_vars_yaml;
 				foreach ($pages_section as $psect){
 					if (isset($vars_yaml['path'][$psect]) and is_array($vars_yaml['path'][$psect])){
@@ -230,128 +266,123 @@
 					if (!empty($config_yaml['encode'])){
 						$output_html = mb_convert_encoding($output_html, $config_yaml['encode']);
 					}
-					File::buildPutFile($dir_output.$filepath,$output_html);
-					$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a>');
+					File::buildPutFile($dir_output.'/'.$filepath,$output_html);
 				} catch (SmartyCompilerException $e){
 					$bmsg->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+					continue;
+				}
+			}else{
+				//tplじゃない場合
+				
+				//ファイル名のはじめが _ ならスキップ
+				if (substr($pagepath['basename'],0,1) === '_'){
+					continue;
 				}
 				
-			}
-		}
-		
-		$smarty->clearAllAssign();
-		$smarty->assign('_home',$home);
-		$smarty->assign($core_vars_yaml);
-		
-		if (file_exists($dir_style)){
-			//css
-			foreach (glob($dir_style.'/*.css') as $path_css){
-				$basename_css = basename($path_css);
-				$filepath = '/style/'.$basename_css;
+				$filepath = $dirname.'/'.$pagepath['basename'];
 				
-				$create_option = '';
-				if (strpos($basename_css,'.tpl') !== false){
-					$source = $smarty->fetch('style/'.$basename_css);
-					$create_option = ' (smarty)';
-				}else{
-					$source = file_get_contents($path_css);
+				$is_output = true;
+				$is_tpl = false;
+				$is_less = false;
+				$is_scss = false;
+				$is_js = false;
+				if (strpos($pagepath['basename'],'.tpl') !== false){
+					$is_tpl = true;
+				}
+				if (strpos($pagepath['basename'],'.less') !== false){
+					$is_less = true;
+				}
+				if (strpos($pagepath['basename'],'.scss') !== false){
+					$is_scss = true;
+				}
+				if (strpos($pagepath['basename'],'.js') !== false){
+					$is_js = true;
 				}
 				
-				File::buildPutFile($dir_output.$filepath,$source);
-				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
-			}
-			
-			
-			//less
-			$less = new lessc;
-			$less->setImportDir($dir_style);
-			$bmsg->registerSection('lesserror','LESS parse error',array('type' => 'danger'));
-			foreach (glob($dir_style.'/*.less') as $path_less){
-				$basename_less = basename($path_less);
-				if (substr($basename_less,0,1) !== '_'){
-					$filepath = '/style/'.$basename_less.'.css';
-					
-					$create_option = '';
-					if (strpos($basename_less,'.tpl') !== false){
-						$source = $smarty->fetch('style/'.$basename_less);
+				if ($is_tpl or $is_less or $is_scss or $is_js){
+					//smarty
+					if ($is_tpl){
+						try {
+							$source = $smarty->fetch('pages/'.$filepath);
+						} catch (SmartyCompilerException $e){
+							$bmsg->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+							continue;
+						}
 						$create_option = ' (smarty)';
+						$filepath = str_replace('.tpl','',$filepath);
 					}else{
-						$source = file_get_contents($path_less);
+						$source = file_get_contents($pathname);
 					}
 					
-					try {
-						File::buildPutFile($dir_output.$filepath,$less->compile($source));
-						$create_option .= ' (less)';
-						$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
-					} catch (Exception $e){
-						$bmsg->add('lesserror','<strong>'.$basename_less.'</strong>: '.$e->getMessage());
+					//less
+					if ($is_less){
+						try {
+							$less->setImportDir($dirname);
+							$source = $less->compile($source);
+							$create_option .= ' (less)';
+							$filepath = str_replace('.less','.css',$filepath);
+						} catch (Exception $e){
+							$bmsg->add('lesserror','<strong>'.$basename_less.'</strong>: '.$e->getMessage());
+							continue;
+						}
 					}
+					
+					//scss
+					if ($is_scss){
+						try {
+							$scss->setImportPaths($dirname);
+							$source = $scss->compile($source);
+							$create_option .= ' (scss)';
+							$filepath = str_replace('.scss','.css',$filepath);
+						} catch (Exception $e){
+							$bmsg->add('scsserror','<strong>'.$basename_scss.'</strong>: '.$e->getMessage());
+							continue;
+						}
+					}
+					
+					//js
+					if ($is_js){
+						//本番環境かつcompilejs=1なら圧縮
+						if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
+							compile($pathname,$dir_output.'/'.$filepath);
+							$is_output = false;
+							$filepath .= ' (minified)';
+						}
+					}
+					
+					if ($is_output){
+						File::buildPutFile($dir_output.'/'.$filepath,$source);
+						
+						if ($is_js){
+							//lint check
+							if ($is_tpl){
+								//Smartyの場合、出力先に対してlintをかける
+								$lint_error = jslint($dir_output.'/'.$filepath);
+							}else{
+								$lint_error = jslint($pathname);
+							}
+							
+							if ($lint_error){
+								foreach ($lint_error as $lerr){
+									$bmsg->add('jslint',$pagepath['basename'].':'.$lerr);
+								}
+							}
+						}
+					}
+				}else{
+					$outputpath = $dir_output.'/'.$filepath;
+					$tmp_dir = dirname($outputpath);
+					if (!is_dir($tmp_dir)){
+						File::buildMakeDir($tmp_dir);
+					}
+					copy($pathname,$outputpath);
 				}
 			}
 			
-			//scss
-			$scss = new scssc;
-			$scss->setImportPaths($dir_style);
-			$bmsg->registerSection('scsserror','SCSS parse error',array('type' => 'danger'));
-			foreach (glob($dir_style.'/*.scss') as $path_scss){
-				$basename_scss = basename($path_scss);
-				if (substr($basename_scss,0,1) !== '_'){
-					$create_option = '';
-					if (strpos($basename_scss,'.tpl') !== false){
-						$source = $smarty->fetch('style/'.$basename_scss);
-						$create_option = ' (smarty)';
-					}else{
-						$source = file_get_contents($path_scss);
-					}
-					
-					$filepath = '/style/'.$basename_scss.'.css';
-					try {
-						File::buildPutFile($dir_output.$filepath,$scss->compile($source));
-						$create_option .= ' (scss)';
-						$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
-					} catch (Exception $e){
-						$bmsg->add('scsserror','<strong>'.$basename_scss.'</strong>: '.$e->getMessage());
-					}
-				}
+			if ($create_option){
+				$create_option = ' <code>'.trim($create_option).'</code>';
 			}
-		}
-		
-		//javascript
-		if (file_exists($dir_javascript)){
-			$bmsg->registerSection('jslint','<strong>JavaScript lint warning</strong>',array('type' => 'danger'));
-			foreach (glob($dir_javascript.'/*.js') as $path_js){
-				$basename_js = basename($path_js);
-				
-				//lint check
-				$lint_error = jslint($path_js);
-				
-				if ($lint_error){
-					foreach ($lint_error as $lerr){
-						$bmsg->add('jslint',$basename_js.':'.$lerr);
-					}
-				}
-				
-				$filepath = '/javascript/'.$basename_js;
-				
-				$create_option = '';
-				if (strpos($basename_js,'.tpl') !== false){
-					$source = $smarty->fetch('style/'.$basename_js);
-					$create_option = ' (smarty)';
-				}else{
-					$source = file_get_contents($path_js);
-				}
-				File::buildPutFile($dir_output.$filepath.'.tmp',file_get_contents($path_js));
-				
-				//本番環境かつcompilejs=1なら圧縮
-				if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
-					compile($dir_output.$filepath.'.tmp',$dir_output.$filepath);
-					unlink($dir_output.$filepath.'.tmp');
-					$create_option .= ' (minified)';
-				}else{
-					rename($dir_output.$filepath.'.tmp',$dir_output.$filepath);
-				}
-				$bmsg->add('create','<a href="'.$home_local.$filepath.'" target="_blank">'.$filepath.'</a> <code>'.trim($create_option).'</code>');
-			}
+			$bmsg->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
 		}
 		
 		//サイトマップ生成
