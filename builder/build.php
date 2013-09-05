@@ -170,7 +170,6 @@
 		}
 		
 		if ($watch and !$has_new){
-			header('HTTP/1.1 304 Not Modified');
 			exit;
 		}
 		

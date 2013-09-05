@@ -111,8 +111,8 @@ $(function(){
                 }
               }
             }
-            watching = false;
           });
+          watching = false;
         }
       },1000);
       $(this).text('pause');
@@ -151,7 +151,7 @@ $(function(){
 <table class="table table-bordered">
  <thead>
   <tr style="text-align:center">
-  	<td>Site</td>
+    <td>Site</td>
   	<td>Build</td>
   </tr>
  </thead>
