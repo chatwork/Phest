@@ -333,7 +333,7 @@
 					//less
 					if ($is_less){
 						try {
-							$less->setImportDir($dirname);
+							$less->setImportDir(dirname($pathname));
 							$source = $less->compile($source);
 							$create_option .= ' (less)';
 							$filepath = str_replace('.less','.css',$filepath);
@@ -346,7 +346,7 @@
 					//scss
 					if ($is_scss){
 						try {
-							$scss->setImportPaths($dirname);
+							$scss->setImportPaths(dirname($pathname));
 							$source = $scss->compile($source);
 							$create_option .= ' (scss)';
 							$filepath = str_replace('.scss','.css',$filepath);
