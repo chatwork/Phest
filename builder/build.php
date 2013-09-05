@@ -134,47 +134,44 @@
 		
 		//ページをスキャン
 		
-		//htdocsをスキャン
-		if (class_exists('FilesystemIterator',false)){
-			$ite = new RecursiveDirectoryIterator($dir_output,FilesystemIterator::SKIP_DOTS);
-		}else{
-			$ite = new RecursiveDirectoryIterator($dir_output);
-		}
-		$htdocs_files = array();
-		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
-			$filepath = strtr(ltrim(substr($pathname,strlen($dir_output)),'\\/'),'\\','/');
-			$htdocs_files[$filepath] = true; //ファイルのフィンガープリントをとる	
-		}
-		
 		$dir_buildstatus = DIR_BUILDER.'/buildstatus';
 		$path_buildstatus_site = $dir_buildstatus.'/'.$site.'.dat';
 		
-		if ($watch){
-			//ソースフォルダの全ファイルをスキャン。新しいファイルがあればビルドする。
-			$buildtime = 0;
-			if (file_exists($path_buildstatus_site)){
-				$buildtime = filemtime($path_buildstatus_site);
+		//ソースフォルダの全ファイルをスキャン。新しいファイルがあるかどうかの判定に使う。
+		$path_concat_string = '';
+		$buildtime = 0;
+		$pathhash = '';
+		if (file_exists($path_buildstatus_site)){
+			$buildtime = filemtime($path_buildstatus_site);
+			$pathhash = file_get_contents($path_buildstatus_site);
+		}
+		
+		if (class_exists('FilesystemIterator',false)){
+			$ite = new RecursiveDirectoryIterator($dir_source,FilesystemIterator::SKIP_DOTS);
+		}else{
+			$ite = new RecursiveDirectoryIterator($dir_source);
+		}
+		
+		$has_new = false;
+		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
+			$filepath = strtr(ltrim(substr($pathname,strlen($dir_source)),'\\/'),'\\','/');
+			if (!$has_new and ($buildtime < filemtime($pathname))){
+				$has_new = true;
 			}
-			
-			if (class_exists('FilesystemIterator',false)){
-				$ite = new RecursiveDirectoryIterator($dir_source,FilesystemIterator::SKIP_DOTS);
-			}else{
-				$ite = new RecursiveDirectoryIterator($dir_source);
-			}
-			
-			$has_new = false;
-			foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
-				$filepath = strtr(ltrim(substr($pathname,strlen($dir_source)),'\\/'),'\\','/');
-				if (!isset($htdocs_files[$filepath]) or ($buildtime < filemtime($pathname))){
-					$has_new = true;
-					break;
-				}
-			}
-			
-			if (!$has_new){
-				header('HTTP/1.1 304 Not Modified');
-				exit;
-			}
+			$path_concat_string .= ':'.$filepath;
+		}
+		
+		//ファイルパスを全部つないだ文字列のハッシュをとる
+		$source_pathhash = md5($path_concat_string);
+		//ファイルパスの変更があるか
+		if ($pathhash != $source_pathhash){
+			$has_new = true;
+			$pathhash = $source_pathhash;
+		}
+		
+		if ($watch and !$has_new){
+			header('HTTP/1.1 304 Not Modified');
+			exit;
 		}
 		
 		$build_option = '';
@@ -418,7 +415,7 @@
 		
 		
 		//ビルド時間を記録
-		File::buildTouch($path_buildstatus_site);
+		File::buildPutFile($path_buildstatus_site,$pathhash);
 	}
 	
 	if ($watch){
