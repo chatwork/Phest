@@ -1,0 +1,8 @@
+home:
+ local:""
+ production:"http://www.example.com"
+encode:""
+buildclear:1
+sitemap:1
+robotstxt:1
+compilejs:1

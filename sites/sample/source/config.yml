@@ -1,6 +1,7 @@
 home:
  local:"../sites/sample/htdocs"
  production:"http://www.sample.com"
+buildclear:1
 sitemap:1
 robotstxt:1
 compilejs:1

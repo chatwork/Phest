@@ -94,8 +94,8 @@
 		if (!file_exists($path_vars_yml)){
 			die('vars.ymlが見つかりません。path='.$path_vars_yml);
 		}
-		$config_yaml = spyc_load_file($path_config_yml);
-		$vars_yaml = spyc_load_file($path_vars_yml);
+		$config_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_config.yml'),spyc_load_file($path_config_yml));
+		$vars_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_vars.yml'),spyc_load_file($path_vars_yml));
 
 		if (!isset($vars_yaml['common']) or !is_array($vars_yaml['common'])){
 			$vars_yaml['common'] = array();
@@ -110,9 +110,6 @@
 		if (!$home){
 			die('config.ymlにhomeが正しく設定されていません');
 		}
-		
-		$bmsg->add('build','home path: <a href="'.$home.'" target="_blank">'.$home.'</a>');
-		$bmsg->add('build','site filepath: '.realpath($dir_site));
 		
 		$bmsg->registerSection('create','Created files',array('type' => 'info','sort' => true));
 		
@@ -180,8 +177,17 @@
 			}
 		}
 		
-		File::removeDir($dir_output);
-		mkdir($dir_output,0777);
+		$build_option = '';
+		if (!empty($config_yaml['buildclear'])){
+			File::removeDir($dir_output);
+			mkdir($dir_output,0777);
+			$build_option = ' (cleared)';
+		}
+		if ($build_option){
+			$build_option = ' <code>'.trim($build_option).'</code>';
+		}
+		$bmsg->add('build','build from: '.realpath($dir_source));
+		$bmsg->add('build','build to: <a href="'.$home.'" target="_blank">'.$home.'</a>'.$build_option);
 		
 		if (class_exists('FilesystemIterator',false)){
 			$ite = new RecursiveDirectoryIterator($dir_pages,FilesystemIterator::SKIP_DOTS);
@@ -274,18 +280,28 @@
 			}else{
 				//tplじゃない場合
 				
-				//ファイル名のはじめが _ ならスキップ
-				if (substr($pagepath['basename'],0,1) === '_'){
-					continue;
-				}
-				
-				$filepath = $dirname.'/'.$pagepath['basename'];
+				//ファイル名の1文字目
+				$first_char = substr($pagepath['basename'],0,1);
 				
 				$is_output = true;
 				$is_tpl = false;
 				$is_less = false;
 				$is_scss = false;
 				$is_js = false;
+				$is_nolint = false;
+				
+				switch ($first_char){
+					//_ ならスキップ
+					case '_':
+						continue 2;
+					//@ ならLintしない
+					case '@':
+						$is_nolint = true;
+						break;
+				}
+				
+				$filepath = $dirname.'/'.ltrim($pagepath['basename'],'@');
+				
 				if (strpos($pagepath['basename'],'.tpl') !== false){
 					$is_tpl = true;
 				}
@@ -353,7 +369,7 @@
 					if ($is_output){
 						File::buildPutFile($dir_output.'/'.$filepath,$source);
 						
-						if ($is_js){
+						if ($is_js and !$is_nolint){
 							//lint check
 							if ($is_tpl){
 								//Smartyの場合、出力先に対してlintをかける
