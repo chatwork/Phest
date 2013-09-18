@@ -131,6 +131,7 @@
 		
 		//jslint
 		$bmsg->registerSection('jslint','<strong>JavaScript lint warning</strong>',array('type' => 'danger'));
+		$bmsg->registerSection('jscompileerror','JavaScript compile error',array('type' => 'danger'));
 		
 		//ページをスキャン
 		
@@ -279,12 +280,12 @@
 				//ファイル名の1文字目
 				$first_char = substr($pagepath['basename'],0,1);
 				
-				$is_output = true;
-				$is_tpl = false;
-				$is_less = false;
-				$is_scss = false;
-				$is_js = false;
-				$is_nolint = false;
+				$is_output = true; //ファイル出力が必要か
+				$is_tpl = false; //Smarty処理が必要なtplファイルか
+				$is_less = false; //Lessファイルか
+				$is_scss = false; //Scssファイルか
+				$is_js = false; //JavaScriptファイルか
+				$is_nolint = false; //Lintエラーを無視するか
 				
 				switch ($first_char){
 					//_ ならスキップ
@@ -334,7 +335,7 @@
 							$create_option .= ' (less)';
 							$filepath = str_replace('.less','.css',$filepath);
 						} catch (Exception $e){
-							$bmsg->add('lesserror','<strong>'.$basename_less.'</strong>: '.$e->getMessage());
+							$bmsg->add('lesserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 							continue;
 						}
 					}
@@ -347,7 +348,7 @@
 							$create_option .= ' (scss)';
 							$filepath = str_replace('.scss','.css',$filepath);
 						} catch (Exception $e){
-							$bmsg->add('scsserror','<strong>'.$basename_scss.'</strong>: '.$e->getMessage());
+							$bmsg->add('scsserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 							continue;
 						}
 					}
@@ -356,9 +357,19 @@
 					if ($is_js){
 						//本番環境かつcompilejs=1なら圧縮
 						if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
-							compile($pathname,$dir_output.'/'.$filepath);
+							$output_to = $dir_output.'/'.$filepath;
+							$source_tmp = $dir_output.'/'.$filepath.'.tmp';
+							File::buildPutFile($source_tmp,$source);
+							compile($source_tmp,$output_to);
+							unlink($source_tmp);
+							
+							$org_filesize = filesize($pathname);
+							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
+								$bmsg->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>: ');
+								continue;
+							}
 							$is_output = false;
-							$filepath .= ' (minified)';
+							$create_option .= ' (minified)';
 						}
 					}
 					
@@ -547,7 +558,9 @@ function compile($source_from,$output_to){
 	}
 	exec($compile_command,$compile_output);
 	
-	chmod($output_to,0777);
+	if (file_exists($output_to)){
+		chmod($output_to,0777);
+	}
 }
 
 /**
