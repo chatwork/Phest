@@ -183,7 +183,7 @@
 			$build_option = ' <code>'.trim($build_option).'</code>';
 		}
 		$bmsg->add('build','build from: '.realpath($dir_source));
-		$bmsg->add('build','build to: <a href="'.$home.'" target="_blank">'.$home.'</a>'.$build_option);
+		$bmsg->add('build','build to: <a href="'.$home_local.'" target="_blank">'.realpath($dir_output).'</a>'.$build_option);
 		
 		if (class_exists('FilesystemIterator',false)){
 			$ite = new RecursiveDirectoryIterator($dir_pages,FilesystemIterator::SKIP_DOTS);
@@ -206,12 +206,12 @@
 			
 			if ($dirname){
 				$rpath = $dirname.'/'.$pagepath['filename'];
-				$_path = $dirname.'/'.$pagepath['filename'];
-				$_folder = $dirname.'/';
+				$_path = $dirname.'/'.$pagepath['filename'].'.html';
+				$_folder = $dirname;
 				$content_tpl = 'pages/'.$dirname.'/'.$pagepath['basename'];
 			}else{
 				$rpath = $pagepath['filename'];
-				$_path = $pagepath['filename'];
+				$_path = $pagepath['filename'].'.html';
 				$_folder = '';
 				$content_tpl = 'pages/'.$pagepath['basename'];
 			}
@@ -249,7 +249,7 @@
 						$page_tmp .= $page.'/';
 					}
 				}
-				$pages_section[] = $page_tmp.$pagepath['filename'];
+				$pages_section[] = $page_tmp.$pagepath['filename'].'.html';
 				
 				$page_vars = $core_vars_yaml;
 				foreach ($pages_section as $psect){
