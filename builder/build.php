@@ -130,7 +130,7 @@
 		$bmsg->registerSection('scsserror','SCSS parse error',array('type' => 'danger'));
 		
 		//jslint
-		$bmsg->registerSection('jslint','<strong>JavaScript lint warning</strong>',array('type' => 'danger'));
+		$bmsg->registerSection('jslint','JavaScript lint warning',array('type' => 'danger'));
 		$bmsg->registerSection('jscompileerror','JavaScript compile error',array('type' => 'danger'));
 		
 		//ページをスキャン
