@@ -267,8 +267,8 @@ jQueryなどの外部OSSライブラリでエラーが大量に出てしまう�
     - 変数の内容をビジュアルに出力します(配列などの場合に便利)
 
 参考：
-Markdown http://ja.wikipedia.org/wiki/Markdown
-textile http://txstyle.org/
+- Markdown http://ja.wikipedia.org/wiki/Markdown
+- textile http://txstyle.org/
 
 Smarty標準のテンプレート関数
 ---------------
