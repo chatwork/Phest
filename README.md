@@ -266,14 +266,11 @@ jQueryなどの外部OSSライブラリでエラーが大量に出てしまう�
 - {$xxx|print_a}
     - 変数の内容をビジュアルに出力します(配列などの場合に便利)
 
-参考：
-- Markdown http://ja.wikipedia.org/wiki/Markdown
-- textile http://txstyle.org/
-
-Smarty標準のテンプレート関数
+参考
 ---------------
-Smarty標準の組み込み関数を使用できます。
-参考：http://www.smarty.net/docs/ja/
+- Smarty http://www.smarty.net/docs/ja/
+- Markdown http://ja.wikipedia.org/wiki/Markdown
+- Textile http://txstyle.org/
 
 
 
