@@ -26,9 +26,9 @@ Smartyの `{include file=""}` や `{if}` `{foreach}` をはじめとした強力
 環境に応じたファイル生成が柔軟に可能。watch機能によりファイルの変更を検知して自動でビルドを実行することもできます。
 (ビルド結果はブラウザのデスクトップ通知機能で通知されます *対応しているブラウザのみ Chrome/Safari/Firefoxなど)
 
-### LESSやSCSSなどのCSSプリプロセッサを使用可能
+### LESSやSCSS、CoffeeScriptなどのCSS/JSプリプロセッサを使用可能
 静的ファイルの書き出しにともなって、LESSなどのコンパイルを実行できます。
-さらに、LESSファイルをSmartyで一度処理させてからコンパイルさせることもできます。
+さらに、Smartyで一度処理させてからコンパイルさせることもできます。
 
 ### JavaScriptの文法チェック、minifyを実行可能
 JavaScriptでも、書き出しにともなって文法チェックと圧縮のminify処理を実行できます。
@@ -207,12 +207,19 @@ vars.yml の設定方法
 
 JavaScriptのファイル作成方法
 ---------------
-*.js のファイルを `pages/` 以下に置くと、拡張子に応じて自動で構文チェックやコンパイル処理などが行われます。
+JavaScriptのファイルを `pages/` 以下に置くと、拡張子に応じて自動で構文チェックやコンパイル処理などが行われます。
 
 - *.js
-    - そのままコピーします。compilejs:1 なら本番環境でビルドするとminifyします
+    - そのままコピーします
 - *.tpl.js
-    - Smartyで処理後、compilejs:1 なら本番環境でビルドするとminifyします
+    - Smartyで処理してコピーします
+- *.coffee
+    - CoffeeScriptでコンパイルします
+- *.tpl.coffee
+    - Smartyで処理後、CoffeeScriptでコンパイルします
+
+    
+config.yml に `compilejs:1` を指定していた場合は、本番環境でビルドするとGoogle Closure Compilerでminifyします。
 
 また、ファイル名の先頭に `@` をつけると、構文チェックが実行されなくなります。
 jQueryなどの外部OSSライブラリでエラーが大量に出てしまうのを無視したい場合に使ってください。
@@ -251,8 +258,17 @@ jQueryなどの外部OSSライブラリでエラーが大量に出てしまう�
     - `{"マークダウンの**文字列**"}` などとして、変数にアサインしていない文字列もmarkdown処理できます。
 - {markdown}〜{/markdown}
     - ブロックで囲んだ部分をMarkdownとして処理します。
+- {$xxx|textile}
+    - 変数をtextileとして解釈し、対応するHTMLに変換します。
+    - `{"Textileの**文字列**"}` などとして、変数にアサインしていない文字列もtextile処理できます。
+- {textile}〜{/textile}
+    - ブロックで囲んだ部分をTextileとして処理します。
 - {$xxx|print_a}
     - 変数の内容をビジュアルに出力します(配列などの場合に便利)
+
+参考：
+Markdown http://ja.wikipedia.org/wiki/Markdown
+textile http://txstyle.org/
 
 Smarty標準のテンプレート関数
 ---------------

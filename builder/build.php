@@ -4,13 +4,16 @@
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.3';
+	$ver = 'v0.3.1';
 	
 	ini_set('display_errors','On');
-	require(DIR_BUILDER.'/lib/debuglib.php');
-	require(DIR_BUILDER.'/lib/smarty/Smarty.class.php');
+	require(DIR_BUILDER.'/lib/function.php');
 	require(DIR_BUILDER.'/lib/File.php');
-	
+	require(DIR_BUILDER.'/lib/BuildMessage.php');
+	require(DIR_BUILDER.'/lib/vendor/debuglib.php');
+	require(DIR_BUILDER.'/lib/vendor/smarty/Smarty.class.php');	
+	require(DIR_BUILDER.'/lib/vendor/spyc.php');
+
 	if (!is_dir(DIR_SITES)){
 		die('dir_sites がディレクトリではありません');
 	}
@@ -81,11 +84,6 @@
 		$path_config_yml = $dir_source.'/config.yml';
 		$path_vars_yml = $dir_source.'/vars.yml';
 		$dir_output = $dir_site.'/htdocs';
-
-		require(DIR_BUILDER.'/lib/phpmarkdown/Michelf/Markdown.php');		
-		require(DIR_BUILDER.'/lib/spyc.php');
-		require(DIR_BUILDER.'/lib/lessphp/lessc.inc.php');
-		require(DIR_BUILDER.'/lib/scssphp/scss.inc.php');
 		
 		//yaml load
 		if (!file_exists($path_config_yml)){
@@ -128,6 +126,9 @@
 		//scss
 		$scss = new scssc;
 		$bmsg->registerSection('scsserror','SCSS parse error',array('type' => 'danger'));
+		
+		//coffee
+		$bmsg->registerSection('coffeeerror','Coffee Script parse error',array('type' => 'danger'));
 		
 		//jslint
 		$bmsg->registerSection('jslint','JavaScript lint warning',array('type' => 'danger'));
@@ -284,6 +285,7 @@
 				$is_tpl = false; //Smarty処理が必要なtplファイルか
 				$is_less = false; //Lessファイルか
 				$is_scss = false; //Scssファイルか
+				$is_coffee = false; //CoffeeScriptか
 				$is_js = false; //JavaScriptファイルか
 				$is_nolint = false; //Lintエラーを無視するか
 				
@@ -307,6 +309,10 @@
 				}
 				if (strpos($pagepath['basename'],'.scss') !== false){
 					$is_scss = true;
+				}
+				if (strpos($pagepath['basename'],'.coffee') !== false){
+					$is_coffee = true;
+					$is_js = true;
 				}
 				if (strpos($pagepath['basename'],'.js') !== false){
 					$is_js = true;
@@ -349,6 +355,19 @@
 							$filepath = str_replace('.scss','.css',$filepath);
 						} catch (Exception $e){
 							$bmsg->add('scsserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+							continue;
+						}
+					}
+					
+					//coffee
+					if ($is_coffee){
+						try {
+							// See available options above.
+							$source = CoffeeScript\Compiler::compile($source,array('filename' => $filepath));
+							$create_option .= ' (coffee)';
+							$filepath = str_replace('.coffee','.js',$filepath);
+						}catch (Exception $e){
+							$bmsg->add('coffeeerror',$e->getMessage());
 							continue;
 						}
 					}
@@ -438,171 +457,3 @@
 		$bsmarty->assign('message_list',$bmsg->getData());
 		$bsmarty->display('_build.tpl');
 	}
-
-/**
- * 出力メッセージの管理
- */
-class BuildMessage {
-	protected $message_data = array();
-	
-	/**
-	 * セクションを登録
-	 * 
-	 * @method registerSection
-	 * @param string $section セクション名
-	 * @param string $title セクションタイトル
-	 * @param array [$options] セクション表示オプション
-	 * @param enum(success|primary|info|danger) [$option.type=success] 表示種類
-	 * @param bool [$option.sort=false] メッセージをソートするか
-	 * @chainable
-	 */
-	public function registerSection($section,$title,array $options = array('type' => 'success','sort' => false)){
-		$this->message_data[$section] = array_merge(array('title' => $title,'list' => array()),$options);
-		$this->section_order_list[] = $section;
-		
-		return $this;
-	}
-	
-	/**
-	 * セクションにメッセージを追加
-	 * @method add
-	 * @param string $section セクション名 (registerSectionで登録した値)
-	 * @param string $message メッセージ内容
-	 * @chainable
-	 */
-	public function add($section,$message){
-		$this->message_data[$section]['list'][] = $message;
-		
-		return $this;
-	}
-	
-	/**
-	 * メッセージデータを取得
-	 * 
-	 * @method getData
-	 * @return array メッセージデータの配列
-	 */
-	public function getData(){
-		$msg_data = array();
-		
-		$type_list = array('success','danger','primary','info');
-		
-		foreach ($type_list as $type){
-			foreach ($this->message_data as $section => $mdat){
-				if ($mdat['type'] != $type){
-					continue;
-				}
-				if (count($mdat['list'])){
-					if (!empty($mdat['sort'])){
-						asort($mdat['list']);
-					}
-					$msg_data[] = $mdat;
-				}
-			}
-		}
-		
-		return $msg_data;
-	}
-}
-
-function markdown($text){
-	return Markdown::defaultTransform($text);
-}
-
-function array_merge_recursive_distinct ( array &$array1, array &$array2 )
-{
-  $merged = $array1;
-
-  foreach ( $array2 as $key => &$value )
-  {
-    if ( is_array ( $value ) && isset ( $merged [$key] ) && is_array ( $merged [$key] ) )
-    {
-      $merged [$key] = array_merge_recursive_distinct ( $merged [$key], $value );
-    }
-    else
-    {
-      $merged [$key] = $value;
-    }
-  }
-
-  return $merged;
-}
-
-/**
- * コンパイルを実行
- */
-function compile($source_from,$output_to){
-	//OS判定
-	switch(PHP_OS){
-		case 'Darwin':
-			$os = 'mac';
-			break;
-		case 'WIN32':
-		case 'WINNT':
-			$os = 'win';
-			break;
-		default:
-			die('サポートしていないOSです:'.PHP_OS);
-			break;
-	}
-	
-	if (file_exists($output_to)){
-		unlink($output_to);
-	}
-	
-	$compile_command = 'java -jar '.dirname(__FILE__).'/lib/compiler/closurecompiler/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --js '.$source_from.' --js_output_file '.$output_to;
-	
-	$compile_output = array();
-	if ($os == 'mac'){
-		$compile_command = 'export DYLD_LIBRARY_PATH="";'.$compile_command;
-	}
-	exec($compile_command,$compile_output);
-	
-	if (file_exists($output_to)){
-		chmod($output_to,0777);
-	}
-}
-
-/**
- * JavaScriptの構文チェック
- */
-function jslint($jspath){
-	//OS判定
-	switch(PHP_OS){
-		case 'Darwin':
-			$os = 'mac';
-			break;
-		case 'WIN32':
-		case 'WINNT':
-			$os = 'win';
-			break;
-		default:
-			die('サポートしていないOSです:'.PHP_OS);
-			break;
-	}
-	
-	$lint_output = array();
-	$cmd = './lib/jsl/'.$os.'/jsl -conf ./lib/jsl/ec.conf -process '.$jspath.' 2>&1';
-	$cmd = strtr($cmd,'/',DIRECTORY_SEPARATOR);
-	
-	exec($cmd,$lint_output);
-	
-	$lint_error = array();
-	if (count($lint_output) > 6){
-		for ($i = 4;$i < (count($lint_output) - 2);$i++){
-			$lint_error[] = $lint_output[$i];
-		}
-	}
-	
-	return $lint_error;
-}
-
-function bytename($size,$unit = 'B'){
-	$unim = array('','K','M','G','T','P');
-	$c = 0;
-	while ($size >= 1024) {
-		$c++;
-		$size = $size / 1024;
-	}
-	return number_format($size,($c ? 2 : 0),'.',',').' '.$unim[$c].$unit;
-}
