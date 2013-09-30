@@ -312,6 +312,7 @@
 				}
 				if (strpos($pagepath['basename'],'.coffee') !== false){
 					$is_coffee = true;
+					$is_nolint = true;
 					$is_js = true;
 				}
 				if (strpos($pagepath['basename'],'.js') !== false){

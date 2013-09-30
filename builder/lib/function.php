@@ -97,7 +97,7 @@ function jslint($jspath){
 	}
 	
 	$lint_output = array();
-	$cmd = './lib/jsl/'.$os.'/jsl -conf ./lib/jsl/ec.conf -process '.$jspath.' 2>&1';
+	$cmd = './lib/vendor/jsl/'.$os.'/jsl -conf ./lib/vendor/jsl/ec.conf -process '.$jspath.' 2>&1';
 	$cmd = strtr($cmd,'/',DIRECTORY_SEPARATOR);
 	
 	exec($cmd,$lint_output);
