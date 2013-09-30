@@ -219,7 +219,7 @@ JavaScriptのファイルを `pages/` 以下に置くと、拡張子に応じて
     - Smartyで処理後、CoffeeScriptでコンパイルします
 
     
-config.yml に `compilejs:1` を指定していた場合は、本番環境でビルドするとGoogle Closure Compilerでminifyします。
+config.yml に `compilejs:1` を指定している場合は、本番環境でビルドするとGoogle Closure Compilerでminifyします。
 
 また、ファイル名の先頭に `@` をつけると、構文チェックが実行されなくなります。
 jQueryなどの外部OSSライブラリでエラーが大量に出てしまうのを無視したい場合に使ってください。
