@@ -262,7 +262,7 @@
 				
 				$smarty->assign($page_vars);
 				
-				$filepath = $dirname.'/'.$pagepath['filename'].'.html';
+				$filepath = ltrim($dirname.'/'.$pagepath['filename'].'.html','/');
 				
 				try {
 					$output_html = $smarty->fetch('parts/base.tpl');
