@@ -45,7 +45,7 @@
 		$create_site = trim($_GET['create_site']);
 		
 		File::copyDir('./blanksite/',DIR_SITES.'/'.$create_site);
-		$path_config_yml = DIR_SITES.'/'.$create_site.'/config.yml';
+		$path_config_yml = DIR_SITES.'/'.$create_site.'/source/config.yml';
 		file_put_contents($path_config_yml,strtr(file_get_contents($path_config_yml),array('{{site}}' => $create_site)));
 		
 		header('Location: ?site='.$create_site);
