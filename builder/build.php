@@ -110,6 +110,7 @@
 		}
 		
 		$bmsg->registerSection('create','Created files',array('type' => 'info','sort' => true));
+		$bmsg->registerSection('builderror','Build option error',array('type' => 'danger'));
 		
 		//Smarty
 		$smarty = new Smarty;
@@ -155,9 +156,41 @@
 		}
 		
 		$has_new = false;
+		$watch_list = array();
 		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
-			$filepath = strtr(ltrim(substr($pathname,strlen($dir_source)),'\\/'),'\\','/');
-			if (!$has_new and ($buildtime < filemtime($pathname))){
+			$watch_list[] = $pathname;
+		}
+		
+		//configのbuildオプションを処理
+		$concat_list = array();
+		if (isset($config_yaml['build'])){
+			foreach ($config_yaml['build'] as $build_dat){
+				foreach ($build_dat as $command => $option){
+					switch ($command){
+						case 'concat':
+							if (!isset($concat_list[$option['output']])){
+								$concat_list[$option['output']] = array();
+							}
+							foreach ($option['sources'] as $spath){
+								if (file_exists($spath)){
+									$watch_list[] = $spath;
+									$concat_list[$option['output']][] = $spath;
+								}else{
+									$bmsg->add('builderror','[concat] source file not exist: '.$spath);
+								}
+							}
+							break;
+					}
+				}
+			}
+		}
+		
+		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
+			$watch_list[] = $pathname;
+		}
+		
+		foreach ($watch_list as $filepath){
+			if (!$has_new and ($buildtime < filemtime($filepath))){
 				$has_new = true;
 			}
 			$path_concat_string .= ':'.$filepath;
@@ -173,6 +206,19 @@
 		
 		if ($watch and !$has_new){
 			exit;
+		}
+		
+		//concatを処理
+		if ($concat_list){
+			foreach ($concat_list as $output_to => $cpath_list){
+				$output_source = '';
+				foreach ($cpath_list as $cpath){
+					$output_source .= file_get_contents($cpath);
+				}
+				$bmsg->add('build','concat files to source/pages/<b>'.$output_to.'</b> ('.count($cpath_list).' files)');
+				File::buildPutFile($dir_pages.'/'.$output_to, $output_source);
+				$output_source = '';
+			}
 		}
 		
 		$build_option = '';
