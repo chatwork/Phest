@@ -149,20 +149,12 @@
 			$pathhash = file_get_contents($path_buildstatus_site);
 		}
 		
-		if (class_exists('FilesystemIterator',false)){
-			$ite = new RecursiveDirectoryIterator($dir_source,FilesystemIterator::SKIP_DOTS);
-		}else{
-			$ite = new RecursiveDirectoryIterator($dir_source);
-		}
-		
 		$has_new = false;
 		$watch_list = array();
-		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
-			$watch_list[] = $pathname;
-		}
 		
 		//configのbuildオプションを処理
 		$concat_list = array();
+		$copyto_list = array();
 		if (isset($config_yaml['build'])){
 			foreach ($config_yaml['build'] as $build_dat){
 				foreach ($build_dat as $command => $option){
@@ -180,14 +172,24 @@
 								}
 							}
 							break;
+						case 'copydir':
+							$is_valid_dir = true;
+							if (!is_dir($option['fromdir'])){
+								$is_valid_dir = false;
+								$bmsg->add('builderror','[copydir] fromdir is not directory: '.$option['fromdir']);
+							}
+							
+							if ($is_valid_dir){
+								$watch_list = array_merge($watch_list,File::getFileList($option['fromdir']));
+								$copyto_list[$option['fromdir']] = $option['todir'];
+							}
+							break;
 					}
 				}
 			}
 		}
 		
-		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
-			$watch_list[] = $pathname;
-		}
+		$watch_list = array_merge($watch_list,File::getFileList($dir_source));
 		
 		foreach ($watch_list as $filepath){
 			if (!$has_new and ($buildtime < filemtime($filepath))){
@@ -215,9 +217,17 @@
 				foreach ($cpath_list as $cpath){
 					$output_source .= file_get_contents($cpath);
 				}
-				$bmsg->add('build','concat files to source/pages/<b>'.$output_to.'</b> ('.count($cpath_list).' files)');
-				File::buildPutFile($dir_pages.'/'.$output_to, $output_source);
+				$bmsg->add('build','concat files to source/<b>'.$output_to.'</b> ('.count($cpath_list).' files)');
+				File::buildPutFile($dir_source.'/'.$output_to, $output_source);
 				$output_source = '';
+			}
+		}
+		
+		//copydirを処理
+		if ($copyto_list){
+			foreach ($copyto_list as $copyfrom => $copyto){
+				$bmsg->add('build','copy directory from <b>'.$copyfrom.'</b> to <b>'.$copyto.'</b>');
+				File::copyDir($copyfrom, $dir_source.'/'.$copyto);
 			}
 		}
 		
