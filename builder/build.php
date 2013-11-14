@@ -250,13 +250,15 @@
 		}
 		
 		$urls = array();
+		$assets_list = array();
+		$assets_smarty_flag = array();
 		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
-			$create_option = '';
 			$pagepath = pathinfo($pathname);
 			$dirname = strtr(ltrim(substr($pagepath['dirname'],strlen($dir_pages)),'\\/'),'\\','/');
+			$basename = $pagepath['basename'];
 			
 			//OSの隠しファイルはスキップ
-			switch (strtolower($pagepath['basename'])){
+			switch (strtolower($basename)){
 				case 'thumbs.db':
 				case '.ds_store':
 					continue 2;
@@ -266,12 +268,12 @@
 				$rpath = $dirname.'/'.$pagepath['filename'];
 				$_path = $dirname.'/'.$pagepath['filename'].'.html';
 				$_folder = $dirname;
-				$content_tpl = 'pages/'.$dirname.'/'.$pagepath['basename'];
+				$content_tpl = 'pages/'.$dirname.'/'.$basename;
 			}else{
 				$rpath = $pagepath['filename'];
 				$_path = $pagepath['filename'].'.html';
 				$_folder = '';
-				$content_tpl = 'pages/'.$pagepath['basename'];
+				$content_tpl = 'pages/'.$basename;
 			}
 			
 			//smartyのアサイン変数をクリア
@@ -282,6 +284,7 @@
 			$smarty->assign('_folder',$_folder);
 			$smarty->assign('_content_tpl',$content_tpl);
 			
+			//最後が .tpl のテンプレートファイルなら
 			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
 				$smarty->assign('_pagename',$pagepath['filename']);
 				
@@ -332,150 +335,167 @@
 					continue;
 				}
 			}else{
-				//tplじゃない場合
+				//最後が .tpl 以外のアセットファイル
 				
-				//ファイル名の1文字目
-				$first_char = substr($pagepath['basename'],0,1);
+				$filepath = $dirname.'/'.$basename;
 				
-				$is_output = true; //ファイル出力が必要か
-				$is_tpl = false; //Smarty処理が必要なtplファイルか
-				$is_less = false; //Lessファイルか
-				$is_scss = false; //Scssファイルか
-				$is_coffee = false; //CoffeeScriptか
-				$is_js = false; //JavaScriptファイルか
-				$is_nolint = false; //Lintエラーを無視するか
-				
-				switch ($first_char){
-					//_ ならスキップ
-					case '_':
-						continue 2;
-					//@ ならLintしない
-					case '@':
-						$is_nolint = true;
-						break;
+				//Smartyの事前処理が必要なファイルを処理
+				if (strpos($basename,'.tpl') !== false){
+					try {
+						$source = $smarty->fetch('pages/'.$filepath);
+					} catch (SmartyCompilerException $e){
+						$bmsg->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+						continue;
+					}
+					$basename = str_replace('.tpl','',$basename);
+					$pathname = $pagepath['dirname'].'/'.$basename;
+					$filepath = $dirname.'/'.$basename;
+					
+					//拡張子 .tpl を抜いたファイル名で出力する
+					file_put_contents($pathname, $source);
+					
+					$assets_smarty_flag[$pathname] = true;
 				}
 				
-				$filepath = $dirname.'/'.ltrim($pagepath['basename'],'@');
-				
-				if (strpos($pagepath['basename'],'.tpl') !== false){
-					$is_tpl = true;
-				}
-				if (strpos($pagepath['basename'],'.less') !== false){
-					$is_less = true;
-				}
-				if (strpos($pagepath['basename'],'.scss') !== false){
-					$is_scss = true;
-				}
-				if (strpos($pagepath['basename'],'.coffee') !== false){
-					$is_coffee = true;
+				$assets_list[] = array(
+					'pathname' => $pathname,
+					'dirname' => $dirname,
+					'filepath' => $filepath,
+					'basename' => $basename,
+					);
+			}
+		}
+		
+		foreach ($assets_list as $path_dat){
+			$create_option = '';
+			$pathname = $path_dat['pathname'];
+			$dirname = $path_dat['dirname'];
+			$filepath = $path_dat['filepath'];
+			$basename = $path_dat['basename'];
+			
+			//ファイル名の1文字目
+			$first_char = substr($basename,0,1);
+			
+			$is_output = true; //ファイル出力が必要か
+			$is_less = false; //Lessファイルか
+			$is_scss = false; //Scssファイルか
+			$is_coffee = false; //CoffeeScriptか
+			$is_js = false; //JavaScriptファイルか
+			$is_nolint = false; //Lintエラーを無視するか
+			
+			switch ($first_char){
+				//_ ならスキップ
+				case '_':
+					continue;
+				//@ ならLintしない
+				case '@':
 					$is_nolint = true;
-					$is_js = true;
-				}
-				if (strpos($pagepath['basename'],'.js') !== false){
-					$is_js = true;
+					$filepath = $dirname.'/'.substr($basename,1);
+					break;
+			}
+			
+			if (strpos($filepath,'.less') !== false){
+				$is_less = true;
+			}
+			if (strpos($filepath,'.scss') !== false){
+				$is_scss = true;
+			}
+			if (strpos($filepath,'.coffee') !== false){
+				$is_coffee = true;
+				$is_nolint = true;
+				$is_js = true;
+			}
+			if (strpos($filepath,'.js') !== false){
+				$is_js = true;
+			}
+			
+			if ($is_less or $is_scss or $is_js){
+				$source = file_get_contents($pathname);
+				
+				if (isset($assets_smarty_flag[$pathname])){
+					$create_option .= ' (smarty)';
 				}
 				
-				if ($is_tpl or $is_less or $is_scss or $is_js){
-					//smarty
-					if ($is_tpl){
-						try {
-							$source = $smarty->fetch('pages/'.$filepath);
-						} catch (SmartyCompilerException $e){
-							$bmsg->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
-							continue;
-						}
-						$create_option = ' (smarty)';
-						$filepath = str_replace('.tpl','',$filepath);
-					}else{
-						$source = file_get_contents($pathname);
+				//less
+				if ($is_less){
+					try {
+						$less->setImportDir(dirname($pathname));
+						$source = $less->compile($source);
+						$create_option .= ' (less)';
+						$filepath = str_replace('.less','.css',$filepath);
+					} catch (Exception $e){
+						$bmsg->add('lesserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+						continue;
 					}
-					
-					//less
-					if ($is_less){
-						try {
-							$less->setImportDir(dirname($pathname));
-							$source = $less->compile($source);
-							$create_option .= ' (less)';
-							$filepath = str_replace('.less','.css',$filepath);
-						} catch (Exception $e){
-							$bmsg->add('lesserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
-							continue;
-						}
-					}
-					
-					//scss
-					if ($is_scss){
-						try {
-							$scss->setImportPaths(dirname($pathname));
-							$source = $scss->compile($source);
-							$create_option .= ' (scss)';
-							$filepath = str_replace('.scss','.css',$filepath);
-						} catch (Exception $e){
-							$bmsg->add('scsserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
-							continue;
-						}
-					}
-					
-					//coffee
-					if ($is_coffee){
-						try {
-							// See available options above.
-							$source = CoffeeScript\Compiler::compile($source,array('filename' => $filepath));
-							$create_option .= ' (coffee)';
-							$filepath = str_replace('.coffee','.js',$filepath);
-						}catch (Exception $e){
-							$bmsg->add('coffeeerror',$e->getMessage());
-							continue;
-						}
-					}
-					
-					//js
-					if ($is_js){
-						//本番環境かつcompilejs=1なら圧縮
-						if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
-							$output_to = $dir_output.'/'.$filepath;
-							$source_tmp = $dir_output.'/'.$filepath.'.tmp';
-							File::buildPutFile($source_tmp,$source);
-							compile($source_tmp,$output_to);
-							unlink($source_tmp);
-							
-							$org_filesize = filesize($pathname);
-							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
-								$bmsg->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>: ');
-								continue;
-							}
-							$is_output = false;
-							$create_option .= ' (minified)';
-						}
-					}
-					
-					if ($is_output){
-						File::buildPutFile($dir_output.'/'.$filepath,$source);
-						
-						if ($is_js and !$is_nolint){
-							//lint check
-							if ($is_tpl){
-								//Smartyの場合、出力先に対してlintをかける
-								$lint_error = jslint($dir_output.'/'.$filepath);
-							}else{
-								$lint_error = jslint($pathname);
-							}
-							
-							if ($lint_error){
-								foreach ($lint_error as $lerr){
-									$bmsg->add('jslint',$pagepath['basename'].':'.$lerr);
-								}
-							}
-						}
-					}
-				}else{
-					$outputpath = $dir_output.'/'.$filepath;
-					$tmp_dir = dirname($outputpath);
-					if (!is_dir($tmp_dir)){
-						File::buildMakeDir($tmp_dir);
-					}
-					copy($pathname,$outputpath);
 				}
+				
+				//scss
+				if ($is_scss){
+					try {
+						$scss->setImportPaths(dirname($pathname));
+						$source = $scss->compile($source);
+						$create_option .= ' (scss)';
+						$filepath = str_replace('.scss','.css',$filepath);
+					} catch (Exception $e){
+						$bmsg->add('scsserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+						continue;
+					}
+				}
+				
+				//coffee
+				if ($is_coffee){
+					try {
+						// See available options above.
+						$source = CoffeeScript\Compiler::compile($source,array('filename' => $filepath));
+						$create_option .= ' (coffee)';
+						$filepath = str_replace('.coffee','.js',$filepath);
+					}catch (Exception $e){
+						$bmsg->add('coffeeerror',$e->getMessage());
+						continue;
+					}
+				}
+				
+				//js
+				if ($is_js){
+					//本番環境かつcompilejs=1なら圧縮
+					if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
+						$output_to = $dir_output.'/'.$filepath;
+						$source_tmp = $dir_output.'/'.$filepath.'.tmp';
+						File::buildPutFile($source_tmp,$source);
+						compile($source_tmp,$output_to);
+						unlink($source_tmp);
+						
+						$org_filesize = filesize($pathname);
+						if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
+							$bmsg->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
+							continue;
+						}
+						$is_output = false;
+						$create_option .= ' (minified)';
+					}
+				}
+				
+				if ($is_output){
+					File::buildPutFile($dir_output.'/'.$filepath,$source);
+					
+					if ($is_js and !$is_nolint){
+						//lint check
+						$lint_error = jslint($pathname);
+						
+						if ($lint_error){
+							foreach ($lint_error as $lerr){
+								$bmsg->add('jslint',$pagepath['basename'].':'.$lerr);
+							}
+						}
+					}
+				}
+			}else{
+				$outputpath = $dir_output.'/'.$filepath;
+				$tmp_dir = dirname($outputpath);
+				if (!is_dir($tmp_dir)){
+					File::buildMakeDir($tmp_dir);
+				}
+				copy($pathname,$outputpath);
 			}
 			
 			if ($create_option){
@@ -483,6 +503,12 @@
 			}
 			$bmsg->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
 		}
+		
+		//Smarty処理して生成したファイルを削除
+		foreach ($assets_smarty_flag as $pathname => $dummy){
+			unlink($pathname);
+		}
+		
 		
 		//サイトマップ生成
 		if (!empty($config_yaml['sitemap'])){

@@ -1,25 +1,3 @@
-@base: 24px;
-@border-color: #B2B;
-
-.underline { border-bottom: 1px solid green }
-
-
-p {
-    background: url('./sample.jpg?{time}');
-}
-
-#header {
-  color: black;
-  border: 1px solid @border-color + #222222;
-
-  .navigation {
-    font-size: @base / 2;
-    a {
-    .underline;
-    }
-  }
-  .logo {
-    width: 300px;
-    :hover { text-decoration: none }
-  }
+code {
+    background: url('./sample.jpg?{time}'); //中にSmartyタグを入れている
 }
