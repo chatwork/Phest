@@ -386,7 +386,7 @@
 			switch ($first_char){
 				//_ ならスキップ
 				case '_':
-					continue;
+					continue 2;
 				//@ ならLintしない
 				case '@':
 					$is_nolint = true;
