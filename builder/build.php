@@ -1,10 +1,20 @@
 <?php
+/**
+ * SmartBuilder https://github.com/chatwork/SmartBuilder
+ * 
+ * Licensed under MIT, see LICENSE
+ * 
+ * @link https://github.com/chatwork/SmartBuilder
+ * @copyright 2013 ChatWork Inc
+ * @author Masaki Yamamoto (https://chawork.com/cw_masaki)
+ */
+
 	use \Michelf\Markdown;
 	
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.4.1b';
+	$ver = 'v0.4.2b';
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -21,6 +31,7 @@
 	}
 	
 	$bsmarty = new Smarty;
+	$bsmarty->compile_dir = DIR_BUILDER.'/cache/templates_c';
 	$bmsg = new BuildMessage;
 	
 	$site_list = array();
@@ -126,7 +137,7 @@
 		//Smarty
 		$smarty = new Smarty;
 		$smarty->template_dir = array($dir_content,DIR_BUILDER.'/templates');
-		$smarty->compile_dir = DIR_BUILDER.'/templates_c/'.$site;
+		$smarty->compile_dir = DIR_BUILDER.'/cache/templates_c/'.$site;
 		$smarty->addPluginsDir(DIR_BUILDER.'/plugins');
 		File::buildMakeDir($smarty->compile_dir);
 		$bmsg->registerSection('smartyerror','Smarty compile error',array('type' => 'danger'));
@@ -148,7 +159,7 @@
 		
 		//ページをスキャン
 		
-		$dir_buildstatus = DIR_BUILDER.'/buildstatus';
+		$dir_buildstatus = DIR_BUILDER.'/cache/buildstatus';
 		$path_buildstatus_site = $dir_buildstatus.'/'.$site.'.dat';
 		
 		//ソースフォルダの全ファイルをスキャン。新しいファイルがあるかどうかの判定に使う。
