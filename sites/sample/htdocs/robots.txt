@@ -1,2 +1,0 @@
-User-agent: *
-Sitemap: ../sites/sample/htdocs/sitemap.xml
