@@ -115,10 +115,10 @@
 		$core_vars_yaml = array_merge_recursive_distinct($vars_yaml['common'],$vars_yaml[$buildtype]);
 		
 		$home = $config_yaml['home'][$buildtype];
-		$home_local = $config_yaml['home']['local'];
 		if (!$home){
 			die('config.ymlにhomeが正しく設定されていません');
 		}
+		$home_local = '../sites/'.$site.'/output/'.$buildtype;
 		
 		$bmsg->registerSection('create','Created files',array('type' => 'info','sort' => true));
 		$bmsg->registerSection('builderror','Build option error',array('type' => 'danger'));
