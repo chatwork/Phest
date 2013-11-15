@@ -14,7 +14,7 @@
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.4.3b';
+	$ver = 'v0.4.4b';
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
