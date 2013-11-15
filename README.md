@@ -27,8 +27,8 @@ Smartyの `{include file=""}` や `{if}` `{foreach}` をはじめとした強力
 環境に応じたファイル生成が柔軟に可能。watch機能によりファイルの変更を検知して自動でビルドを実行することもできます。
 (ビルド結果はブラウザのデスクトップ通知機能で通知されます *対応しているブラウザのみ Chrome/Safari/Firefoxなど)
 
-### LESSやSCSS、CoffeeScriptなどのCSS/JSプリプロセッサを使用可能
-静的ファイルの書き出しにともなって、LESSなどのコンパイルを実行できます。
+### LESSやSCSS、CoffeeScriptなどのCSS/JSプリプロセッサ、minifyを実行可能
+静的ファイルの書き出しにともなって、LESSなどのコンパイル、minifyを実行できます。
 さらに、Smartyで一度処理させてからコンパイルさせることもできます。
 
 ### JavaScriptの文法チェック、minifyを実行可能
@@ -120,7 +120,8 @@ config.yml の設定方法
     buildclear: 1
 	sitemap: 1
 	robotstxt: 1
-	compilejs: 1
+    compilejs: 1
+	compilecss: 1
 
 `home` には、ローカル環境時と本番環境時のブラウザから見たルートパスを設定します。
 この設定値はビルド時のリンクにも使われますが、`{$_home}` としてテンプレート変数としても
@@ -139,6 +140,9 @@ config.yml の設定方法
 1 で生成し、0 を指定すると生成しません。(デフォルト:1)
 
 `compilejs` は JavaScript の minify 処理を実行するかどうかのオプションです。
+1 の場合は本番環境用に Build した時に minify されます。(デフォルト:1)
+
+`compilecss` はスタイルシートの minify 処理を実行するかどうかのオプションです。
 1 の場合は本番環境用に Build した時に minify されます。(デフォルト:1)
 
 他に、 `encode` というキーでエンコードしたい文字コードを入れると、

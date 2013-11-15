@@ -14,7 +14,7 @@
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.4.2b';
+	$ver = 'v0.4.3b';
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -410,6 +410,7 @@
 			$is_scss = false; //Scssファイルか
 			$is_coffee = false; //CoffeeScriptか
 			$is_js = false; //JavaScriptファイルか
+			$is_css = false; //CSSファイルか
 			$is_nolint = false; //Lintエラーを無視するか
 			
 			switch ($first_char){
@@ -422,9 +423,11 @@
 			
 			if (strpos($filepath,'.less') !== false){
 				$is_less = true;
+				$is_css = true;
 			}
 			if (strpos($filepath,'.scss') !== false){
 				$is_scss = true;
+				$is_css = true;
 			}
 			if (strpos($filepath,'.coffee') !== false){
 				$is_coffee = true;
@@ -433,6 +436,9 @@
 			}
 			if (strpos($filepath,'.js') !== false){
 				$is_js = true;
+			}
+			if (strpos($filepath,'.css') !== false){
+				$is_css = true;
 			}
 			
 			if ($is_less or $is_scss or $is_js){
@@ -500,6 +506,12 @@
 							continue;
 						}
 						$is_output = false;
+						$create_option .= ' (minified)';
+					}
+				}
+				if ($is_css){
+					if ($buildtype == 'production' and !empty($config_yaml['compilecss'])){
+						$source = CssMin::minify($source);
 						$create_option .= ' (minified)';
 					}
 				}
