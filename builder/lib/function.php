@@ -5,6 +5,7 @@
 	require(DIR_BUILDER.'/lib/vendor/textile/classTextile.php');	
 	require(DIR_BUILDER.'/lib/vendor/lessphp/lessc.inc.php');
 	require(DIR_BUILDER.'/lib/vendor/scssphp/scss.inc.php');
+	require(DIR_BUILDER.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
 	require(DIR_BUILDER.'/lib/vendor/CoffeeScript/Init.php');
 	
 	CoffeeScript\Init::load();
