@@ -4,9 +4,11 @@
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.3.1';
+	$ver = 'v0.4b';
 	
+	error_reporting(E_ALL);
 	ini_set('display_errors','On');
+	
 	require(DIR_BUILDER.'/lib/function.php');
 	require(DIR_BUILDER.'/lib/File.php');
 	require(DIR_BUILDER.'/lib/BuildMessage.php');
@@ -43,13 +45,17 @@
 	//site作成
 	if (!empty($_GET['create_site'])){
 		$create_site = trim($_GET['create_site']);
-		
-		File::copyDir('./blanksite/',DIR_SITES.'/'.$create_site);
-		$path_config_yml = DIR_SITES.'/'.$create_site.'/source/config.yml';
-		file_put_contents($path_config_yml,strtr(file_get_contents($path_config_yml),array('{{site}}' => $create_site)));
-		
-		header('Location: ?site='.$create_site);
-		exit;
+		$path_create_site = DIR_SITES.'/'.$create_site;
+		if (!file_exists($path_create_site)){
+			File::copyDir('./sitetemplates/default',DIR_SITES.'/'.$create_site);
+			$path_config_yml = DIR_SITES.'/'.$create_site.'/source/config.yml';
+			file_put_contents($path_config_yml,strtr(file_get_contents($path_config_yml),array('{{site}}' => $create_site)));
+			
+			header('Location: ?site='.$create_site);
+			exit;
+		}else{
+			die('すでに '.$create_site.' というサイトが存在します');
+		}
 	}
 	
 	//watch mode
@@ -80,7 +86,7 @@
 		
 		$dir_site = DIR_SITES.'/'.$site;
 		$dir_source = $dir_site.'/source';
-		$dir_pages = $dir_source.'/pages';
+		$dir_content = $dir_source.'/content';
 		$path_config_yml = $dir_source.'/config.yml';
 		$path_vars_yml = $dir_source.'/vars.yml';
 		$dir_output = $dir_site.'/htdocs';
@@ -91,6 +97,9 @@
 		}
 		if (!file_exists($path_vars_yml)){
 			die('vars.ymlが見つかりません。path='.$path_vars_yml);
+		}
+		if (!file_exists($dir_content)){
+			die('contentフォルダが見つかりません。path='.$dir_content);
 		}
 		$config_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_config.yml'),spyc_load_file($path_config_yml));
 		$vars_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_vars.yml'),spyc_load_file($path_vars_yml));
@@ -114,7 +123,7 @@
 		
 		//Smarty
 		$smarty = new Smarty;
-		$smarty->template_dir = array($dir_source,DIR_BUILDER.'/templates');
+		$smarty->template_dir = array($dir_content,DIR_BUILDER.'/templates');
 		$smarty->compile_dir = DIR_BUILDER.'/templates_c/'.$site;
 		$smarty->addPluginsDir(DIR_BUILDER.'/plugins');
 		File::buildMakeDir($smarty->compile_dir);
@@ -244,9 +253,9 @@
 		$bmsg->add('build','build to: <a href="'.$home_local.'" target="_blank">'.realpath($dir_output).'</a>'.$build_option);
 		
 		if (class_exists('FilesystemIterator',false)){
-			$ite = new RecursiveDirectoryIterator($dir_pages,FilesystemIterator::SKIP_DOTS);
+			$ite = new RecursiveDirectoryIterator($dir_content,FilesystemIterator::SKIP_DOTS);
 		}else{
-			$ite = new RecursiveDirectoryIterator($dir_pages);
+			$ite = new RecursiveDirectoryIterator($dir_content);
 		}
 		
 		$urls = array();
@@ -254,8 +263,10 @@
 		$assets_smarty_flag = array();
 		foreach (new RecursiveIteratorIterator($ite) as $pathname => $path){
 			$pagepath = pathinfo($pathname);
-			$dirname = strtr(ltrim(substr($pagepath['dirname'],strlen($dir_pages)),'\\/'),'\\','/');
+			$dirname = strtr(ltrim(substr($pagepath['dirname'],strlen($dir_content)),'\\/'),'\\','/');
 			$basename = $pagepath['basename'];
+			//ファイル名の1文字目
+			$first_char = substr($basename,0,1);
 			
 			//OSの隠しファイルはスキップ
 			switch (strtolower($basename)){
@@ -268,12 +279,12 @@
 				$rpath = $dirname.'/'.$pagepath['filename'];
 				$_path = $dirname.'/'.$pagepath['filename'].'.html';
 				$_folder = $dirname;
-				$content_tpl = 'pages/'.$dirname.'/'.$basename;
+				$content_tpl = $dirname.'/'.$basename;
 			}else{
 				$rpath = $pagepath['filename'];
 				$_path = $pagepath['filename'].'.html';
 				$_folder = '';
-				$content_tpl = 'pages/'.$basename;
+				$content_tpl = $basename;
 			}
 			
 			//smartyのアサイン変数をクリア
@@ -286,6 +297,10 @@
 			
 			//最後が .tpl のテンプレートファイルなら
 			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
+				if ($first_char === '_'){
+					continue;
+				}
+				
 				$smarty->assign('_pagename',$pagepath['filename']);
 				
 				//for canonical
@@ -324,25 +339,25 @@
 				$filepath = ltrim($dirname.'/'.$pagepath['filename'].'.html','/');
 				
 				try {
-					$output_html = $smarty->fetch('parts/base.tpl');
+					$output_html = $smarty->fetch('_base.tpl');
 					
 					if (!empty($config_yaml['encode'])){
 						$output_html = mb_convert_encoding($output_html, $config_yaml['encode']);
 					}
 					File::buildPutFile($dir_output.'/'.$filepath,$output_html);
+					$bmsg->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
 				} catch (SmartyCompilerException $e){
 					$bmsg->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 					continue;
 				}
 			}else{
 				//最後が .tpl 以外のアセットファイル
-				
 				$filepath = $dirname.'/'.$basename;
 				
 				//Smartyの事前処理が必要なファイルを処理
 				if (strpos($basename,'.tpl') !== false){
 					try {
-						$source = $smarty->fetch('pages/'.$filepath);
+						$source = $smarty->fetch($filepath);
 					} catch (SmartyCompilerException $e){
 						$bmsg->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
@@ -357,12 +372,15 @@
 					$assets_smarty_flag[$pathname] = true;
 				}
 				
-				$assets_list[] = array(
-					'pathname' => $pathname,
-					'dirname' => $dirname,
-					'filepath' => $filepath,
-					'basename' => $basename,
-					);
+				if ($first_char !== '_'){
+					$assets_list[] = array(
+						'pathname' => $pathname,
+						'dirname' => $dirname,
+						'filepath' => $filepath,
+						'basename' => $basename,
+						'first_char' => $first_char,
+						);
+				}
 			}
 		}
 		
@@ -372,9 +390,7 @@
 			$dirname = $path_dat['dirname'];
 			$filepath = $path_dat['filepath'];
 			$basename = $path_dat['basename'];
-			
-			//ファイル名の1文字目
-			$first_char = substr($basename,0,1);
+			$first_char = $path_dat['first_char'];
 			
 			$is_output = true; //ファイル出力が必要か
 			$is_less = false; //Lessファイルか
@@ -384,9 +400,6 @@
 			$is_nolint = false; //Lintエラーを無視するか
 			
 			switch ($first_char){
-				//_ ならスキップ
-				case '_':
-					continue 2;
 				//@ ならLintしない
 				case '@':
 					$is_nolint = true;
@@ -484,7 +497,7 @@
 						
 						if ($lint_error){
 							foreach ($lint_error as $lerr){
-								$bmsg->add('jslint',$pagepath['basename'].':'.$lerr);
+								$bmsg->add('jslint',$basename.':'.$lerr);
 							}
 						}
 					}
@@ -514,14 +527,14 @@
 		if (!empty($config_yaml['sitemap'])){
 			$smarty->assign('_urls',$urls);
 			$filepath = '/sitemap.xml';
-			file_put_contents($dir_output.$filepath,$smarty->fetch('_sitemap_xml.tpl'));
+			file_put_contents($dir_output.$filepath,$smarty->fetch('smartbuilder_internal/sitemap_xml.tpl'));
 			$bmsg->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 		
 		//robots.txt
 		if (!empty($config_yaml['robotstxt'])){
 			$filepath = '/robots.txt';
-			file_put_contents($dir_output.$filepath,$smarty->fetch('_robots_txt.tpl'));
+			file_put_contents($dir_output.$filepath,$smarty->fetch('smartbuilder_internal/robots_txt.tpl'));
 			$bmsg->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 		
@@ -538,5 +551,5 @@
 	}else{
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$bmsg->getData());
-		$bsmarty->display('_build.tpl');
+		$bsmarty->display('smartbuilder_internal/build.tpl');
 	}

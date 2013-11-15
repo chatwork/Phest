@@ -20,7 +20,7 @@ section {
 }
 
 .toolBar {
-	width: 500px;
+	width: 600px;
 	margin: 10px 10px;
 }
 .toolBar tbody tr {
@@ -72,7 +72,8 @@ $(function(){
       
       clearInterval(watch_timer);
       watch_timer = null;
-      $(this).text('Local watch');
+      $('#watchIcon').removeClass('glyphicon-stop').addClass('glyphicon-refresh');
+      $('#watchText').text('Local watch');
       $('#buildLocal').removeClass('disabled');
       $('#buildProduction').removeClass('disabled');
     }else{
@@ -115,7 +116,9 @@ $(function(){
           watching = false;
         }
       },1000);
-      $(this).text('pause');
+
+      $('#watchIcon').removeClass('glyphicon-refresh').addClass('glyphicon-stop');
+      $('#watchText').text('pause');
       $('#buildLocal').addClass('disabled');
       $('#buildProduction').addClass('disabled');
     }
@@ -167,8 +170,8 @@ $(function(){
    </td>
    <td>
     <button id="buildLocal" class="btn btn-primary">Local</button>
-    <button id="buildLocalWatch" class="btn btn-primary">Local watch</button>
-    <button id="buildProduction" class="btn btn-success">Production</button>
+    <button id="buildLocalWatch" class="btn btn-primary"><span id="watchIcon" class="glyphicon glyphicon-refresh"></span> <span id="watchText">Local watch</span></button>
+    <button id="buildProduction" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Production</button>
    </td>
   </tr>
  </tbody>

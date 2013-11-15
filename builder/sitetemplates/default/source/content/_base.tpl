@@ -4,8 +4,8 @@
   <title>{$title}</title>
  </head>
  <body>
-  {include file="parts/header.tpl"}
+  {include file="_header.tpl"}
   {include file=$_content_tpl}
-  {include file="parts/footer.tpl"}
+  {include file="_footer.tpl"}
  </body>
 </html>
