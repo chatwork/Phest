@@ -4,7 +4,7 @@
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.4b';
+	$ver = 'v0.4.1b';
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -115,10 +115,10 @@
 		$core_vars_yaml = array_merge_recursive_distinct($vars_yaml['common'],$vars_yaml[$buildtype]);
 		
 		$home = $config_yaml['home'][$buildtype];
-		$home_local = $config_yaml['home']['local'];
 		if (!$home){
 			die('config.ymlにhomeが正しく設定されていません');
 		}
+		$home_local = '../sites/'.$site.'/output/'.$buildtype;
 		
 		$bmsg->registerSection('create','Created files',array('type' => 'info','sort' => true));
 		$bmsg->registerSection('builderror','Build option error',array('type' => 'danger'));
@@ -228,7 +228,7 @@
 				foreach ($cpath_list as $cpath){
 					$output_source .= file_get_contents($cpath);
 				}
-				$bmsg->add('build','concat files to source/<b>'.$output_to.'</b> ('.count($cpath_list).' files)');
+				$bmsg->add('build','concat '.count($cpath_list).' files to source/<b>'.$output_to.'</b>');
 				File::buildPutFile($dir_source.'/'.$output_to, $output_source);
 				$output_source = '';
 			}
