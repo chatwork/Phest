@@ -228,7 +228,7 @@
 				foreach ($cpath_list as $cpath){
 					$output_source .= file_get_contents($cpath);
 				}
-				$bmsg->add('build','concat files to source/<b>'.$output_to.'</b> ('.count($cpath_list).' files)');
+				$bmsg->add('build','concat '.count($cpath_list).' files to source/<b>'.$output_to.'</b>');
 				File::buildPutFile($dir_source.'/'.$output_to, $output_source);
 				$output_source = '';
 			}
