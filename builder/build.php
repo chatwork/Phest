@@ -89,7 +89,9 @@
 		$dir_content = $dir_source.'/content';
 		$path_config_yml = $dir_source.'/config.yml';
 		$path_vars_yml = $dir_source.'/vars.yml';
-		$dir_output = $dir_site.'/htdocs';
+		$dir_output = $dir_site.'/output/'.$buildtype;
+		
+		File::buildMakeDir($dir_output);
 		
 		//yaml load
 		if (!file_exists($path_config_yml)){
@@ -423,7 +425,11 @@
 			}
 			
 			if ($is_less or $is_scss or $is_js){
-				$source = file_get_contents($pathname);
+				if (file_exists($pathname)){
+					$source = file_get_contents($pathname);
+				}else{
+					continue;
+				}
 				
 				if (isset($assets_smarty_flag[$pathname])){
 					$create_option .= ' (smarty)';
@@ -458,7 +464,6 @@
 				//coffee
 				if ($is_coffee){
 					try {
-						// See available options above.
 						$source = CoffeeScript\Compiler::compile($source,array('filename' => $filepath));
 						$create_option .= ' (coffee)';
 						$filepath = str_replace('.coffee','.js',$filepath);

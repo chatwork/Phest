@@ -1,5 +1,5 @@
 home:
- local:"http://localhost/SmartBuilder/sites/{{site}}/htdocs"
+ local:"http://localhost/SmartBuilder/sites/{{site}}/output/local"
  production:"http://www.{{site}}.com"
 sitemap:1
 robotstxt:1

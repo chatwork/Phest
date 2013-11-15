@@ -49,8 +49,15 @@ $(function(){
   });
 
   $('#buildLocal').click(function(){
+    $('.btn').addClass('disabled');
     $('#result').fadeOut();
     document.location.href = '?build=local&site=' + $('#site').val();
+  });
+  
+  $('#buildProduction').click(function(){
+    $('.btn').addClass('disabled');
+    $('#result').fadeOut();
+    document.location.href = '?build=production&site=' + $('#site').val();
   });
 
   var watch_timer = null;
@@ -123,11 +130,6 @@ $(function(){
       $('#buildProduction').addClass('disabled');
     }
   });
-
-  $('#buildProduction').click(function(){
-    $('#result').fadeOut();
-    document.location.href = '?build=production&site=' + $('#site').val();
-  });
   
   var message_list_tpl = _.template($('#messageListTemplate').html());
   
@@ -177,8 +179,6 @@ $(function(){
  </tbody>
 </table>
 </section>
-
-
 
 <div id="watchStatus" style="padding:5px;display:none"><img src="./assets/image/ajax-loader.gif" style="width:25px;height:25px"/>Watching....</div>
 <section id="result" class="resultSection"></section>

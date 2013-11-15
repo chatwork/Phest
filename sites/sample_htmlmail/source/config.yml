@@ -1,5 +1,5 @@
 home:
- local:"http://localhost/SmartBuilder/sites/sample_htmlmail/htdocs"
+ local:"http://localhost/SmartBuilder/sites/sample_htmlmail/output/local"
  production:"http://www.sample.com"
 encode:"jis"
 buildclear:1
