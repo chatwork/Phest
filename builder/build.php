@@ -1,4 +1,14 @@
 <?php
+/**
+ * SmartBuilder https://github.com/chatwork/SmartBuilder
+ * 
+ * Licensed under MIT, see LICENSE
+ * 
+ * @link https://github.com/chatwork/SmartBuilder
+ * @copyright 2013 ChatWork Inc
+ * @author Masaki Yamamoto (https://chawork.com/cw_masaki)
+ */
+
 	use \Michelf\Markdown;
 	
 	define('DIR_BUILDER',dirname(__FILE__));

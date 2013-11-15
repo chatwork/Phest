@@ -8,7 +8,6 @@ SmartBuilder
 SmartyベースのWebサイト制作ツールです。
 SmartyのテンプレートファイルをHTMLファイルへ変換し静的サイトとして書き出します。
 S3でのホスティングやGitHub Pagesなど、静的ページしか使えないような環境向けのサイト作りに便利です。
-ライセンスはMITになる予定。
 
 特徴
 ---------------
@@ -281,6 +280,6 @@ jQueryなどの外部OSSライブラリでエラーが大量に出てしまう�
 - Textile http://txstyle.org/
 
 
-
-
-
+LICENSE
+---------------
+Licensed under MIT, see LICENSE
