@@ -1,14 +1,14 @@
 common:
- test:"ABC"
- title:"no title"
+  test:"ABC"
+  title:"no title"
 local:
- title:'local'
+  title:'local'
 production:
- title:'production'
+  title:'production'
 path:
- index.html:
-  title:"index page"
- feature/:
-  test:"DEF"
- feature/index.html:
-  title:"feature page"
+  index.html:
+    title:"index page"
+  feature/:
+    test:"DEF"
+  feature/index.html:
+    title:"feature page"

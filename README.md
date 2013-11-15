@@ -1,7 +1,9 @@
 SmartBuilder
 ============
 
-※現在まだ開発中です！！(アルファバージョン) ご利用は **at your own risk** で。
+※現在まだ開発中です！！(ベータバージョン) ご利用は **at your own risk** で。
+
+※まだ後方互換性のない仕様変更が入る可能性が大きくありますのでご注意を。
 
 SmartyベースのWebサイト制作ツールです。
 SmartyのテンプレートファイルをHTMLファイルへ変換し静的サイトとして書き出します。
@@ -75,12 +77,15 @@ encodeオプションでJISコードに変換して生成させることもで�
     - builder/       (ビルドツール)
     - sites/
         - mysite/
-            - htdocs/      (静的ファイルの生成先)
+            - output/      (静的ファイルの生成先)
             - source/
                 - config.yml   (設定ファイル)
                 - vars.yml     (サイトの変数定義ファイル)
-                - pages/
-                - parts/
+                - content/
+                    - _base.tpl
+                    - _footer.tpl
+                    - _header.tpl
+                    - index.tpl
 
 というフォルダ構成になっています。
 
@@ -91,21 +96,18 @@ encodeオプションでJISコードに変換して生成させることもで�
 サイト全体で使用するテンプレート変数や、パスに応じて
 変数の内容を変化させることもできます。
 
-`mysite/htdocs` は生成されるファイルが出力されるフォルダです。
+`mysite/output` は生成されるファイルが出力されるフォルダです。
+local用にビルドした場合は `mysite/output/local` に、production用にビルドした場合は `mysite/output/production` に出力されます。
 ここのファイルをサーバーにアップロードしてください。
-このフォルダは毎回buildの度にすべてクリアされます。
+このフォルダは毎回buildの度にすべてクリアされます。(config.ymlによるオプションで変更可能)
 
 `mysite/source` 以下は、各サイトのコードやリソースになります。
 
-`pages/` 以下は、Smartyのtplファイルを入れます。
-ここに `index.tpl` と置くと、`htdocs/index.html` として生成されます。
+`content/` 以下は、サイトで使用するSmartyのtplファイルや画像やCSS、JavaScriptなどを入れます。
+ここに `index.tpl` と置くと、`output/local/index.html` として生成されそのまま `output/local/` フォルダへコピーされます。
 フォルダ階層を自由につくることもできます。
-tplファイル以外も入れることができ、画像やCSS、JavaScriptなどを置くと
-そのまま `htdocs` へコピーされます。
-
-`parts/` 以下は、Smartyのtplファイルを入れますが、`pages/`との違いは、
-ここに置いた `.tpl` ファイルは自動で `.html` ファイルへと生成されないため、
-ページではない共通のテンプレートファイルなどを入れます。
+ファイル名の先頭に `_` をつけると、`output`フォルダへと出力されなくなるので、include用のファイルなどに使用してください。
+デフォルトの設定では、 `_base.tpl` がレイアウトのベースとなるテンプレートとなります。(config.ymlによるオプションで変更可能)
 
 
 config.yml の設定方法
@@ -113,19 +115,22 @@ config.yml の設定方法
 下記の内容がデフォルトで入っています。
 
 	home:
-	 local:"http://localhost/SmartBuilder/sites/sample/htdocs"
-	 production:"http://www.sample.com"
-    buildclear:1
-	sitemap:1
-	robotstxt:1
-	compilejs:1
+	  local: "http://localhost/SmartBuilder/sites/sample/output/local"
+	  production: "http://www.sample.com"
+    basetpl: "_base.tpl"
+    buildclear: 1
+	sitemap: 1
+	robotstxt: 1
+	compilejs: 1
 
 `home` には、ローカル環境時と本番環境時のブラウザから見たルートパスを設定します。
 この設定値はビルド時のリンクにも使われますが、`{$_home}` としてテンプレート変数としても
 自動でアサインされるため、`<a href="{$_home}/test.html"></a>` など、
 パスとして使用したい場合に便利です。
 
-`buildclear` は、ビルド時に `htdocs` の中身をすべて削除するかどうかのオプションです。
+`basetpl` は、レイアウトのベースとなるテンプレートファイル名を指定します。
+
+`buildclear` は、ビルド時に `output/` の中身をすべて削除するかどうかのオプションです。
 1 ですべて削除し、0 を指定すると削除しません。(デフォルト:1)
 
 `sitemap` は `sitemap.xml` ファイルを自動で生成するかどうかのオプションです。
@@ -159,18 +164,18 @@ vars.yml の設定方法
 例えば、
 
 	common:
-	 title:"no title"
+	  title:"no title"
 	local:
-	 title:"local"
+	  title:"local"
 	production:
-	 title:"production"
+	  title:"production"
 	path:
-	 index.html:
-	  title:"index page"
-     feature/:
-      title:"feature page"
-	 feature/index.html:
-	  title:"feature index page"
+	  index.html:
+	    title:"index page"
+      feature/:
+        title:"feature page"
+	  feature/index.html:
+	    title:"feature index page"
 
 と定義した場合は、`{$title}` というテンプレート変数が、
 
@@ -203,6 +208,9 @@ vars.yml の設定方法
 
 また、ファイル名の先頭に `_` をつけると、単体でコンパイルされなくなります。
 `@import` などでインポートするファイルに使ってください。
+
+`@import` でインポートする場合で、.tpl. を含むSmarty処理後のファイルをインポートしたい場合は、
+.tpl. をファイル名から除外したファイル名を指定してください。
 
 
 JavaScriptのファイル作成方法

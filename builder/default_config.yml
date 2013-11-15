@@ -1,7 +1,8 @@
 home:
- local:""
- production:"http://www.example.com"
-encode:""
+  local: ""
+  production: "http://www.example.com"
+basetpl: "_base.tpl"
+encode: ""
 buildclear:1
 sitemap:1
 robotstxt:1

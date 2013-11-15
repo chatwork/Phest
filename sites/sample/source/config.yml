@@ -1,6 +1,7 @@
 home:
- local:"../sites/sample/output/local"
- production:"http://www.sample.com"
+  local:"../sites/sample/output/local"
+  production:"http://www.sample.com"
+basetpl: "_base.tpl"
 buildclear:1
 sitemap:1
 robotstxt:1

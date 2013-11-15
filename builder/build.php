@@ -341,7 +341,7 @@
 				$filepath = ltrim($dirname.'/'.$pagepath['filename'].'.html','/');
 				
 				try {
-					$output_html = $smarty->fetch('_base.tpl');
+					$output_html = $smarty->fetch($config_yaml['basetpl']);
 					
 					if (!empty($config_yaml['encode'])){
 						$output_html = mb_convert_encoding($output_html, $config_yaml['encode']);

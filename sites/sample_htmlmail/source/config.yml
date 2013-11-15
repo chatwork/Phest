@@ -1,6 +1,7 @@
 home:
- local:"http://localhost/SmartBuilder/sites/sample_htmlmail/output/local"
- production:"http://www.sample.com"
+  local:"http://localhost/SmartBuilder/sites/sample_htmlmail/output/local"
+  production:"http://www.sample.com"
+basetpl: "_base.tpl"
 encode:"jis"
 buildclear:1
 sitemap:0
