@@ -24,7 +24,7 @@
 	require(DIR_BUILDER.'/lib/BuildMessage.php');
 	require(DIR_BUILDER.'/lib/vendor/debuglib.php');
 	require(DIR_BUILDER.'/lib/vendor/smarty/Smarty.class.php');	
-	require(DIR_BUILDER.'/lib/vendor/spyc.php');
+	require(DIR_BUILDER.'/lib/vendor/spyc/spyc.php');
 
 	$bsmarty = new Smarty;
 	$bsmarty->compile_dir = DIR_BUILDER.'/cache/templates_c';
