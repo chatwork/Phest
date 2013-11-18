@@ -23,8 +23,13 @@ section {
 	width: 600px;
 	margin: 10px 10px;
 }
+
 .toolBar tbody tr {
 	text-align: center;
+}
+
+a {
+  cursor: pointer;
 }
 </style>
 <script type="text/javascript">
