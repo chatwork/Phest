@@ -26,10 +26,6 @@
 	require(DIR_BUILDER.'/lib/vendor/smarty/Smarty.class.php');	
 	require(DIR_BUILDER.'/lib/vendor/spyc.php');
 
-	if (!is_dir(DIR_SITES)){
-		die('dir_sites がディレクトリではありません');
-	}
-	
 	$bsmarty = new Smarty;
 	$bsmarty->compile_dir = DIR_BUILDER.'/cache/templates_c';
 	$bmsg = new BuildMessage;
@@ -58,6 +54,7 @@
 		$create_site = trim($_GET['create_site']);
 		$path_create_site = DIR_SITES.'/'.$create_site;
 		if (!file_exists($path_create_site)){
+			File::buildMakeDir(DIR_SITES);
 			File::copyDir('./sitetemplates/default',DIR_SITES.'/'.$create_site);
 			$path_config_yml = DIR_SITES.'/'.$create_site.'/source/config.yml';
 			file_put_contents($path_config_yml,strtr(file_get_contents($path_config_yml),array('{{site}}' => $create_site)));
