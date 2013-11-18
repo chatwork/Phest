@@ -441,7 +441,7 @@
 				$is_css = true;
 			}
 			
-			if ($is_js or $is_css){
+			if ($is_less or $is_scss or $is_js){
 				if (file_exists($pathname)){
 					$source = file_get_contents($pathname);
 				}else{
