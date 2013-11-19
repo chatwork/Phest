@@ -17,13 +17,14 @@
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.4.5b';
+	$ver = 'v0.5b';
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
 	
 	require(DIR_BUILDER.'/lib/function.php');
 	require(DIR_BUILDER.'/lib/BuildMessage.php');
+	require(DIR_BUILDER.'/lib/LanguageBuilder.php');
 	
 	require(DIR_BUILDER.'/lib/File.php');
 	use \ChatWork\Utility\File;
@@ -39,9 +40,7 @@
 	
 	require(DIR_BUILDER.'/lib/vendor/debuglib.php');
 	require(DIR_BUILDER.'/lib/vendor/spyc/spyc.php');
-
-	$bsmarty = new Smarty;
-	$bsmarty->compile_dir = DIR_BUILDER.'/cache/templates_c';
+	
 	$bmsg = new BuildMessage;
 	
 	$site_list = array();
@@ -50,13 +49,11 @@
 			$site_list[] = basename($site_dir);
 		}
 	}
-	$bsmarty->assign('site_list',$site_list);
 	
 	$site = '';
 	if (isset($_GET['site']) and in_array($_GET['site'],$site_list)){
 		$site = $_GET['site'];
 	}
-	$bsmarty->assign('site',$site);
 	
 	$buildtype = '';
 	if (!empty($_GET['build'])){
@@ -100,20 +97,15 @@
 			break;
 	}
 	
-	//build実行
-	if ($build and $site){
-		define('SMARTBUILDER_BUILTTYPE',$buildtype);
-		
-		$bmsg->registerSection('build','Build <strong>'.$site.'</strong> for <strong class="'.$build_class.'">'.$buildtype.'</strong> at '.date('H:i:s'));
-		
+	$lang = '';
+	$lang_list = array();
+	if ($site){
 		$dir_site = DIR_SITES.'/'.$site;
 		$dir_source = $dir_site.'/source';
 		$dir_content = $dir_source.'/content';
 		$path_config_yml = $dir_source.'/config.yml';
 		$path_vars_yml = $dir_source.'/vars.yml';
-		$dir_output = $dir_site.'/output/'.$buildtype;
-		
-		File::buildMakeDir($dir_output);
+		$path_languages_yml = $dir_source.'/languages.yml';
 		
 		//yaml load
 		if (!file_exists($path_config_yml)){
@@ -126,6 +118,35 @@
 			die('contentフォルダが見つかりません。path='.$dir_content);
 		}
 		$config_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_config.yml'),spyc_load_file($path_config_yml));
+		$lang_list = $config_yaml['languages'];
+		
+		if ($lang_list){
+			if (isset($_GET['lang']) and in_array($_GET['lang'],$lang_list)){
+				$lang = $_GET['lang'];
+			}else{
+				$lang = $lang_list[0];
+			}
+		}
+	}
+	
+	//build実行
+	if ($build and $site){
+		define('SMARTBUILDER_BUILTTYPE',$buildtype);
+		
+		$build_submessage = '';
+		if ($lang){
+			$build_submessage = ' in <strong>'.$lang.'</strong>';
+		}
+		$bmsg->registerSection('build','ビルド完了 <strong>'.$site.'</strong> for <strong class="'.$build_class.'">'.$buildtype.'</strong>'.$build_submessage.' at '.date('H:i:s'));
+		
+		if ($lang){
+			$buildpath = '/output/'.$lang.'/'.$buildtype;
+		}else{
+			$buildpath = '/output/'.$buildtype;
+		}
+		$dir_output = $dir_site.$buildpath;
+		
+		File::buildMakeDir($dir_output);
 		$vars_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_vars.yml'),spyc_load_file($path_vars_yml));
 
 		if (!isset($vars_yaml['common']) or !is_array($vars_yaml['common'])){
@@ -140,9 +161,9 @@
 		if (!$home){
 			die('config.ymlにhomeが正しく設定されていません');
 		}
-		$home_local = '../sites/'.$site.'/output/'.$buildtype;
+		$home_local = '../sites/'.$site.$buildpath;
 		
-		$bmsg->registerSection('create','Created files',array('type' => 'info','sort' => true));
+		$bmsg->registerSection('create','作成したファイル',array('type' => 'info','sort' => true));
 		$bmsg->registerSection('builderror','Build option error',array('type' => 'danger'));
 		
 		//Smarty
@@ -151,22 +172,22 @@
 		$smarty->compile_dir = DIR_BUILDER.'/cache/templates_c/'.$site;
 		$smarty->addPluginsDir(DIR_BUILDER.'/plugins');
 		File::buildMakeDir($smarty->compile_dir);
-		$bmsg->registerSection('smartyerror','Smarty compile error',array('type' => 'danger'));
+		$bmsg->registerSection('smartyerror','Smarty コンパイルエラー',array('type' => 'danger'));
 		
 		//less
 		$less = new lessc;
-		$bmsg->registerSection('lesserror','LESS parse error',array('type' => 'danger'));
+		$bmsg->registerSection('lesserror','LESS 構文エラー',array('type' => 'danger'));
 		
 		//scss
 		$scss = new scssc;
-		$bmsg->registerSection('scsserror','SCSS parse error',array('type' => 'danger'));
+		$bmsg->registerSection('scsserror','SCSS 構文エラー',array('type' => 'danger'));
 		
 		//coffee
-		$bmsg->registerSection('coffeeerror','Coffee Script parse error',array('type' => 'danger'));
+		$bmsg->registerSection('coffeeerror','Coffee Script 構文エラー',array('type' => 'danger'));
 		
 		//jslint
-		$bmsg->registerSection('jslint','JavaScript lint warning',array('type' => 'danger'));
-		$bmsg->registerSection('jscompileerror','JavaScript compile error',array('type' => 'danger'));
+		$bmsg->registerSection('jslint','JavaScript 文法エラー',array('type' => 'danger'));
+		$bmsg->registerSection('jscompileerror','JavaScript コンパイルエラー',array('type' => 'danger'));
 		
 		//ページをスキャン
 		
@@ -264,6 +285,16 @@
 			}
 		}
 		
+		//------------- build処理
+		$lang_list = $config_yaml['languages'];
+		if ($lang_list){
+			if (!file_exists($path_languages_yml)){
+				File::buildTouch($path_languages_yml);
+			}
+			$LG = new LanguageBuilder($bmsg,$lang_list);
+			$LG->process($path_languages_yml);
+		}
+		
 		$build_option = '';
 		if (!empty($config_yaml['buildclear'])){
 			File::removeDir($dir_output);
@@ -273,8 +304,8 @@
 		if ($build_option){
 			$build_option = ' <code>'.trim($build_option).'</code>';
 		}
-		$bmsg->add('build','build from: '.realpath($dir_source));
-		$bmsg->add('build','build to: <a href="'.$home_local.'" target="_blank">'.realpath($dir_output).'</a>'.$build_option);
+		$bmsg->add('build','ビルド元: '.realpath($dir_source));
+		$bmsg->add('build','ビルド先: <a href="'.$home_local.'" target="_blank">'.realpath($dir_output).'</a>'.$build_option);
 		
 		if (class_exists('FilesystemIterator',false)){
 			$ite = new RecursiveDirectoryIterator($dir_content,FilesystemIterator::SKIP_DOTS);
@@ -318,6 +349,9 @@
 			$smarty->assign('_path',$_path);
 			$smarty->assign('_folder',$_folder);
 			$smarty->assign('_content_tpl',$content_tpl);
+			if ($lang){
+				$smarty->assign('L',$LG->getLangDat($lang));
+			}
 			
 			//最後が .tpl のテンプレートファイルなら
 			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
@@ -588,7 +622,14 @@
 		echo json_encode(array('code' => 200,'message_list' => $bmsg->getData()));
 		exit;
 	}else{
+		$bsmarty = new Smarty;
+		$bsmarty->compile_dir = DIR_BUILDER.'/cache/templates_c';
+		
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$bmsg->getData());
+		$bsmarty->assign('site',$site);
+		$bsmarty->assign('site_list',$site_list);
+		$bsmarty->assign('lang',$lang);
+		$bsmarty->assign('lang_list',$lang_list);
 		$bsmarty->display('smartbuilder_internal/build.tpl');
 	}

@@ -33,6 +33,10 @@ class BuildMessage {
 	 * @chainable
 	 */
 	public function add($section,$message){
+		if (!isset($this->message_data[$section])){
+			trigger_error('BuildMessage: section='.$section.' は定義されていません');
+			return $this;
+		}
 		$this->message_data[$section]['list'][] = $message;
 		
 		return $this;
