@@ -13,7 +13,6 @@
 	use \RecursiveDirectoryIterator;
 	use \RecursiveIteratorIterator;
 	use \FilesystemIterator;
-	use \Michelf\Markdown;
 	
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
@@ -24,7 +23,6 @@
 	ini_set('display_errors','On');
 	
 	require(DIR_BUILDER.'/lib/function.php');
-	require(DIR_BUILDER.'/lib/globalfunction.php');
 	require(DIR_BUILDER.'/lib/BuildMessage.php');
 	
 	require(DIR_BUILDER.'/lib/File.php');
