@@ -5,7 +5,8 @@ SmartBuilder
 
 ※まだ後方互換性のない仕様変更が入る可能性が大きくありますのでご注意を。
 
-PHPの静的サイトジェネレーターです。(テンプレートなどプログラム的な処理を実行し、HTMLファイルとして書き出すツール)
+SmartBuilderはPHPでできた、**デザイナ向け**の静的サイトジェネレーターです。(テンプレートなどプログラム的な処理を実行し、HTMLファイルとして書き出すツール)
+
 [Amazon S3](http://aws.amazon.com/jp/s3/)でのホスティングやGitHub Pagesなど、静的ページしか使えないような環境向けのサイト作りに便利です。
 テンプレートエンジンには[Smarty](http://www.smarty.net/)を採用。テンプレートファイルのインクルードや各種条件文などを柔軟に使用できます。
 
@@ -256,16 +257,16 @@ jQueryなどの外部OSSライブラリでエラーが大量に出てしまう�
 ---------------
 テンプレート内で自動でアサインされる変数の一覧です。
 
-- {$_home}
+- `{$_home}`
     - ブラウザからアクセスするルートパスを指定します。最後の/は指定しない。
     - `config.yml` の `home` の値がビルドタイプに応じて入ります。
-- {$_path}
+- `{$_path}`
     - ルートパスからのページパスを表します。
     - 例：www.sample.com/feature/index.html なら `feature/index.html`
     - これを使って、特定のパスだけレイアウトを変えるなどが可能です。
-- {$_folder}
+- `{$_folder}`
     - `{$_path}` のフォルダ名部分のみが入ります。
-- {$_content_tpl}
+- `{$_content_tpl}`
     - 表示対象ファイルのテンプレートファイルパスです。システムが内部的に使用しています。
 
 
@@ -273,21 +274,21 @@ jQueryなどの外部OSSライブラリでエラーが大量に出てしまう�
 ---------------
 テンプレート内で実行できる独自のテンプレート関数です。(Smarty標準でないもの)
 
-- {local}〜{/local}
+- `{local}〜{/local}`
     - ローカル環境でだけブロック内の文字列を出力します
-- {production}〜{/production}
+- `{production}〜{/production}`
     - 本番環境でだけブロック内の文字列を出力します
-- {time}
+- `{time}`
     - ビルド時のタイムスタンプを出力します
-- {$xxx|markdown}
+- `{$xxx|markdown}`
     - 変数をmarkdownとして解釈し、対応するHTMLに変換します。
-- {markdown}〜{/markdown}
+- `{markdown}〜{/markdown}`
     - ブロックで囲んだ部分をMarkdownとして処理します。
-- {$xxx|textile}
+- `{$xxx|textile}`
     - 変数をtextileとして解釈し、対応するHTMLに変換します。
-- {textile}〜{/textile}
+- `{textile}〜{/textile}`
     - ブロックで囲んだ部分をTextileとして処理します。
-- {$xxx|print_a}
+- `{$xxx|print_a}`
     - 変数の内容をビジュアルに出力します(配列などの場合に便利)
 
 
