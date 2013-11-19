@@ -286,3 +286,48 @@ PHP Textile http://txstyle.org/article/36/textile-versions
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+debuglib for PHP5 http://phpdebuglib.de
+-----------------------------------------------------------
+#############################################################
+## Name          : debuglib for PHP5
+## Author        : Thomas Schüßler <debuglib at atomar dot de>
+## Last changed  : 31.03.2009 10:15:13
+## Revision      : 45
+## Website       : http://phpdebuglib.de
+############################################################
+
+/*
+ * Copyright (C) 2004-2009 by Thomas Schüßler
+ * Written by Thomas Schüßler <debuglib at atomar dot de>
+ * All Rights Reserved
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+*/
+
+
+Spyc http://code.google.com/p/spyc/
+-----------------------------------------------------------
+/**
+ * Spyc -- A Simple PHP YAML Class
+ * @version 0.5
+ * @author Vlad Andersen <vlad.andersen@gmail.com>
+ * @author Chris Wanstrath <chris@ozmm.org>
+ * @link http://code.google.com/p/spyc/
+ * @copyright Copyright 2005-2006 Chris Wanstrath, 2006-2011 Vlad Andersen
+ * @license http://www.opensource.org/licenses/mit-license.php MIT License
+ * @package Spyc
+ */

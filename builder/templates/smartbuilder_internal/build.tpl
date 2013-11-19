@@ -20,7 +20,7 @@ section {
 }
 
 .toolBar {
-	width: 600px;
+	width: 700px;
 	margin: 10px 10px;
 }
 
@@ -30,6 +30,10 @@ section {
 
 a {
   cursor: pointer;
+}
+
+.newSite {
+  font-size:12px;
 }
 </style>
 <script type="text/javascript">
@@ -47,7 +51,7 @@ $(function(){
   });
   
   $('#createSite').click(function(){
-    var sitename = prompt("Input new site's name",'');
+    var sitename = prompt("作成したいサイト名を入力してください",'');
     if (sitename){
       document.location.href = '?create_site=' + sitename;
     }
@@ -56,13 +60,13 @@ $(function(){
   $('#buildLocal').click(function(){
     $('.btn').addClass('disabled');
     $('#result').fadeOut();
-    document.location.href = '?build=local&site=' + $('#site').val();
+    document.location.href = create_query('local');
   });
   
   $('#buildProduction').click(function(){
     $('.btn').addClass('disabled');
     $('#result').fadeOut();
-    document.location.href = '?build=production&site=' + $('#site').val();
+    document.location.href = create_query('production');
   });
 
   var watch_timer = null;
@@ -73,7 +77,7 @@ $(function(){
     }
     
     if (build != 'watch'){
-      document.location.href = '?build=watch&site=' + $('#site').val();
+      document.location.href = create_query('watch');
     }
     
     $('#result').fadeOut();
@@ -94,7 +98,7 @@ $(function(){
       watch_timer = setInterval(function(){
         if (!watching){
           watching = true;
-          $.getJSON('?build=local&watch=1&site=' + $('#site').val(),function(data){
+          $.getJSON(create_query('local',1),function(data){
             if (data){
               build_result(data.message_list);
               
@@ -144,6 +148,22 @@ $(function(){
     })).show();
   };
   
+  var create_query = function(buildtype,watch){
+    var str = '?build=' + buildtype;
+    if (watch){
+      str += '&watch=1';
+    }
+    var site = $('#site').val();
+    if (site){
+      str += '&site=' + site;
+    }
+    var lang = $('#lang').val();
+    if (lang){
+      str += '&lang=' + lang;
+    }
+    return str;
+  };
+  
   var message_list = {if isset($message_list)}{$message_list|json_encode}{else}null{/if};
   
   if (message_list){
@@ -161,20 +181,32 @@ $(function(){
 <table class="table table-bordered">
  <thead>
   <tr style="text-align:center">
-    <td>Site</td>
-  	<td>Build</td>
+    <td>サイト</td>
+   {if $lang}
+    <td>言語</td>
+   {/if}
+    <td>ビルド実行</td>
   </tr>
  </thead>
  <tbody>
   <tr>
    <td>
-   	<select id="site" name="site" class="form-control">
+    <select id="site" name="site" class="form-control">
      {foreach $site_list as $site_val}
       <option value="{$site_val}"{if $site_val == $site} selected{/if}>{$site_val}</option>
      {/foreach}
     </select>
-    <a id="createSite">Create new site</a>
+    <a id="createSite" class="newSite">新しくサイトを作成</a>
    </td>
+   {if $lang}
+   <td>
+    <select id="lang" name="lang" class="form-control">
+     {foreach $lang_list as $lang_val}
+      <option value="{$lang_val}"{if $lang_val == $lang} selected{/if}>{$lang_val}</option>
+     {/foreach}
+    </select>
+   </td>
+   {/if}
    <td>
     <button id="buildLocal" class="btn btn-primary">Local</button>
     <button id="buildLocalWatch" class="btn btn-primary"><span id="watchIcon" class="glyphicon glyphicon-refresh"></span> <span id="watchText">Local watch</span></button>

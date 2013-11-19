@@ -1,4 +1,7 @@
 <?php
+	namespace ChatWork\Utility;
+	use \RecursiveDirectoryIterator;
+	use \FilesystemIterator;
 ####################################################################
 # File Utility
 # copyright (c): 2005-2010,ChatWork Inc all rights reserved

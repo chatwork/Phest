@@ -1,0 +1,10 @@
+home:
+  local: "http://localhost/SmartBuilder/sites/sample_i18n/output/local"
+  production: "http://www.sample_i18n.com"
+basetpl: "_base.tpl"
+buildclear: 1
+sitemap: 1
+robotstxt: 1
+compilejs: 1
+compilecss: 1
+languages: [ "ja", "en", "vi", "zh-cn", "zh-tw" ]

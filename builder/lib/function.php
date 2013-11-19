@@ -1,14 +1,8 @@
 <?php
-	use \Michelf\Markdown;
+	namespace ChatWork\SmartBuilder;
 	
-	require(DIR_BUILDER.'/lib/vendor/phpmarkdown/Michelf/Markdown.php');	
-	require(DIR_BUILDER.'/lib/vendor/textile/classTextile.php');	
-	require(DIR_BUILDER.'/lib/vendor/lessphp/lessc.inc.php');
-	require(DIR_BUILDER.'/lib/vendor/scssphp/scss.inc.php');
-	require(DIR_BUILDER.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
 	require(DIR_BUILDER.'/lib/vendor/CoffeeScript/Init.php');
-	
-	CoffeeScript\Init::load();
+	\CoffeeScript\Init::load();
 	
 
 function array_merge_recursive_distinct ( array &$array1, array &$array2 )
@@ -28,20 +22,6 @@ function array_merge_recursive_distinct ( array &$array1, array &$array2 )
   }
 
   return $merged;
-}
-	
-function markdown($text){
-	return Markdown::defaultTransform($text);
-}
-	
-function textile($text){
-	static $parser = null;
-	
-	if (!$parser){
-		$parser = new Textile();
-	}
-	
-	return $parser->textileThis($text);
 }
 
 /**

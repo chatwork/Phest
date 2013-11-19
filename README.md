@@ -9,6 +9,9 @@ PHPの静的サイトジェネレーターです。(テンプレートなどプ�
 [Amazon S3](http://aws.amazon.com/jp/s3/)でのホスティングやGitHub Pagesなど、静的ページしか使えないような環境向けのサイト作りに便利です。
 テンプレートエンジンには[Smarty](http://www.smarty.net/)を採用。テンプレートファイルのインクルードや各種条件文などを柔軟に使用できます。
 
+SmartBuilderはクラウド型ビジネスチャットツール「[チャットワーク](http://www.chatwork.com/ja/)」を開発するChatWork社が開発しています。
+ChatWork社内で実際にサイト制作に使用しているツールであるため、随時継続的なバージョンアップが行われています。
+
 ※静的サイトにするメリット (参考:[静的サイトジェネレータのメリット・デメリット](http://mymemo.weby117.com/static/static_2.html))
  * 低コストで運用可能。(Amazon S3なら月額10円〜)
  * サーバー側でプログラム処理が不要なので、配信が高速。
@@ -19,7 +22,7 @@ PHPの静的サイトジェネレーターです。(テンプレートなどプ�
 特徴
 ---------------
 ### 黒い画面不要！デザイナ向けのツールです。
-一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)による操作が必須です。
+一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)によるコマンド操作が必須です。
 SmartBuilderはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
 
 ### Smartyのテンプレートから静的HTMLファイルを生成できる
@@ -29,7 +32,8 @@ Smartyの `{include file=""}` や `{if}` `{foreach}` をはじめとした強力
 
 ### LESSやSCSS、CoffeeScriptなどのCSS/JSプリプロセッサ、minifyを実行可能
 静的ファイルの書き出しにともなって、LESS/SCSS/CoffeScriptなどのコンパイル、圧縮処理(minify)を実行できます。
-さらに、CSSやJavaScriptをSmartyで一度処理させてからコンパイルさせることもできます。(CSSやJavaScript内でSmarty構文が使用可能
+さらに、CSSやJavaScriptをSmartyで一度処理させてからコンパイルさせることもできます。(CSSやJavaScript内でSmarty構文が使用可能)
+なお、圧縮処理は時間がかかるため本番環境用ビルドでのみ実行されます。
 
 ### YAMLで記述した変数定義を使用することが可能
 簡易なデータ記述言語である[YAML](http://ja.wikipedia.org/wiki/YAML)で変数を定義することができます。
@@ -49,17 +53,25 @@ Smartyの `{include file=""}` や `{if}` `{foreach}` をはじめとした強力
 encodeオプションでJISコードに変換して生成させることもできます。
 
 
-ファイル構成
+インストール
 ---------------
+PHP5.3以上がインストールされている必要があります。
+Windowsでは[XAMPP](http://www.apachefriends.org/jp/xampp.html)、Macでは[MAMP](http://www.mamp.info/en/index.html)が簡単にインストールできるのでオススメです。
+また、ツール内部でGoogle Closure Compilerを実行するためJavaの実行環境が必要です。
 
-- SmartBuilder/
-    - builder/       (ビルドツール)
-    - sites/         (作成するサイトデータ)
+PHPが稼働するドキュメントルート以下(通常 `htdocs/` や `www/` 、 `public_html/` など)に、リポジトリ内のデータをコピーするだけでokです。
 
-というフォルダ構成になっています。
+フォルダ構成は
 
-`SmartBuilder/` をphpを処理できるパスにコピーし、
+- builder/       (ビルドツール)
+- sites/         (作成するサイトデータ)
+
+となっています。
+
 `builder/` をブラウザから開くとビルドツールが表示されます。
+
+※コピーするフォルダは `builder/` だけでも問題ありません。
+リポジトリにコミットされている `sites/` にはあらかじめ参考となるサンプルのサイトデータが設置されていますが、不要であれば削除してください。
 
 
 サイトの新規作成
@@ -67,32 +79,30 @@ encodeオプションでJISコードに変換して生成させることもで�
 ビルドツールを表示し、`Create new site`リンクをクリックします。
 作成したいサイト名を半角英数で入力します。 (例:mysite)
 
-- SmartBuilder/
-    - builder/       (ビルドツール)
-    - sites/         (作成するサイトデータ)
+- builder/       (ビルドツール)
+- sites/         (作成するサイトデータ)
 
 すると、 `sites/` 以下にサイト名のフォルダが生成されます。
 
 
-サイトのファイル構成
+SmartBuilderのファイル構成
 ---------------
 `mysite` というサイトを作成したものとして説明します。
 
-- SmartBuilder/
-    - builder/       (ビルドツール)
-    - sites/
-        - mysite/
-            - output/      (静的ファイルの生成先)
-            - source/
-                - config.yml   (設定ファイル)
-                - vars.yml     (サイトの変数定義ファイル)
-                - content/
-                    - _base.tpl
-                    - _footer.tpl
-                    - _header.tpl
-                    - index.tpl
+- builder/       (ビルドツール)
+- sites/
+    - mysite/
+        - output/      (静的ファイルの生成先)
+        - source/
+            - config.yml   (設定ファイル)
+            - vars.yml     (サイトの変数定義ファイル)
+            - content/
+                - _base.tpl
+                - _footer.tpl
+                - _header.tpl
+                - index.tpl
 
-というフォルダ構成になっています。
+というファイル構成になっています。
 
 `mysite/source/config.yml` が設定ファイルになっているので、
 サイトの情報やオプションなどを設定できます。
@@ -130,11 +140,10 @@ config.yml の設定方法
 	compilecss: 1
 
 `home` には、ローカル環境時と本番環境時のブラウザから見たルートパスを設定します。
-この設定値はビルド時のリンクにも使われますが、`{$_home}` としてテンプレート変数としても
-自動でアサインされるため、`<a href="{$_home}/test.html"></a>` など、
+この設定値は、`{$_home}` としてテンプレート変数として自動でアサインされるため、`<a href="{$_home}/test.html"></a>` など、
 パスとして使用したい場合に便利です。
 
-`basetpl` は、レイアウトのベースとなるテンプレートファイル名を指定します。
+`basetpl` は、レイアウトのベースとなるテンプレートファイル名を指定します。(デフォルト:_base.tpl)
 
 `buildclear` は、ビルド時に `output/` の中身をすべて削除するかどうかのオプションです。
 1 ですべて削除し、0 を指定すると削除しません。(デフォルト:1)
@@ -272,16 +281,81 @@ jQueryなどの外部OSSライブラリでエラーが大量に出てしまう�
     - ビルド時のタイムスタンプを出力します
 - {$xxx|markdown}
     - 変数をmarkdownとして解釈し、対応するHTMLに変換します。
-    - `{"マークダウンの**文字列**"}` などとして、変数にアサインしていない文字列もmarkdown処理できます。
 - {markdown}〜{/markdown}
     - ブロックで囲んだ部分をMarkdownとして処理します。
 - {$xxx|textile}
     - 変数をtextileとして解釈し、対応するHTMLに変換します。
-    - `{"Textileの*文字列*"}` などとして、変数にアサインしていない文字列もtextile処理できます。
 - {textile}〜{/textile}
     - ブロックで囲んだ部分をTextileとして処理します。
 - {$xxx|print_a}
     - 変数の内容をビジュアルに出力します(配列などの場合に便利)
+
+
+多言語対応
+---------------
+SmartBuilderには多言語に対応するための仕組みが用意されています。
+`config.yml` に `languages` というキーを定義することで有効になります。
+
+例：日本語、英語、ベトナム語に対応
+
+    languages: [ "ja", "en", "vi" ]
+
+このキーを足してビルドツールを表示すると、「言語」という項目が表示されるようになります。
+("ja"や"en"などは特に決まっておらず、任意の言語を表す文字列を指定できます)
+
+上記の設定をしたあと、1度ビルドを実行するとサイトの `source/` フォルダに `languages.yml` という空ファイルが作成されます。
+そのYAMLファイルに多言語の言語キーをセットしていくことで多言語対応が可能です。
+
+`language.yml` の記述は下記の様に定義します。
+
+    testkey:
+      description:"テストキー" 
+      lang: 
+        ja: "日本語"
+        en: "English"
+        vi: "Tiếng Việt"
+
+こう記述しておくと、`.tpl` ファイル内で
+
+    {$L.testkey}
+
+と書くことでビルド時に選択している言語を埋め込むことができます。
+
+また、言語キー内で別の言語キーを読み込むこともできます。
+
+例：testkey2 を読み込み
+
+    testkey:
+      lang: 
+        ja: "読み込み {{testkey2}}"
+
+これを使うことで共通で使う文言などをまとめることができます。
+
+その他、詳しくはリポジトリの `sites/sample_i18n` の設定を参照してください。
+
+
+高度な処理 (※開発中)
+---------------
+`config.yml` に `build` というキーを定義することで、
+ビルド時に複数のファイルを1つにまとめたり、
+特定のフォルダをコピーしてきたりといった高度な処理を行うことができます。
+
+設定例：
+
+    build:
+      - 
+        concat:
+          output: "content/javascript/all.js"
+          sources:
+            - "source/abc.js"
+            - "source/def.js"
+      - 
+        copydir:
+          todir: "content/myfolder"
+          fromdir:"../../myfolder"
+
+※この機能はまだ開発中です。JavaScriptファイルの結合や、各種事前処理など、Gruntの様な処理を行えるようにする予定。
+
 
 参考
 ---------------
