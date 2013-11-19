@@ -1,4 +1,5 @@
 <?php
+	namespace ChatWork\SmartBuilder;
 
 /**
  * 出力メッセージの管理

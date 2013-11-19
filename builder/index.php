@@ -1,4 +1,6 @@
 <?php
+	namespace ChatWork\SmartBuilder;
+	
 /**
  * SmartBuilder https://github.com/chatwork/SmartBuilder
  * 
@@ -8,7 +10,9 @@
  * @copyright 2013 ChatWork Inc
  * @author Masaki Yamamoto (https://chawork.com/cw_masaki)
  */
-
+	use \RecursiveDirectoryIterator;
+	use \RecursiveIteratorIterator;
+	use \FilesystemIterator;
 	use \Michelf\Markdown;
 	
 	define('DIR_BUILDER',dirname(__FILE__));
@@ -20,10 +24,22 @@
 	ini_set('display_errors','On');
 	
 	require(DIR_BUILDER.'/lib/function.php');
-	require(DIR_BUILDER.'/lib/File.php');
+	require(DIR_BUILDER.'/lib/globalfunction.php');
 	require(DIR_BUILDER.'/lib/BuildMessage.php');
-	require(DIR_BUILDER.'/lib/vendor/debuglib.php');
+	
+	require(DIR_BUILDER.'/lib/File.php');
+	use \ChatWork\Utility\File;
+	
 	require(DIR_BUILDER.'/lib/vendor/smarty/Smarty.class.php');	
+	use \Smarty;
+	require(DIR_BUILDER.'/lib/vendor/lessphp/lessc.inc.php');
+	use \lessc;
+	require(DIR_BUILDER.'/lib/vendor/scssphp/scss.inc.php');
+	use \scssc;
+	require(DIR_BUILDER.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
+	use \CssMin;
+	
+	require(DIR_BUILDER.'/lib/vendor/debuglib.php');
 	require(DIR_BUILDER.'/lib/vendor/spyc/spyc.php');
 
 	$bsmarty = new Smarty;
@@ -478,7 +494,7 @@
 				//coffee
 				if ($is_coffee){
 					try {
-						$source = CoffeeScript\Compiler::compile($source,array('filename' => $filepath));
+						$source = \CoffeeScript\Compiler::compile($source,array('filename' => $filepath));
 						$create_option .= ' (coffee)';
 						$filepath = str_replace('.coffee','.js',$filepath);
 					}catch (Exception $e){
