@@ -18,7 +18,7 @@
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.5.1b';
+	$ver = 'v0.6b';
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -139,6 +139,7 @@
 			$build_submessage = $lang.'/';
 		}
 		$bmsg->registerSection('build','ビルド完了 [ <strong class="'.$build_class.'">'.$build_submessage.$buildtype.'</strong> ] - '.date('H:i:s'));
+		$bmsg->registerSection('builderror','ビルドエラー',array('type' => 'danger'));
 		
 		if ($lang){
 			$buildpath = '/output/'.$lang.'/'.$buildtype;
@@ -156,6 +157,7 @@
 		if (!isset($vars_yaml[$buildtype]) or !is_array($vars_yaml[$buildtype])){
 			$vars_yaml[$buildtype] = array();
 		}
+		
 		$core_vars_yaml = array_merge_recursive_distinct($vars_yaml['common'],$vars_yaml[$buildtype]);
 		
 		$home = $config_yaml['home'][$buildtype];
@@ -165,7 +167,6 @@
 		$home_local = '../sites/'.$site.$buildpath;
 		
 		$bmsg->registerSection('create','作成したファイル',array('type' => 'info','sort' => true));
-		$bmsg->registerSection('builderror','Build option error',array('type' => 'danger'));
 		
 		//Smarty
 		$smarty = new Smarty;
@@ -210,6 +211,7 @@
 		//configのbuildオプションを処理
 		$concat_list = array();
 		$copyto_list = array();
+		$phpinclude_list = array();
 		if (isset($config_yaml['build'])){
 			foreach ($config_yaml['build'] as $build_dat){
 				foreach ($build_dat as $command => $option){
@@ -219,6 +221,7 @@
 								$concat_list[$option['output']] = array();
 							}
 							foreach ($option['sources'] as $spath){
+								$spath = $dir_source.'/'.$spath;
 								if (file_exists($spath)){
 									$watch_list[] = $spath;
 									$concat_list[$option['output']][] = $spath;
@@ -229,18 +232,57 @@
 							break;
 						case 'copydir':
 							$is_valid_dir = true;
-							if (!is_dir($option['fromdir'])){
+							$from_dpath = $dir_source.'/'.$option['fromdir'];
+							$to_dpath = $dir_source.'/'.$option['todir'];
+							if (!is_dir($from_dpath)){
 								$is_valid_dir = false;
-								$bmsg->add('builderror','[copydir] fromdir is not directory: '.$option['fromdir']);
+								$bmsg->add('builderror','[copydir] fromdir is not directory: '.$from_dpath);
 							}
 							
 							if ($is_valid_dir){
-								$watch_list = array_merge($watch_list,File::getFileList($option['fromdir']));
-								$copyto_list[$option['fromdir']] = $option['todir'];
+								$watch_list = array_merge($watch_list,File::getFileList($from_dpath));
+								$copyto_list[$from_dpath] = $to_dpath;
 							}
+							break;
+						case 'phpinclude':
+							if (isset($option['path'])){
+								$include_path = $dir_source.'/'.$option['path'];
+								
+								if (empty($option['type'])){
+									$type = 'build';
+								}else{
+									$type = $option['type'];
+								}
+								
+								if (file_exists($include_path)){
+									$watch_list[] = $include_path;
+									$phpinclude_list[$type][] = $include_path;
+								}else{
+									$bmsg->add('builderror','[phpinclude] php file is not exist: '.$include_path);
+								}
+							}
+							
 							break;
 					}
 				}
+			}
+		}
+		
+		//type=watch のphpincludeを実行
+		if (isset($phpinclude_list['watch'])){
+			foreach ($phpinclude_list['watch'] as $ppath){
+				include($ppath);
+			}
+		}
+		
+		$include_vars_list = array();
+		foreach ($vars_yaml['includes'] as $ipath){
+			$ipath = $dir_source.'/'.$ipath;
+			if (file_exists($ipath)){
+				$watch_list[] = $ipath;
+				$include_vars_list[] = $ipath;
+			}else{
+				$bmsg->add('builderror','vars.yml インクルードしようとしたファイルは存在しません: '.$ipath);
 			}
 		}
 		
@@ -265,6 +307,13 @@
 			exit;
 		}
 		
+		if (isset($phpinclude_list['build'])){
+			foreach ($phpinclude_list['build'] as $ppath){
+				$bmsg->add('build','PHPを実行: '.basename($ppath));
+				include($ppath);
+			}
+		}
+		
 		//concatを処理
 		if ($concat_list){
 			foreach ($concat_list as $output_to => $cpath_list){
@@ -272,7 +321,7 @@
 				foreach ($cpath_list as $cpath){
 					$output_source .= file_get_contents($cpath);
 				}
-				$bmsg->add('build','concat '.count($cpath_list).' files to source/<b>'.$output_to.'</b>');
+				$bmsg->add('build','[concat] '.count($cpath_list).'個のファイルを結合: /<b>'.$output_to.'</b>');
 				File::buildPutFile($dir_source.'/'.$output_to, $output_source);
 				$output_source = '';
 			}
@@ -281,9 +330,15 @@
 		//copydirを処理
 		if ($copyto_list){
 			foreach ($copyto_list as $copyfrom => $copyto){
-				$bmsg->add('build','copy directory from <b>'.$copyfrom.'</b> to <b>'.$copyto.'</b>');
+				$bmsg->add('build','[copydir] <b>'.$copyfrom.'</b> から <b>'.$copyto.'</b> へコピー');
 				File::copyDir($copyfrom, $dir_source.'/'.$copyto);
 			}
+		}
+		
+		//vars.ymlのincludesを処理
+		foreach ($include_vars_list as $ipath){
+			$inc_yaml = spyc_load_file($ipath);
+			$core_vars_yaml = array_merge_recursive_distinct($core_vars_yaml,$inc_yaml);
 		}
 		
 		//------------- build処理
@@ -300,7 +355,6 @@
 		if (!empty($config_yaml['buildclear'])){
 			File::removeDir($dir_output);
 			mkdir($dir_output,0777);
-			$build_option = ' (cleared)';
 		}
 		if ($build_option){
 			$build_option = ' <code>'.trim($build_option).'</code>';
@@ -540,10 +594,14 @@
 				if ($is_js){
 					//本番環境かつcompilejs=1なら圧縮
 					if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
+						//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
 						$output_to = $dir_output.'/'.$filepath;
 						$source_tmp = $dir_output.'/'.$filepath.'.tmp';
 						File::buildPutFile($source_tmp,$source);
+						
+						//コンパイル
 						compile($source_tmp,$output_to);
+						//完了したらテンポラリファイルを削除
 						unlink($source_tmp);
 						
 						$org_filesize = filesize($pathname);
@@ -555,13 +613,17 @@
 						$create_option .= ' (minified)';
 					}
 				}
+				
+				//css
 				if ($is_css){
+					//本番環境かつcompilecss=1なら圧縮
 					if ($buildtype == 'production' and !empty($config_yaml['compilecss'])){
 						$source = CssMin::minify($source);
 						$create_option .= ' (minified)';
 					}
 				}
 				
+				//ファイルとして出力
 				if ($is_output){
 					File::buildPutFile($dir_output.'/'.$filepath,$source);
 					
