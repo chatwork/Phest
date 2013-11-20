@@ -17,7 +17,7 @@
 	define('DIR_BUILDER',dirname(__FILE__));
 	require(DIR_BUILDER.'/config.php');
 	
-	$ver = 'v0.5b';
+	$ver = 'v0.5.1b';
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -135,9 +135,9 @@
 		
 		$build_submessage = '';
 		if ($lang){
-			$build_submessage = ' in <strong>'.$lang.'</strong>';
+			$build_submessage = $lang.'/';
 		}
-		$bmsg->registerSection('build','ビルド完了 <strong>'.$site.'</strong> for <strong class="'.$build_class.'">'.$buildtype.'</strong>'.$build_submessage.' at '.date('H:i:s'));
+		$bmsg->registerSection('build','ビルド完了 [ <strong class="'.$build_class.'">'.$build_submessage.$buildtype.'</strong> ] - '.date('H:i:s'));
 		
 		if ($lang){
 			$buildpath = '/output/'.$lang.'/'.$buildtype;
