@@ -217,7 +217,7 @@ $(function(){
 </table>
 </section>
 
-<div id="watchStatus" style="padding:5px;display:none"><img src="./assets/image/ajax-loader.gif" style="width:25px;height:25px"/>Watching....</div>
+<div id="watchStatus" style="padding:5px;display:none"><img src="./assets/image/ajax-loader.gif" style="width:25px;height:25px"/>更新をチェック中....</div>
 <section id="result" class="resultSection"></section>
 
 <script id="messageListTemplate" type="text/template">
