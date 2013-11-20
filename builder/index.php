@@ -226,7 +226,7 @@
 									$watch_list[] = $spath;
 									$concat_list[$option['output']][] = $spath;
 								}else{
-									$bmsg->add('builderror','[concat] source file not exist: '.$spath);
+									$bmsg->add('builderror','[concat] sources で指定されたファイルが存在しません: '.$spath);
 								}
 							}
 							break;
@@ -236,7 +236,7 @@
 							$to_dpath = $dir_source.'/'.$option['todir'];
 							if (!is_dir($from_dpath)){
 								$is_valid_dir = false;
-								$bmsg->add('builderror','[copydir] fromdir is not directory: '.$from_dpath);
+								$bmsg->add('builderror','[copydir] fromdir はディレクトリではありません: '.$from_dpath);
 							}
 							
 							if ($is_valid_dir){
@@ -258,7 +258,7 @@
 									$watch_list[] = $include_path;
 									$phpinclude_list[$type][] = $include_path;
 								}else{
-									$bmsg->add('builderror','[phpinclude] php file is not exist: '.$include_path);
+									$bmsg->add('builderror','[phpinclude] phpファイルが存在しません '.$include_path);
 								}
 							}
 							
