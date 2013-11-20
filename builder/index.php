@@ -5,10 +5,11 @@
  * SmartBuilder https://github.com/chatwork/SmartBuilder
  * 
  * Licensed under MIT, see LICENSE
+ * https://github.com/chatwork/SmartBuilder/blob/master/LICENSE
  * 
  * @link https://github.com/chatwork/SmartBuilder
  * @copyright 2013 ChatWork Inc
- * @author Masaki Yamamoto (https://chawork.com/cw_masaki)
+ * @author Masaki Yamamoto (https://chatwork.com/cw_masaki)
  */
 	use \RecursiveDirectoryIterator;
 	use \RecursiveIteratorIterator;
