@@ -1,16 +1,16 @@
-SmartBuilder
+Phest - PHP Easy Static Site Generator
 ============
 
-※現在まだ開発中です！！(ベータバージョン) ご利用は **at your own risk** で。
+ * 現在まだ開発中です！！(ベータバージョン) ご利用は **at your own risk** で。
+ * まだ後方互換性のない仕様変更が入る可能性が大きくありますのでご注意を。
 
-※まだ後方互換性のない仕様変更が入る可能性が大きくありますのでご注意を。
-
-SmartBuilderはPHPでできた、**デザイナ向け**の静的サイトジェネレーターです。(静的サイトジェネレーター：テンプレートなどプログラム的な処理を実行し、HTMLファイルとして書き出すツール)
+Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです。
+(静的サイトジェネレーター：テンプレートなどプログラム的な処理を実行し、HTMLファイルとして書き出すツール)
 
 [Amazon S3](http://aws.amazon.com/jp/s3/)でのホスティングやGitHub Pagesなど、静的ページしか使えないような環境向けのサイト作りに便利です。
 テンプレートエンジンには[Smarty](http://www.smarty.net/)を採用。テンプレートファイルのインクルードや各種条件文などを柔軟に使用できます。
 
-SmartBuilderはクラウド型ビジネスチャットツール「[チャットワーク](http://www.chatwork.com/ja/)」を開発するChatWork社が開発しています。
+Phestはクラウド型ビジネスチャットツール「[チャットワーク](http://www.chatwork.com/ja/)」を開発するChatWork社が開発しています。
 ChatWork社内で実際にサイト制作に使用しているツールであるため、随時継続的なバージョンアップが行われています。
 
 ※静的サイトにするメリット (参考:[静的サイトジェネレータのメリット・デメリット](http://mymemo.weby117.com/static/static_2.html))
@@ -24,7 +24,9 @@ ChatWork社内で実際にサイト制作に使用しているツールである
 ---------------
 ### 黒い画面不要！デザイナ向けのツールです。
 一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)によるコマンド操作が必須です。
-SmartBuilderはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
+PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
+ファイルの更新検知もコマンドを実行する必要はなく、ブラウザ側から実行でき、更新通知をデスクトップ通知で知らせることができます。
+(※デスクトップ通知は対応しているブラウザのみ。Chrome/Firefox/Safari/Opera など)
 
 ### Smartyのテンプレートから静的HTMLファイルを生成できる
 Smartyの `{include file=""}` や `{if}` `{foreach}` をはじめとした強力で柔軟なテンプレート構文が使用できます。
@@ -86,7 +88,7 @@ PHPが稼働するドキュメントルート以下(通常 `htdocs/` や `www/` 
 すると、 `sites/` 以下にサイト名のフォルダが生成されます。
 
 
-SmartBuilderのファイル構成
+Phestのファイル構成
 ---------------
 `mysite` というサイトを作成したものとして説明します。
 
@@ -131,7 +133,7 @@ config.yml の設定方法
 下記の内容がデフォルトで入っています。
 
 	home:
-	  local: "http://localhost/SmartBuilder/sites/sample/output/local"
+	  local: "http://localhost/Phest/sites/sample/output/local"
 	  production: "http://www.sample.com"
     basetpl: "_base.tpl"
     buildclear: 1
@@ -294,7 +296,7 @@ jQueryなどの外部OSSライブラリでエラーが大量に出てしまう�
 
 多言語対応
 ---------------
-SmartBuilderには多言語に対応するための仕組みが用意されています。
+Phestには多言語に対応するための仕組みが用意されています。
 `config.yml` に `languages` というキーを定義することで有効になります。
 
 例：日本語、英語、ベトナム語に対応

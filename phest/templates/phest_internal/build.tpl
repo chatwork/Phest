@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
- <title>SmartBuilder {$ver}</title>
+ <title>Phest {$ver}</title>
  <link href="./assets/bootstrap/css/bootstrap.css" rel="stylesheet">
 <!--[if lt IE 9]>
 <script type="text/javascript" src="./assets/jquery-1.10.2.min.js"></script>

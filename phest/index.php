@@ -1,13 +1,14 @@
 <?php
-	namespace ChatWork\SmartBuilder;
+	namespace ChatWork\Phest;
 	
 /**
- * SmartBuilder https://github.com/chatwork/SmartBuilder
+ * Phest - PHP Easy Static Site Generator
+ * https://github.com/chatwork/Phest
  * 
  * Licensed under MIT, see LICENSE
- * https://github.com/chatwork/SmartBuilder/blob/master/LICENSE
+ * https://github.com/chatwork/Phest/blob/master/LICENSE
  * 
- * @link https://github.com/chatwork/SmartBuilder
+ * @link https://github.com/chatwork/Phest
  * @copyright 2013 ChatWork Inc
  * @author Masaki Yamamoto (https://chatwork.com/cw_masaki)
  */
@@ -15,32 +16,32 @@
 	use \RecursiveIteratorIterator;
 	use \FilesystemIterator;
 	
-	define('DIR_BUILDER',dirname(__FILE__));
-	require(DIR_BUILDER.'/config.php');
+	define('DIR_PHEST',dirname(__FILE__));
+	require(DIR_PHEST.'/config.php');
 	
-	$ver = 'v0.5.1b';
+	$ver = 'v0.6b';
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
 	
-	require(DIR_BUILDER.'/lib/function.php');
-	require(DIR_BUILDER.'/lib/BuildMessage.php');
-	require(DIR_BUILDER.'/lib/LanguageBuilder.php');
+	require(DIR_PHEST.'/lib/function.php');
+	require(DIR_PHEST.'/lib/BuildMessage.php');
+	require(DIR_PHEST.'/lib/LanguageBuilder.php');
 	
-	require(DIR_BUILDER.'/lib/File.php');
+	require(DIR_PHEST.'/lib/File.php');
 	use \ChatWork\Utility\File;
 	
-	require(DIR_BUILDER.'/lib/vendor/smarty/Smarty.class.php');	
+	require(DIR_PHEST.'/lib/vendor/smarty/Smarty.class.php');	
 	use \Smarty;
-	require(DIR_BUILDER.'/lib/vendor/lessphp/lessc.inc.php');
+	require(DIR_PHEST.'/lib/vendor/lessphp/lessc.inc.php');
 	use \lessc;
-	require(DIR_BUILDER.'/lib/vendor/scssphp/scss.inc.php');
+	require(DIR_PHEST.'/lib/vendor/scssphp/scss.inc.php');
 	use \scssc;
-	require(DIR_BUILDER.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
+	require(DIR_PHEST.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
 	use \CssMin;
 	
-	require(DIR_BUILDER.'/lib/vendor/debuglib.php');
-	require(DIR_BUILDER.'/lib/vendor/spyc/spyc.php');
+	require(DIR_PHEST.'/lib/vendor/debuglib.php');
+	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
 	
 	$bmsg = new BuildMessage;
 	
@@ -118,7 +119,7 @@
 		if (!file_exists($dir_content)){
 			die('contentフォルダが見つかりません。path='.$dir_content);
 		}
-		$config_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_config.yml'),spyc_load_file($path_config_yml));
+		$config_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_config.yml'),spyc_load_file($path_config_yml));
 		$lang_list = $config_yaml['languages'];
 		
 		if ($lang_list){
@@ -132,13 +133,14 @@
 	
 	//build実行
 	if ($build and $site){
-		define('SMARTBUILDER_BUILTTYPE',$buildtype);
+		define('PHEST_BUILTTYPE',$buildtype);
 		
 		$build_submessage = '';
 		if ($lang){
 			$build_submessage = $lang.'/';
 		}
 		$bmsg->registerSection('build','ビルド完了 [ <strong class="'.$build_class.'">'.$build_submessage.$buildtype.'</strong> ] - '.date('H:i:s'));
+		$bmsg->registerSection('builderror','ビルドエラー',array('type' => 'danger'));
 		
 		if ($lang){
 			$buildpath = '/output/'.$lang.'/'.$buildtype;
@@ -148,7 +150,7 @@
 		$dir_output = $dir_site.$buildpath;
 		
 		File::buildMakeDir($dir_output);
-		$vars_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_vars.yml'),spyc_load_file($path_vars_yml));
+		$vars_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_vars.yml'),spyc_load_file($path_vars_yml));
 
 		if (!isset($vars_yaml['common']) or !is_array($vars_yaml['common'])){
 			$vars_yaml['common'] = array();
@@ -156,6 +158,7 @@
 		if (!isset($vars_yaml[$buildtype]) or !is_array($vars_yaml[$buildtype])){
 			$vars_yaml[$buildtype] = array();
 		}
+		
 		$core_vars_yaml = array_merge_recursive_distinct($vars_yaml['common'],$vars_yaml[$buildtype]);
 		
 		$home = $config_yaml['home'][$buildtype];
@@ -165,13 +168,12 @@
 		$home_local = '../sites/'.$site.$buildpath;
 		
 		$bmsg->registerSection('create','作成したファイル',array('type' => 'info','sort' => true));
-		$bmsg->registerSection('builderror','Build option error',array('type' => 'danger'));
 		
 		//Smarty
 		$smarty = new Smarty;
-		$smarty->template_dir = array($dir_content,DIR_BUILDER.'/templates');
-		$smarty->compile_dir = DIR_BUILDER.'/cache/templates_c/'.$site;
-		$smarty->addPluginsDir(DIR_BUILDER.'/plugins');
+		$smarty->template_dir = array($dir_content,DIR_PHEST.'/templates');
+		$smarty->compile_dir = DIR_PHEST.'/cache/templates_c/'.$site;
+		$smarty->addPluginsDir(DIR_PHEST.'/plugins');
 		File::buildMakeDir($smarty->compile_dir);
 		$bmsg->registerSection('smartyerror','Smarty コンパイルエラー',array('type' => 'danger'));
 		
@@ -192,7 +194,7 @@
 		
 		//ページをスキャン
 		
-		$dir_buildstatus = DIR_BUILDER.'/cache/buildstatus';
+		$dir_buildstatus = DIR_PHEST.'/cache/buildstatus';
 		$path_buildstatus_site = $dir_buildstatus.'/'.$site.'.dat';
 		
 		//ソースフォルダの全ファイルをスキャン。新しいファイルがあるかどうかの判定に使う。
@@ -210,6 +212,7 @@
 		//configのbuildオプションを処理
 		$concat_list = array();
 		$copyto_list = array();
+		$phpinclude_list = array();
 		if (isset($config_yaml['build'])){
 			foreach ($config_yaml['build'] as $build_dat){
 				foreach ($build_dat as $command => $option){
@@ -219,28 +222,68 @@
 								$concat_list[$option['output']] = array();
 							}
 							foreach ($option['sources'] as $spath){
+								$spath = $dir_source.'/'.$spath;
 								if (file_exists($spath)){
 									$watch_list[] = $spath;
 									$concat_list[$option['output']][] = $spath;
 								}else{
-									$bmsg->add('builderror','[concat] source file not exist: '.$spath);
+									$bmsg->add('builderror','[concat] sources で指定されたファイルが存在しません: '.$spath);
 								}
 							}
 							break;
 						case 'copydir':
 							$is_valid_dir = true;
-							if (!is_dir($option['fromdir'])){
+							$from_dpath = $dir_source.'/'.$option['fromdir'];
+							$to_dpath = $dir_source.'/'.$option['todir'];
+							if (!is_dir($from_dpath)){
 								$is_valid_dir = false;
-								$bmsg->add('builderror','[copydir] fromdir is not directory: '.$option['fromdir']);
+								$bmsg->add('builderror','[copydir] fromdir はディレクトリではありません: '.$from_dpath);
 							}
 							
 							if ($is_valid_dir){
-								$watch_list = array_merge($watch_list,File::getFileList($option['fromdir']));
-								$copyto_list[$option['fromdir']] = $option['todir'];
+								$watch_list = array_merge($watch_list,File::getFileList($from_dpath));
+								$copyto_list[$from_dpath] = $to_dpath;
 							}
+							break;
+						case 'phpinclude':
+							if (isset($option['path'])){
+								$include_path = $dir_source.'/'.$option['path'];
+								
+								if (empty($option['type'])){
+									$type = 'build';
+								}else{
+									$type = $option['type'];
+								}
+								
+								if (file_exists($include_path)){
+									$watch_list[] = $include_path;
+									$phpinclude_list[$type][] = $include_path;
+								}else{
+									$bmsg->add('builderror','[phpinclude] phpファイルが存在しません '.$include_path);
+								}
+							}
+							
 							break;
 					}
 				}
+			}
+		}
+		
+		//type=watch のphpincludeを実行
+		if (isset($phpinclude_list['watch'])){
+			foreach ($phpinclude_list['watch'] as $ppath){
+				include($ppath);
+			}
+		}
+		
+		$include_vars_list = array();
+		foreach ($vars_yaml['includes'] as $ipath){
+			$ipath = $dir_source.'/'.$ipath;
+			if (file_exists($ipath)){
+				$watch_list[] = $ipath;
+				$include_vars_list[] = $ipath;
+			}else{
+				$bmsg->add('builderror','vars.yml インクルードしようとしたファイルは存在しません: '.$ipath);
 			}
 		}
 		
@@ -265,6 +308,13 @@
 			exit;
 		}
 		
+		if (isset($phpinclude_list['build'])){
+			foreach ($phpinclude_list['build'] as $ppath){
+				$bmsg->add('build','PHPを実行: '.basename($ppath));
+				include($ppath);
+			}
+		}
+		
 		//concatを処理
 		if ($concat_list){
 			foreach ($concat_list as $output_to => $cpath_list){
@@ -272,7 +322,7 @@
 				foreach ($cpath_list as $cpath){
 					$output_source .= file_get_contents($cpath);
 				}
-				$bmsg->add('build','concat '.count($cpath_list).' files to source/<b>'.$output_to.'</b>');
+				$bmsg->add('build','[concat] '.count($cpath_list).'個のファイルを結合: /<b>'.$output_to.'</b>');
 				File::buildPutFile($dir_source.'/'.$output_to, $output_source);
 				$output_source = '';
 			}
@@ -281,9 +331,15 @@
 		//copydirを処理
 		if ($copyto_list){
 			foreach ($copyto_list as $copyfrom => $copyto){
-				$bmsg->add('build','copy directory from <b>'.$copyfrom.'</b> to <b>'.$copyto.'</b>');
+				$bmsg->add('build','[copydir] <b>'.$copyfrom.'</b> から <b>'.$copyto.'</b> へコピー');
 				File::copyDir($copyfrom, $dir_source.'/'.$copyto);
 			}
+		}
+		
+		//vars.ymlのincludesを処理
+		foreach ($include_vars_list as $ipath){
+			$inc_yaml = spyc_load_file($ipath);
+			$core_vars_yaml = array_merge_recursive_distinct($core_vars_yaml,$inc_yaml);
 		}
 		
 		//------------- build処理
@@ -300,7 +356,6 @@
 		if (!empty($config_yaml['buildclear'])){
 			File::removeDir($dir_output);
 			mkdir($dir_output,0777);
-			$build_option = ' (cleared)';
 		}
 		if ($build_option){
 			$build_option = ' <code>'.trim($build_option).'</code>';
@@ -540,10 +595,14 @@
 				if ($is_js){
 					//本番環境かつcompilejs=1なら圧縮
 					if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
+						//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
 						$output_to = $dir_output.'/'.$filepath;
 						$source_tmp = $dir_output.'/'.$filepath.'.tmp';
 						File::buildPutFile($source_tmp,$source);
+						
+						//コンパイル
 						compile($source_tmp,$output_to);
+						//完了したらテンポラリファイルを削除
 						unlink($source_tmp);
 						
 						$org_filesize = filesize($pathname);
@@ -555,13 +614,17 @@
 						$create_option .= ' (minified)';
 					}
 				}
+				
+				//css
 				if ($is_css){
+					//本番環境かつcompilecss=1なら圧縮
 					if ($buildtype == 'production' and !empty($config_yaml['compilecss'])){
 						$source = CssMin::minify($source);
 						$create_option .= ' (minified)';
 					}
 				}
 				
+				//ファイルとして出力
 				if ($is_output){
 					File::buildPutFile($dir_output.'/'.$filepath,$source);
 					
@@ -601,14 +664,14 @@
 		if (!empty($config_yaml['sitemap'])){
 			$smarty->assign('_urls',$urls);
 			$filepath = '/sitemap.xml';
-			file_put_contents($dir_output.$filepath,$smarty->fetch('smartbuilder_internal/sitemap_xml.tpl'));
+			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/sitemap_xml.tpl'));
 			$bmsg->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 		
 		//robots.txt
 		if (!empty($config_yaml['robotstxt'])){
 			$filepath = '/robots.txt';
-			file_put_contents($dir_output.$filepath,$smarty->fetch('smartbuilder_internal/robots_txt.tpl'));
+			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/robots_txt.tpl'));
 			$bmsg->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 		
@@ -624,7 +687,7 @@
 		exit;
 	}else{
 		$bsmarty = new Smarty;
-		$bsmarty->compile_dir = DIR_BUILDER.'/cache/templates_c';
+		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
 		
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$bmsg->getData());
@@ -632,5 +695,5 @@
 		$bsmarty->assign('site_list',$site_list);
 		$bsmarty->assign('lang',$lang);
 		$bsmarty->assign('lang_list',$lang_list);
-		$bsmarty->display('smartbuilder_internal/build.tpl');
+		$bsmarty->display('phest_internal/build.tpl');
 	}

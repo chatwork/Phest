@@ -1,5 +1,5 @@
 <?php
-	namespace ChatWork\SmartBuilder;
+	namespace ChatWork\Phest;
 	
 class LanguageBuilder {
 	protected $bmsg = null;

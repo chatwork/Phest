@@ -1,9 +1,9 @@
 <?php
-function smarty_block_local($params, $content, $template, &$repeat)
+function smarty_block_production($params, $content, $template, &$repeat)
 {
     if(!$repeat){
         if (isset($content)) {
-        	if (SMARTBUILDER_BUILTTYPE == 'local'){
+        	if (PHEST_BUILTTYPE == 'production'){
         		return $content;
         	}else{
         		return '';

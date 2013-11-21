@@ -1,5 +1,5 @@
 home:
-  local:"http://localhost/SmartBuilder/sites/sample_htmlmail/output/local"
+  local:"http://localhost/Phest/sites/sample_htmlmail/output/local"
   production:"http://www.sample.com"
 basetpl: "_base.tpl"
 encode:"jis"

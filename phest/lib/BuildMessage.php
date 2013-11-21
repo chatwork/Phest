@@ -1,5 +1,5 @@
 <?php
-	namespace ChatWork\SmartBuilder;
+	namespace ChatWork\Phest;
 
 /**
  * 出力メッセージの管理

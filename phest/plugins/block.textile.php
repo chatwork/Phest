@@ -1,5 +1,5 @@
 <?php
-    require_once(DIR_BUILDER.'/lib/vendor/textile/classTextile.php');
+    require_once(DIR_PHEST.'/lib/vendor/textile/classTextile.php');
     
 function smarty_block_textile($params, $content, $template, &$repeat)
 {
