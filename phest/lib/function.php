@@ -1,7 +1,7 @@
 <?php
-	namespace ChatWork\SmartBuilder;
+	namespace ChatWork\Phest;
 	
-	require(DIR_BUILDER.'/lib/vendor/CoffeeScript/Init.php');
+	require(DIR_PHEST.'/lib/vendor/CoffeeScript/Init.php');
 	\CoffeeScript\Init::load();
 	
 
@@ -46,7 +46,7 @@ function compile($source_from,$output_to){
 		unlink($output_to);
 	}
 	
-	$compile_command = 'java -jar "'.DIR_BUILDER.'/lib/vendor/closurecompiler/compiler.jar" --compilation_level SIMPLE_OPTIMIZATIONS --js "'.$source_from.'" --js_output_file "'.$output_to.'"';
+	$compile_command = 'java -jar "'.DIR_PHEST.'/lib/vendor/closurecompiler/compiler.jar" --compilation_level SIMPLE_OPTIMIZATIONS --js "'.$source_from.'" --js_output_file "'.$output_to.'"';
 	
 	$compile_output = array();
 	if ($os == 'mac'){

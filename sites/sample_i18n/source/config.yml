@@ -1,5 +1,5 @@
 home:
-  local: "http://localhost/SmartBuilder/sites/sample_i18n/output/local"
+  local: "http://localhost/Phest/sites/sample_i18n/output/local"
   production: "http://www.sample_i18n.com"
 basetpl: "_base.tpl"
 buildclear: 1

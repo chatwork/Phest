@@ -1,5 +1,5 @@
 home:
-  local: "http://localhost/SmartBuilder/sites/{{site}}/output/local"
+  local: "http://localhost/Phest/sites/{{site}}/output/local"
   production: "http://www.{{site}}.com"
 basetpl: "_base.tpl"
 buildclear: 1

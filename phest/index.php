@@ -1,13 +1,14 @@
 <?php
-	namespace ChatWork\SmartBuilder;
+	namespace ChatWork\Phest;
 	
 /**
- * SmartBuilder https://github.com/chatwork/SmartBuilder
+ * Phest - PHP Easy Static Site Generator
+ * https://github.com/chatwork/Phest
  * 
  * Licensed under MIT, see LICENSE
- * https://github.com/chatwork/SmartBuilder/blob/master/LICENSE
+ * https://github.com/chatwork/Phest/blob/master/LICENSE
  * 
- * @link https://github.com/chatwork/SmartBuilder
+ * @link https://github.com/chatwork/Phest
  * @copyright 2013 ChatWork Inc
  * @author Masaki Yamamoto (https://chatwork.com/cw_masaki)
  */
@@ -15,32 +16,32 @@
 	use \RecursiveIteratorIterator;
 	use \FilesystemIterator;
 	
-	define('DIR_BUILDER',dirname(__FILE__));
-	require(DIR_BUILDER.'/config.php');
+	define('DIR_PHEST',dirname(__FILE__));
+	require(DIR_PHEST.'/config.php');
 	
 	$ver = 'v0.6b';
 	
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
 	
-	require(DIR_BUILDER.'/lib/function.php');
-	require(DIR_BUILDER.'/lib/BuildMessage.php');
-	require(DIR_BUILDER.'/lib/LanguageBuilder.php');
+	require(DIR_PHEST.'/lib/function.php');
+	require(DIR_PHEST.'/lib/BuildMessage.php');
+	require(DIR_PHEST.'/lib/LanguageBuilder.php');
 	
-	require(DIR_BUILDER.'/lib/File.php');
+	require(DIR_PHEST.'/lib/File.php');
 	use \ChatWork\Utility\File;
 	
-	require(DIR_BUILDER.'/lib/vendor/smarty/Smarty.class.php');	
+	require(DIR_PHEST.'/lib/vendor/smarty/Smarty.class.php');	
 	use \Smarty;
-	require(DIR_BUILDER.'/lib/vendor/lessphp/lessc.inc.php');
+	require(DIR_PHEST.'/lib/vendor/lessphp/lessc.inc.php');
 	use \lessc;
-	require(DIR_BUILDER.'/lib/vendor/scssphp/scss.inc.php');
+	require(DIR_PHEST.'/lib/vendor/scssphp/scss.inc.php');
 	use \scssc;
-	require(DIR_BUILDER.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
+	require(DIR_PHEST.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
 	use \CssMin;
 	
-	require(DIR_BUILDER.'/lib/vendor/debuglib.php');
-	require(DIR_BUILDER.'/lib/vendor/spyc/spyc.php');
+	require(DIR_PHEST.'/lib/vendor/debuglib.php');
+	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
 	
 	$bmsg = new BuildMessage;
 	
@@ -118,7 +119,7 @@
 		if (!file_exists($dir_content)){
 			die('contentフォルダが見つかりません。path='.$dir_content);
 		}
-		$config_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_config.yml'),spyc_load_file($path_config_yml));
+		$config_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_config.yml'),spyc_load_file($path_config_yml));
 		$lang_list = $config_yaml['languages'];
 		
 		if ($lang_list){
@@ -132,7 +133,7 @@
 	
 	//build実行
 	if ($build and $site){
-		define('SMARTBUILDER_BUILTTYPE',$buildtype);
+		define('PHEST_BUILTTYPE',$buildtype);
 		
 		$build_submessage = '';
 		if ($lang){
@@ -149,7 +150,7 @@
 		$dir_output = $dir_site.$buildpath;
 		
 		File::buildMakeDir($dir_output);
-		$vars_yaml = array_merge(spyc_load_file(DIR_BUILDER.'/default_vars.yml'),spyc_load_file($path_vars_yml));
+		$vars_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_vars.yml'),spyc_load_file($path_vars_yml));
 
 		if (!isset($vars_yaml['common']) or !is_array($vars_yaml['common'])){
 			$vars_yaml['common'] = array();
@@ -170,9 +171,9 @@
 		
 		//Smarty
 		$smarty = new Smarty;
-		$smarty->template_dir = array($dir_content,DIR_BUILDER.'/templates');
-		$smarty->compile_dir = DIR_BUILDER.'/cache/templates_c/'.$site;
-		$smarty->addPluginsDir(DIR_BUILDER.'/plugins');
+		$smarty->template_dir = array($dir_content,DIR_PHEST.'/templates');
+		$smarty->compile_dir = DIR_PHEST.'/cache/templates_c/'.$site;
+		$smarty->addPluginsDir(DIR_PHEST.'/plugins');
 		File::buildMakeDir($smarty->compile_dir);
 		$bmsg->registerSection('smartyerror','Smarty コンパイルエラー',array('type' => 'danger'));
 		
@@ -193,7 +194,7 @@
 		
 		//ページをスキャン
 		
-		$dir_buildstatus = DIR_BUILDER.'/cache/buildstatus';
+		$dir_buildstatus = DIR_PHEST.'/cache/buildstatus';
 		$path_buildstatus_site = $dir_buildstatus.'/'.$site.'.dat';
 		
 		//ソースフォルダの全ファイルをスキャン。新しいファイルがあるかどうかの判定に使う。
@@ -663,14 +664,14 @@
 		if (!empty($config_yaml['sitemap'])){
 			$smarty->assign('_urls',$urls);
 			$filepath = '/sitemap.xml';
-			file_put_contents($dir_output.$filepath,$smarty->fetch('smartbuilder_internal/sitemap_xml.tpl'));
+			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/sitemap_xml.tpl'));
 			$bmsg->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 		
 		//robots.txt
 		if (!empty($config_yaml['robotstxt'])){
 			$filepath = '/robots.txt';
-			file_put_contents($dir_output.$filepath,$smarty->fetch('smartbuilder_internal/robots_txt.tpl'));
+			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/robots_txt.tpl'));
 			$bmsg->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 		
@@ -686,7 +687,7 @@
 		exit;
 	}else{
 		$bsmarty = new Smarty;
-		$bsmarty->compile_dir = DIR_BUILDER.'/cache/templates_c';
+		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
 		
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$bmsg->getData());
@@ -694,5 +695,5 @@
 		$bsmarty->assign('site_list',$site_list);
 		$bsmarty->assign('lang',$lang);
 		$bsmarty->assign('lang_list',$lang_list);
-		$bsmarty->display('smartbuilder_internal/build.tpl');
+		$bsmarty->display('phest_internal/build.tpl');
 	}
