@@ -371,4 +371,4 @@ Phestには多言語に対応するための仕組みが用意されています
 
 LICENSE
 ---------------
-Licensed under MIT, see LICENSE
+Licensed under MIT, see [LICENSE](https://github.com/chatwork/Phest/blob/master/LICENSE)

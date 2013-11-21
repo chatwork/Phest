@@ -1,5 +1,17 @@
 Phest https://github.com/chatwork/Phest
 -----------------------------------------------------------
+/**
+ * Phest - PHP Easy Static Site Generator
+ * https://github.com/chatwork/Phest
+ * 
+ * Licensed under MIT, see LICENSE
+ * https://github.com/chatwork/Phest/blob/master/LICENSE
+ * 
+ * @link https://github.com/chatwork/Phest
+ * @copyright 2013 ChatWork Inc
+ * @author Masaki Yamamoto (https://chatwork.com/cw_masaki)
+ */
+
 The MIT License (MIT)
 
 Copyright (c) 2013 ChatWork Inc
