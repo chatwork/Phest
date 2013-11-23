@@ -9,3 +9,4 @@ robotstxt:1
 compilejs:1
 compilecss:1
 languages:[]
+smartypluginsdir: []

@@ -168,6 +168,12 @@ config.yml の設定方法
 その文字コードに変換して出力できます。(HTMLメールの場合はJISにしたいなど)
 PHPの `mb_convert_encoding` 関数で指定できる文字コードの文字列をセットできます。
 
+ * 高度なconfig.ymlの設定
+
+    smartypluginsdir: []
+
+サイトごとに個別のSmartyプラグインフォルダを指定できます。
+`source/` フォルダからの相対パスを指定してください。
 
 vars.yml の設定方法
 ---------------
@@ -207,6 +213,11 @@ vars.yml の設定方法
 
 それ以外のページでは、ローカル環境でビルドすると `local` が、本番環境でビルドすると `production` がアサインされます。
 
+ * 高度なvars.ymlの設定
+
+    includes: []
+
+別のYAMLファイルの内容を取り込むことができます。`source/`フォルダからの相対パスで、YAMLファイルを指定してください。
 
 スタイルシートのファイル作成方法
 ---------------
@@ -248,7 +259,7 @@ JavaScriptのファイルを `pages/` 以下に置くと、拡張子に応じて
 - *.tpl.coffee
     - Smartyで処理後、CoffeeScriptでコンパイルします
 
-    
+
 config.yml に `compilejs:1` を指定している場合は、本番環境でビルドするとGoogle Closure Compilerでminifyします。
 
 また、ファイル名の先頭に `@` をつけると、構文チェックが実行されなくなります。
@@ -313,8 +324,8 @@ Phestには多言語に対応するための仕組みが用意されています
 `language.yml` の記述は下記の様に定義します。
 
     testkey:
-      description:"テストキー" 
-      lang: 
+      description:"テストキー"
+      lang:
         ja: "日本語"
         en: "English"
         vi: "Tiếng Việt"
@@ -330,7 +341,7 @@ Phestには多言語に対応するための仕組みが用意されています
 例：testkey2 を読み込み
 
     testkey:
-      lang: 
+      lang:
         ja: "読み込み {{testkey2}}"
 
 これを使うことで共通で使う文言などをまとめることができます。
@@ -347,13 +358,13 @@ Phestには多言語に対応するための仕組みが用意されています
 設定例：
 
     build:
-      - 
+      -
         concat:
           output: "content/javascript/all.js"
           sources:
             - "source/abc.js"
             - "source/def.js"
-      - 
+      -
         copydir:
           todir: "content/myfolder"
           fromdir:"../../myfolder"
