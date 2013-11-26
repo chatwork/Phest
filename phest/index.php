@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.7b';
+	$ver = 'v0.7.1b';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -258,7 +258,7 @@
 			if (!file_exists($path_languages_yml)){
 				File::buildTouch($path_languages_yml);
 			}
-			$LG = new LanguageBuilder($bmsg,$lang_list);
+			$LG = new LanguageBuilder($phest,$lang_list);
 			$LG->process($path_languages_yml);
 		}
 
