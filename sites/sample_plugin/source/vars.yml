@@ -1,0 +1,6 @@
+    common:
+local:
+production:
+path:
+  index.html:
+    title: "Page Title"

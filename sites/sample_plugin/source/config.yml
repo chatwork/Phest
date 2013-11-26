@@ -1,0 +1,16 @@
+home:
+  local: "http://localhost/Phest/sites/sample_plugin/output/local"
+  production: "http://www.sample_plugin.com"
+basetpl: "_base.tpl"
+buildclear: 1
+sitemap: 1
+robotstxt: 1
+compilejs: 1
+compilecss: 1
+plugins:
+  - concat:
+      output: "all.js"
+      sources:[ "test.js", "test2.js" ]
+  - copydir:
+      from: "cptest1"
+      to: "cptest2"

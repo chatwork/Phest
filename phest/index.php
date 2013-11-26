@@ -19,13 +19,13 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.6.1b';
+	$ver = 'v0.7b';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
 
 	require(DIR_PHEST.'/lib/function.php');
-	require(DIR_PHEST.'/lib/BuildMessage.php');
+	require(DIR_PHEST.'/lib/Phest.php');
 	require(DIR_PHEST.'/lib/LanguageBuilder.php');
 
 	require(DIR_PHEST.'/lib/File.php');
@@ -43,7 +43,7 @@
 	require(DIR_PHEST.'/lib/vendor/debuglib.php');
 	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
 
-	$bmsg = new BuildMessage;
+	$phest = new Phest;
 
 	$site_list = array();
 	foreach (glob(DIR_SITES.'/*') as $site_dir){
@@ -109,6 +109,9 @@
 		$path_vars_yml = $dir_source.'/vars.yml';
 		$path_languages_yml = $dir_source.'/languages.yml';
 
+		$phest->setSite($site);
+		$phest->addPluginsDir($dir_source.'/plugins/phest');
+
 		//yaml load
 		if (!file_exists($path_config_yml)){
 			die('config.ymlが見つかりません。path='.$path_config_yml);
@@ -139,8 +142,8 @@
 		if ($lang){
 			$build_submessage = $lang.'/';
 		}
-		$bmsg->registerSection('build','ビルド完了 [ <strong class="'.$build_class.'">'.$build_submessage.$buildtype.'</strong> ] - '.date('H:i:s'));
-		$bmsg->registerSection('builderror','ビルドエラー',array('type' => 'danger'));
+		$phest->registerSection('build','ビルド完了 [ <strong class="'.$build_class.'">'.$build_submessage.$buildtype.'</strong> ] - '.date('H:i:s'));
+		$phest->registerSection('builderror','ビルドエラー',array('type' => 'danger'));
 
 		if ($lang){
 			$buildpath = '/output/'.$lang.'/'.$buildtype;
@@ -167,177 +170,79 @@
 		}
 		$home_local = '../sites/'.$site.$buildpath;
 
-		$bmsg->registerSection('create','作成したファイル',array('type' => 'info','sort' => true));
+		$phest->registerSection('create','作成したファイル',array('type' => 'info','sort' => true));
 
 		//Smarty
 		$smarty = new Smarty;
 		$smarty->template_dir = array($dir_content,DIR_PHEST.'/templates');
 		$smarty->compile_dir = DIR_PHEST.'/cache/templates_c/'.$site;
-		$smarty->addPluginsDir(DIR_PHEST.'/plugins');
+		$smarty->addPluginsDir(array(DIR_PHEST.'/plugins/smarty',$dir_source.'/plugins/smarty'));
 		if ($config_yaml['smartypluginsdir']){
 			foreach ($config_yaml['smartypluginsdir'] as $pdir){
 				$smarty->addPluginsDir($dir_source.'/'.$pdir);
 			}
 		}
 		File::buildMakeDir($smarty->compile_dir);
-		$bmsg->registerSection('smartyerror','Smarty コンパイルエラー',array('type' => 'danger'));
+		$phest->registerSection('smartyerror','Smarty コンパイルエラー',array('type' => 'danger'));
 
 		//less
 		$less = new lessc;
-		$bmsg->registerSection('lesserror','LESS 構文エラー',array('type' => 'danger'));
+		$phest->registerSection('lesserror','LESS 構文エラー',array('type' => 'danger'));
 
 		//scss
 		$scss = new scssc;
-		$bmsg->registerSection('scsserror','SCSS 構文エラー',array('type' => 'danger'));
+		$phest->registerSection('scsserror','SCSS 構文エラー',array('type' => 'danger'));
 
 		//coffee
-		$bmsg->registerSection('coffeeerror','Coffee Script 構文エラー',array('type' => 'danger'));
+		$phest->registerSection('coffeeerror','Coffee Script 構文エラー',array('type' => 'danger'));
 
 		//jslint
-		$bmsg->registerSection('jslint','JavaScript 文法エラー',array('type' => 'danger'));
-		$bmsg->registerSection('jscompileerror','JavaScript コンパイルエラー',array('type' => 'danger'));
-
-		//ページをスキャン
-
-		$dir_buildstatus = DIR_PHEST.'/cache/buildstatus';
-		$path_buildstatus_site = $dir_buildstatus.'/'.$site.'.dat';
-
-		//ソースフォルダの全ファイルをスキャン。新しいファイルがあるかどうかの判定に使う。
-		$path_concat_string = '';
-		$buildtime = 0;
-		$pathhash = '';
-		if (file_exists($path_buildstatus_site)){
-			$buildtime = filemtime($path_buildstatus_site);
-			$pathhash = file_get_contents($path_buildstatus_site);
-		}
-
-		$has_new = false;
-		$watch_list = array();
-
-		//configのbuildオプションを処理
-		$concat_list = array();
-		$copyto_list = array();
-		$phpinclude_list = array();
-		if (isset($config_yaml['build'])){
-			foreach ($config_yaml['build'] as $build_dat){
-				foreach ($build_dat as $command => $option){
-					switch ($command){
-						case 'concat':
-							if (!isset($concat_list[$option['output']])){
-								$concat_list[$option['output']] = array();
-							}
-							foreach ($option['sources'] as $spath){
-								$spath = $dir_source.'/'.$spath;
-								if (file_exists($spath)){
-									$watch_list[] = $spath;
-									$concat_list[$option['output']][] = $spath;
-								}else{
-									$bmsg->add('builderror','[concat] sources で指定されたファイルが存在しません: '.$spath);
-								}
-							}
-							break;
-						case 'copydir':
-							$is_valid_dir = true;
-							$from_dpath = $dir_source.'/'.$option['fromdir'];
-							$to_dpath = $dir_source.'/'.$option['todir'];
-							if (!is_dir($from_dpath)){
-								$is_valid_dir = false;
-								$bmsg->add('builderror','[copydir] fromdir はディレクトリではありません: '.$from_dpath);
-							}
-
-							if ($is_valid_dir){
-								$watch_list = array_merge($watch_list,File::getFileList($from_dpath));
-								$copyto_list[$from_dpath] = $to_dpath;
-							}
-							break;
-						case 'phpinclude':
-							if (isset($option['path'])){
-								$include_path = $dir_source.'/'.$option['path'];
-
-								if (empty($option['type'])){
-									$type = 'build';
-								}else{
-									$type = $option['type'];
-								}
-
-								if (file_exists($include_path)){
-									$watch_list[] = $include_path;
-									$phpinclude_list[$type][] = $include_path;
-								}else{
-									$bmsg->add('builderror','[phpinclude] phpファイルが存在しません '.$include_path);
-								}
-							}
-
-							break;
-					}
-				}
-			}
-		}
-
-		//type=watch のphpincludeを実行
-		if (isset($phpinclude_list['watch'])){
-			foreach ($phpinclude_list['watch'] as $ppath){
-				include($ppath);
-			}
-		}
+		$phest->registerSection('jslint','JavaScript 文法エラー',array('type' => 'danger'));
+		$phest->registerSection('jscompileerror','JavaScript コンパイルエラー',array('type' => 'danger'));
 
 		$include_vars_list = array();
 		foreach ($vars_yaml['includes'] as $ipath){
 			$ipath = $dir_source.'/'.$ipath;
 			if (file_exists($ipath)){
-				$watch_list[] = $ipath;
+				$phest->addWatchList($ipath);
 				$include_vars_list[] = $ipath;
 			}else{
-				$bmsg->add('builderror','vars.yml インクルードしようとしたファイルは存在しません: '.$ipath);
+				$phest->add('builderror','vars.yml インクルードしようとしたファイルは存在しません: '.$ipath);
 			}
 		}
 
-		$watch_list = array_merge($watch_list,File::getFileList($dir_source));
+		$phest->addWatchList(File::getFileList($dir_source));
 
-		foreach ($watch_list as $filepath){
-			if (!$has_new and ($buildtime < filemtime($filepath))){
-				$has_new = true;
+		//phest pluginを処理
+		$loaded_plugins = array();
+		if (isset($config_yaml['plugins'])){
+			foreach ($config_yaml['plugins'] as $pdat){
+				$plugin_name = key($pdat);
+				$plugin_params = current($pdat);
+				if ($phest->loadPlugin($plugin_name)){
+					$loaded_plugins[$plugin_name] = true;
+					$watch_func_name = 'ChatWork\Phest\plugin_watch_'.$plugin_name;
+					if (function_exists($watch_func_name)){
+						$loaded_plugins[$plugin_name] = $watch_func_name($plugin_params,$phest);
+					}
+				}
 			}
-			$path_concat_string .= ':'.$filepath;
 		}
 
-		//ファイルパスを全部つないだ文字列のハッシュをとる
-		$source_pathhash = md5($path_concat_string);
-		//ファイルパスの変更があるか
-		if ($pathhash != $source_pathhash){
-			$has_new = true;
-			$pathhash = $source_pathhash;
-		}
-
-		if ($watch and !$has_new){
+		if ($watch and !$phest->hasNew()){
 			exit;
 		}
 
-		if (isset($phpinclude_list['build'])){
-			foreach ($phpinclude_list['build'] as $ppath){
-				$bmsg->add('build','PHPを実行: '.basename($ppath));
-				include($ppath);
-			}
-		}
-
-		//concatを処理
-		if ($concat_list){
-			foreach ($concat_list as $output_to => $cpath_list){
-				$output_source = '';
-				foreach ($cpath_list as $cpath){
-					$output_source .= file_get_contents($cpath);
+		if (isset($config_yaml['plugins'])){
+			foreach ($config_yaml['plugins'] as $pdat){
+				$plugin_name = key($pdat);
+				$plugin_params = current($pdat);
+				if (!empty($loaded_plugins[$plugin_name])){
+					$build_func_name = 'ChatWork\Phest\plugin_build_'.$plugin_name;
+					if (function_exists($build_func_name)){
+						$build_func_name($plugin_params,$phest);
+					}
 				}
-				$bmsg->add('build','[concat] '.count($cpath_list).'個のファイルを結合: /<b>'.$output_to.'</b>');
-				File::buildPutFile($dir_source.'/'.$output_to, $output_source);
-				$output_source = '';
-			}
-		}
-
-		//copydirを処理
-		if ($copyto_list){
-			foreach ($copyto_list as $copyfrom => $copyto){
-				$bmsg->add('build','[copydir] <b>'.$copyfrom.'</b> から <b>'.$copyto.'</b> へコピー');
-				File::copyDir($copyfrom, $dir_source.'/'.$copyto);
 			}
 		}
 
@@ -365,8 +270,8 @@
 		if ($build_option){
 			$build_option = ' <code>'.trim($build_option).'</code>';
 		}
-		$bmsg->add('build','ビルド元: '.realpath($dir_source));
-		$bmsg->add('build','ビルド先: <a href="'.$home_local.'" target="_blank">'.realpath($dir_output).'</a>'.$build_option);
+		$phest->add('build','ビルド元: '.realpath($dir_source));
+		$phest->add('build','ビルド先: <a href="'.$home_local.'" target="_blank">'.realpath($dir_output).'</a>'.$build_option);
 
 		if (class_exists('FilesystemIterator',false)){
 			$ite = new RecursiveDirectoryIterator($dir_content,FilesystemIterator::SKIP_DOTS);
@@ -464,9 +369,9 @@
 						$output_html = mb_convert_encoding($output_html, $config_yaml['encode']);
 					}
 					File::buildPutFile($dir_output.'/'.$filepath,$output_html);
-					$bmsg->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
+					$phest->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
 				} catch (SmartyCompilerException $e){
-					$bmsg->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+					$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 					continue;
 				}
 			}else{
@@ -478,7 +383,7 @@
 					try {
 						$source = $smarty->fetch($filepath);
 					} catch (SmartyCompilerException $e){
-						$bmsg->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+						$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
 					$basename = str_replace('.tpl','',$basename);
@@ -566,7 +471,7 @@
 						$create_option .= ' (less)';
 						$filepath = str_replace('.less','.css',$filepath);
 					} catch (Exception $e){
-						$bmsg->add('lesserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+						$phest->add('lesserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
 				}
@@ -579,7 +484,7 @@
 						$create_option .= ' (scss)';
 						$filepath = str_replace('.scss','.css',$filepath);
 					} catch (Exception $e){
-						$bmsg->add('scsserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+						$phest->add('scsserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
 				}
@@ -591,7 +496,7 @@
 						$create_option .= ' (coffee)';
 						$filepath = str_replace('.coffee','.js',$filepath);
 					}catch (Exception $e){
-						$bmsg->add('coffeeerror',$e->getMessage());
+						$phest->add('coffeeerror',$e->getMessage());
 						continue;
 					}
 				}
@@ -612,7 +517,7 @@
 
 						$org_filesize = filesize($pathname);
 						if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
-							$bmsg->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
+							$phest->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
 							continue;
 						}
 						$is_output = false;
@@ -639,7 +544,7 @@
 
 						if ($lint_error){
 							foreach ($lint_error as $lerr){
-								$bmsg->add('jslint',$basename.':'.$lerr);
+								$phest->add('jslint',$basename.':'.$lerr);
 							}
 						}
 					}
@@ -656,7 +561,7 @@
 			if ($create_option){
 				$create_option = ' <code>'.trim($create_option).'</code>';
 			}
-			$bmsg->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
+			$phest->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
 		}
 
 		//Smarty処理して生成したファイルを削除
@@ -664,38 +569,33 @@
 			unlink($pathname);
 		}
 
-
 		//サイトマップ生成
 		if (!empty($config_yaml['sitemap'])){
 			$smarty->assign('_urls',$urls);
 			$filepath = '/sitemap.xml';
 			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/sitemap_xml.tpl'));
-			$bmsg->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
+			$phest->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 
 		//robots.txt
 		if (!empty($config_yaml['robotstxt'])){
 			$filepath = '/robots.txt';
 			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/robots_txt.tpl'));
-			$bmsg->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
+			$phest->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
-
-
-		//ビルド時間を記録
-		File::buildPutFile($path_buildstatus_site,$pathhash);
 	}
 
 	if ($watch){
 		header('HTTP/1.1 200 OK');
 		header('Content-type:application/json;charset=UTF-8');
-		echo json_encode(array('code' => 200,'message_list' => $bmsg->getData()));
+		echo json_encode(array('code' => 200,'message_list' => $phest->getMessageData()));
 		exit;
 	}else{
 		$bsmarty = new Smarty;
 		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
 
 		$bsmarty->assign('ver',$ver);
-		$bsmarty->assign('message_list',$bmsg->getData());
+		$bsmarty->assign('message_list',$phest->getMessageData());
 		$bsmarty->assign('site',$site);
 		$bsmarty->assign('site_list',$site_list);
 		$bsmarty->assign('lang',$lang);

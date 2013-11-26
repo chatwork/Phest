@@ -349,28 +349,24 @@ Phestには多言語に対応するための仕組みが用意されています
 その他、詳しくはリポジトリの `sites/sample_i18n` の設定を参照してください。
 
 
-高度な処理 (※開発中)
+プラグイン
 ---------------
-`config.yml` に `build` というキーを定義することで、
+`config.yml` に `plugins` というキーを定義することで、
 ビルド時に複数のファイルを1つにまとめたり、
 特定のフォルダをコピーしてきたりといった高度な処理を行うことができます。
 
 設定例：
 
-    build:
-      -
-        concat:
-          output: "content/javascript/all.js"
-          sources:
-            - "source/abc.js"
-            - "source/def.js"
-      -
-        copydir:
-          todir: "content/myfolder"
-          fromdir:"../../myfolder"
+    plugins:
+      - concat:
+          output: "all.js"
+          sources:[ "test.js", "test2.js" ]
+      - copydir:
+          from: "cptest1"
+          to: "cptest2"
 
-※この機能はまだ開発中です。JavaScriptファイルの結合や、各種事前処理など、Gruntの様な処理を行えるようにする予定。
-
+※いまのところはファイルを統合する `concat` とフォルダをコピーする `copydir` のみ。
+今後追加予定。sites側でサイトごとに独立してpluginを作成して拡張することが可能。
 
 参考
 ---------------
