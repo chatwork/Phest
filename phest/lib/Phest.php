@@ -1,10 +1,13 @@
 <?php
     namespace ChatWork\Phest;
 
+    use \ChatWork\Utility\File;
+
 class Phest {
     protected $message_data = array();
     protected $site = '';
     protected $watch_list = array();
+    protected $path_buildstatus_site = '';
     protected $site_last_buildtime = 0;
     protected $site_last_buildhash = 0;
     protected $plugins_dir = array();
@@ -22,12 +25,12 @@ class Phest {
     public function setSite($site){
         $this->site = $site;
         $dir_buildstatus = DIR_PHEST.'/cache/buildstatus';
-        $path_buildstatus_site = $dir_buildstatus.'/'.$site.'.dat';
+        $this->path_buildstatus_site = $dir_buildstatus.'/'.$site.'.dat';
 
         //ソースフォルダの全ファイルをスキャン。新しいファイルがあるかどうかの判定に使う。
-        if (file_exists($path_buildstatus_site)){
-            $this->site_last_buildtime = filemtime($path_buildstatus_site);
-            $this->site_last_buildhash = file_get_contents($path_buildstatus_site);
+        if (file_exists($this->path_buildstatus_site)){
+            $this->site_last_buildtime = filemtime($this->path_buildstatus_site);
+            $this->site_last_buildhash = file_get_contents($this->path_buildstatus_site);
         }
     }
 
@@ -180,12 +183,16 @@ class Phest {
 
         //ファイルパスを全部つないだ文字列のハッシュをとる
         $source_pathhash = md5($path_concat_string);
+
         //ファイルパスの変更があるか
         if ($this->site_last_buildhash != $source_pathhash){
             $has_new = true;
+        }
+
+        if ($has_new){
             $this->site_last_buildhash = $source_pathhash;
             //ビルド時間を記録
-            File::buildPutFile($path_buildstatus_site,$pathhash);
+            File::buildPutFile($this->path_buildstatus_site,$this->site_last_buildhash);
         }
 
         return $has_new;
