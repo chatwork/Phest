@@ -21,7 +21,7 @@ plugins:
          type: primary
          icon: ok-circle
        dryrun: true
-       prefix: ja/
+       prefix: test/
   -
      s3deploy:
        _button:
