@@ -31,7 +31,7 @@ plugins:
          confirm: true
        dryrun: false
        prefix: test/
-       bucket: developer.chatwork.com
+       bucket: yourbucketname
        region: tokyo
        key: your access key
        secret: you secret key
