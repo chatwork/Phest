@@ -40,16 +40,16 @@ a {
 $(function(){
   var query = {};
   parse_str(window.location.search.substr(1),query);
-  
+
   var build = '';
   if (query.build){
     build = query.build;
   }
-  
+
   $('#site').change(function(){
     document.location.href = '?site=' + $(this).val();
   });
-  
+
   $('#createSite').click(function(){
     var sitename = prompt("作成したいサイト名を入力してください",'');
     if (sitename){
@@ -62,11 +62,29 @@ $(function(){
     $('#result').fadeOut();
     document.location.href = create_query('local');
   });
-  
+
   $('#buildProduction').click(function(){
     $('.btn').addClass('disabled');
     $('#result').fadeOut();
     document.location.href = create_query('production');
+  });
+
+  var do_plugin = function(plugin_idx){
+    $('.btn').addClass('disabled');
+    $('#result').fadeOut();
+    document.location.href = create_query('plugin',0,plugin_idx);
+  };
+
+  $('._pluginButtons').click(function(){
+    var button = $(this);
+
+    if (button.attr('data-confirm')){
+      if (confirm('本当に実行しますか？')){
+        do_plugin($(this).attr('data-plugin-idx'));
+      }
+    }else{
+      do_plugin($(this).attr('data-plugin-idx'));
+    }
   });
 
   var watch_timer = null;
@@ -75,17 +93,17 @@ $(function(){
     if (NotificationAPI.checkPermission() != 0){
       NotificationAPI.requestPermission();
     }
-    
+
     if (build != 'watch'){
       document.location.href = create_query('watch');
     }
-    
+
     $('#result').fadeOut();
-    
+
     var watching = false;
     if (watch_timer){
       $('#watchStatus').hide();
-      
+
       clearInterval(watch_timer);
       watch_timer = null;
       $('#watchIcon').removeClass('glyphicon-stop').addClass('glyphicon-refresh');
@@ -94,17 +112,17 @@ $(function(){
       $('#buildProduction').removeClass('disabled');
     }else{
       $('#watchStatus').fadeIn();
-      
+
       watch_timer = setInterval(function(){
         if (!watching){
           watching = true;
           $.getJSON(create_query('local',1),function(data){
             if (data){
               build_result(data.message_list);
-              
+
               for (var i = 0,sec_len = data.message_list.length;i < sec_len;i++){
                 var section = data.message_list[i];
-                
+
                 var body = '';
                 switch (section.type){
                   case 'danger':
@@ -117,7 +135,7 @@ $(function(){
                         this.cancel();
                       };
                       popup.show();
-                      
+
                       setTimeout(function(){
                         popup.close();
                       },3000);
@@ -139,19 +157,22 @@ $(function(){
       $('#buildProduction').addClass('disabled');
     }
   });
-  
+
   var message_list_tpl = _.template($('#messageListTemplate').html());
-  
+
   var build_result = function(message_list){
     $('#result').html(message_list_tpl({
       message_list:message_list
     })).show();
   };
-  
-  var create_query = function(buildtype,watch){
+
+  var create_query = function(buildtype,watch,plugin_idx){
     var str = '?build=' + buildtype;
     if (watch){
       str += '&watch=1';
+    }
+    if (plugin_idx){
+      str += '&plugin_idx=' + plugin_idx;
     }
     var site = $('#site').val();
     if (site){
@@ -163,13 +184,13 @@ $(function(){
     }
     return str;
   };
-  
+
   var message_list = {if isset($message_list)}{$message_list|json_encode}{else}null{/if};
-  
+
   if (message_list){
     build_result(message_list);
   }
-  
+
   if (build == 'watch'){
      $('#buildLocalWatch').click();
   }
@@ -213,6 +234,18 @@ $(function(){
     <button id="buildProduction" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Production</button>
    </td>
   </tr>
+   {if $extra_buttons}
+  <tr style="text-align:center">
+    <td colspan="{if $lang}3{else}2{/if}">プラグイン</td>
+  </tr>
+  <tr style="text-align:center">
+    <td colspan="{if $lang}3{else}2{/if}">
+    {foreach $extra_buttons as $idx => $btn_dat}
+     <button class="_pluginButtons btn {if isset($btn_dat.type)}btn-{$btn_dat.type}{/if}" data-plugin-idx="{$idx}"{if !empty($btn_dat.confirm)} data-confirm="1"{/if}>{if isset($btn_dat.icon)}<span class="glyphicon glyphicon-{$btn_dat.icon}"></span> {/if}{$btn_dat.label}</button>
+    {/foreach}
+    </td>
+  </tr>
+   {/if}
  </tbody>
 </table>
 </section>

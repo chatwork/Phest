@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.7.4b';
+	$ver = 'v0.7.6b';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -84,6 +84,11 @@
 	if (!empty($_GET['watch'])){
 		$watch = 1;
 	}
+	$plugin_idx = false;
+	if (!empty($_GET['plugin_idx'])){
+		$plugin_idx = $_GET['plugin_idx'];
+	}
+
 
 	$build = true;
 	$build_class = '';
@@ -94,6 +99,10 @@
 		case 'production':
 			$build_class = 'text-success';
 			break;
+		case 'plugin':
+			$build_class = 'text-primary';
+			$build = false;
+			break;
 		default:
 			$build = false;
 			break;
@@ -103,6 +112,8 @@
 
 	$lang = '';
 	$lang_list = array();
+	$plugin_list = array();
+	$extra_buttons = array();
 	if ($site){
 		$dir_site = DIR_SITES.'/'.$site;
 		$dir_source = $dir_site.'/source';
@@ -125,6 +136,24 @@
 			die('contentフォルダが見つかりません。path='.$dir_content);
 		}
 		$config_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_config.yml'),spyc_load_file($path_config_yml));
+
+
+		if (isset($config_yaml['plugins'])){
+			foreach ($config_yaml['plugins'] as $idx => $pdat){
+				$plugin_name = key($pdat);
+				$plugin_params = current($pdat);
+
+				$plugin_list[$idx] = array(
+					'name' => $plugin_name,
+					'params' => $plugin_params,
+					);
+
+				if (isset($plugin_params['_button'])){
+					$extra_buttons[$idx] = $plugin_params['_button'];
+				}
+			}
+		}
+
 		$lang_list = $config_yaml['languages'];
 
 		if ($lang_list){
@@ -214,16 +243,14 @@
 
 		//phest pluginを処理
 		$loaded_plugins = array();
-		if (isset($config_yaml['plugins'])){
-			foreach ($config_yaml['plugins'] as $pdat){
-				$plugin_name = key($pdat);
-				$plugin_params = current($pdat);
-				if ($phest->loadPlugin($plugin_name)){
-					$loaded_plugins[$plugin_name] = true;
-					$watch_func_name = 'ChatWork\Phest\plugin_watch_'.$plugin_name;
-					if (function_exists($watch_func_name)){
-						$loaded_plugins[$plugin_name] = $watch_func_name($plugin_params,$phest);
-					}
+		foreach ($plugin_list as $idx => $pdat){
+			$plugin_name = $pdat['name'];
+			$plugin_params = $pdat['params'];
+			if ($phest->loadPlugin($plugin_name)){
+				$loaded_plugins[$plugin_name] = true;
+				$watch_func_name = 'ChatWork\Phest\plugin_watch_'.$plugin_name;
+				if (function_exists($watch_func_name)){
+					$loaded_plugins[$plugin_name] = $watch_func_name($plugin_params,$phest);
 				}
 			}
 		}
@@ -232,15 +259,13 @@
 			exit;
 		}
 
-		if (isset($config_yaml['plugins'])){
-			foreach ($config_yaml['plugins'] as $pdat){
-				$plugin_name = key($pdat);
-				$plugin_params = current($pdat);
-				if (!empty($loaded_plugins[$plugin_name])){
-					$build_func_name = 'ChatWork\Phest\plugin_build_'.$plugin_name;
-					if (function_exists($build_func_name)){
-						$build_func_name($plugin_params,$phest);
-					}
+		foreach ($plugin_list as $idx => $pdat){
+			$plugin_name = $pdat['name'];
+			$plugin_params = $pdat['params'];
+			if (!empty($loaded_plugins[$plugin_name])){
+				$build_func_name = 'ChatWork\Phest\plugin_build_'.$plugin_name;
+				if (function_exists($build_func_name)){
+					$build_func_name($plugin_params,$phest);
 				}
 			}
 		}
@@ -586,19 +611,30 @@
 			$phest->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 
-		if (isset($config_yaml['plugins'])){
-			foreach ($config_yaml['plugins'] as $pdat){
-				$plugin_name = key($pdat);
-				$plugin_params = current($pdat);
-				if (!empty($loaded_plugins[$plugin_name])){
-					$build_func_name = 'ChatWork\Phest\plugin_finish_'.$plugin_name;
-					if (function_exists($build_func_name)){
-						$build_func_name($plugin_params,$phest);
-					}
+		//フィニッシュプラグインの実行
+		foreach ($plugin_list as $idx => $pdat){
+			$plugin_name = $pdat['name'];
+			$plugin_params = $pdat['params'];
+			if (!empty($loaded_plugins[$plugin_name])){
+				$build_func_name = 'ChatWork\Phest\plugin_finish_'.$plugin_name;
+				if (function_exists($build_func_name)){
+					$build_func_name($plugin_params,$phest);
 				}
 			}
 		}
+	}
 
+	//ボタンプラグインの実行
+	if ($plugin_idx !== false){
+		$pdat = $plugin_list[$plugin_idx];
+		$plugin_name = $pdat['name'];
+		$plugin_params = $pdat['params'];
+		if ($phest->loadPlugin($plugin_name)){
+			$build_func_name = 'ChatWork\Phest\plugin_button_'.$plugin_name;
+			if (function_exists($build_func_name)){
+				$build_func_name($plugin_params,$phest);
+			}
+		}
 	}
 
 	if ($watch){
@@ -612,6 +648,7 @@
 
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$phest->getMessageData());
+		$bsmarty->assign('extra_buttons',$extra_buttons);
 		$bsmarty->assign('site',$site);
 		$bsmarty->assign('site_list',$site_list);
 		$bsmarty->assign('lang',$lang);
