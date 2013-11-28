@@ -6,6 +6,8 @@
 class Phest {
     protected $message_data = array();
     protected $site = '';
+    protected $lang = '';
+    protected $buildtype = '';
     protected $watch_list = array();
     protected $path_buildstatus_site = '';
     protected $site_last_buildtime = 0;
@@ -14,6 +16,16 @@ class Phest {
 
     public function __construct(){
         $this->plugins_dir = array(DIR_PHEST.'/plugins/phest');
+        return $this;
+    }
+
+    public function setBuildType($buildtype){
+        $this->buildtype = $buildtype;
+        return $this;
+    }
+
+    public function getBuildType(){
+        return $this->buildtype;
     }
 
     /**
@@ -32,6 +44,27 @@ class Phest {
             $this->site_last_buildtime = filemtime($this->path_buildstatus_site);
             $this->site_last_buildhash = file_get_contents($this->path_buildstatus_site);
         }
+        return $this;
+    }
+
+    /**
+     * 言語をセット
+     *
+     * @method setLang
+     */
+    public function setLang($lang){
+        $this->lang = $lang;
+        return $this;
+    }
+
+    /**
+     * 言語を取得
+     *
+     * @method getLang
+     * @return string 言語
+     */
+    public function getLang(){
+        return $this->lang;
     }
 
     /**
@@ -83,6 +116,22 @@ class Phest {
         return DIR_SITES.'/'.$this->site.'/source';
     }
 
+    public function getBuildDirName(){
+        $lang = $this->getLang();
+        $buildtype = $this->getBuildType();
+        if ($lang){
+            $buildpath = '/output/'.$lang.'/'.$buildtype;
+        }else{
+            $buildpath = '/output/'.$buildtype;
+        }
+
+        return $buildpath;
+    }
+
+    public function getOutputPath(){
+        return DIR_SITES.'/'.$this->site.$this->getBuildDirName();
+    }
+
     /**
      * セクションを登録
      *
@@ -116,6 +165,22 @@ class Phest {
         $this->message_data[$section]['list'][] = $message;
 
         return $this;
+    }
+
+    /**
+     * エラーがあるか
+     *
+     * @method hasError
+     * @return boolean  [description]
+     */
+    public function hasError(){
+        foreach ($this->message_data as $section => $mdat){
+            if ($mdat['type'] == 'danger' and count($mdat['list'])){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

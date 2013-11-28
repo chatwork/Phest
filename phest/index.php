@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.7.2b';
+	$ver = 'v0.7.4b';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -99,6 +99,8 @@
 			break;
 	}
 
+	$phest->setBuildType($buildtype);
+
 	$lang = '';
 	$lang_list = array();
 	if ($site){
@@ -132,6 +134,8 @@
 				$lang = $lang_list[0];
 			}
 		}
+
+		$phest->setLang($lang);
 	}
 
 	//build実行
@@ -145,12 +149,7 @@
 		$phest->registerSection('build','ビルド完了 [ <strong class="'.$build_class.'">'.$build_submessage.$buildtype.'</strong> ] - '.date('H:i:s'));
 		$phest->registerSection('builderror','ビルドエラー',array('type' => 'danger'));
 
-		if ($lang){
-			$buildpath = '/output/'.$lang.'/'.$buildtype;
-		}else{
-			$buildpath = '/output/'.$buildtype;
-		}
-		$dir_output = $dir_site.$buildpath;
+		$dir_output = $phest->getOutputPath();
 
 		File::buildMakeDir($dir_output);
 		$vars_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_vars.yml'),spyc_load_file($path_vars_yml));
@@ -168,7 +167,7 @@
 		if (!$home){
 			die('config.ymlにhomeが正しく設定されていません');
 		}
-		$home_local = '../sites/'.$site.$buildpath;
+		$home_local = '../sites/'.$site.$phest->getBuildDirName();
 
 		$phest->registerSection('create','作成したファイル',array('type' => 'info','sort' => true));
 
@@ -316,6 +315,7 @@
 			$smarty->assign('_folder',$_folder);
 			$smarty->assign('_content_tpl',$content_tpl);
 			if ($lang){
+				$smarty->assign('_lang',$lang);
 				$smarty->assign('L',$LG->getLangDat($lang));
 			}
 
@@ -338,7 +338,9 @@
 					$priority = '0.5';
 				}
 
-				$urls[] = array('path' => $path_current,'lastmod' => date('c',filemtime($pathname)),'changefreq' => $changefreq,'priority' => $priority);
+				if (!in_array($_path,$config_yaml['ignoresitemaps'])){
+					$urls[] = array('path' => $path_current,'lastmod' => date('c',filemtime($pathname)),'changefreq' => $changefreq,'priority' => $priority);
+				}
 
 				//vars.ymlで読み出すセクションのリストを生成
 				$pages_section = array();
@@ -583,6 +585,20 @@
 			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/robots_txt.tpl'));
 			$phest->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
+
+		if (isset($config_yaml['plugins'])){
+			foreach ($config_yaml['plugins'] as $pdat){
+				$plugin_name = key($pdat);
+				$plugin_params = current($pdat);
+				if (!empty($loaded_plugins[$plugin_name])){
+					$build_func_name = 'ChatWork\Phest\plugin_finish_'.$plugin_name;
+					if (function_exists($build_func_name)){
+						$build_func_name($plugin_params,$phest);
+					}
+				}
+			}
+		}
+
 	}
 
 	if ($watch){
