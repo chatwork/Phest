@@ -9,4 +9,5 @@ robotstxt:1
 compilejs:1
 compilecss:1
 languages:[]
+ignoresitemaps: [ 404.html ]
 smartypluginsdir: []
