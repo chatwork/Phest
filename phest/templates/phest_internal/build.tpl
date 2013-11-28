@@ -79,7 +79,7 @@ $(function(){
     var button = $(this);
 
     if (button.attr('data-confirm')){
-      if (confirm('本当に実行しますか？')){
+      if (confirm('本当に「' + $.trim(button.text()) + '」を実行しますか？')){
         do_plugin($(this).attr('data-plugin-idx'));
       }
     }else{
