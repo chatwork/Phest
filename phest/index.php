@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.7.6b';
+	$ver = 'v0.7.8b';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -44,6 +44,7 @@
 	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
 
 	$phest = new Phest;
+	$current_time = time();
 
 	$site_list = array();
 	foreach (glob(DIR_SITES.'/*') as $site_dir){
@@ -335,10 +336,14 @@
 			//smartyのアサイン変数をクリア
 			$smarty->clearAllAssign();
 
+			$smarty->assign('_phestver','Phest '.$ver);
+			$smarty->assign('_time',$current_time);
 			$smarty->assign('_home',$home);
 			$smarty->assign('_path',$_path);
 			$smarty->assign('_folder',$_folder);
 			$smarty->assign('_content_tpl',$content_tpl);
+			$smarty->assign($core_vars_yaml);
+
 			if ($lang){
 				$smarty->assign('_lang',$lang);
 				$smarty->assign('L',$LG->getLangDat($lang));
@@ -378,7 +383,7 @@
 				}
 				$pages_section[] = $page_tmp.$pagepath['filename'].'.html';
 
-				$page_vars = $core_vars_yaml;
+				$page_vars = array();
 				foreach ($pages_section as $psect){
 					if (isset($vars_yaml['path'][$psect]) and is_array($vars_yaml['path'][$psect])){
 						$page_vars = array_merge_recursive_distinct($page_vars,$vars_yaml['path'][$psect]);
@@ -397,19 +402,19 @@
 					}
 					File::buildPutFile($dir_output.'/'.$filepath,$output_html);
 					$phest->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
-				} catch (SmartyCompilerException $e){
+				} catch (\Exception $e){
 					$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 					continue;
 				}
 			}else{
 				//最後が .tpl 以外のアセットファイル
-				$filepath = $dirname.'/'.$basename;
+				$filepath = ltrim($dirname.'/'.$basename,'/');
 
 				//Smartyの事前処理が必要なファイルを処理
 				if (strpos($basename,'.tpl') !== false){
 					try {
 						$source = $smarty->fetch($filepath);
-					} catch (SmartyCompilerException $e){
+					} catch (\Exception $e){
 						$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
@@ -497,7 +502,7 @@
 						$source = $less->compile($source);
 						$create_option .= ' (less)';
 						$filepath = str_replace('.less','.css',$filepath);
-					} catch (Exception $e){
+					} catch (\Exception $e){
 						$phest->add('lesserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
@@ -510,7 +515,7 @@
 						$source = $scss->compile($source);
 						$create_option .= ' (scss)';
 						$filepath = str_replace('.scss','.css',$filepath);
-					} catch (Exception $e){
+					} catch (\Exception $e){
 						$phest->add('scsserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
@@ -522,7 +527,7 @@
 						$source = \CoffeeScript\Compiler::compile($source,array('filename' => $filepath));
 						$create_option .= ' (coffee)';
 						$filepath = str_replace('.coffee','.js',$filepath);
-					}catch (Exception $e){
+					}catch (\Exception $e){
 						$phest->add('coffeeerror',$e->getMessage());
 						continue;
 					}
