@@ -108,8 +108,7 @@ $(function(){
       watch_timer = null;
       $('#watchIcon').removeClass('glyphicon-stop').addClass('glyphicon-refresh');
       $('#watchText').text('Local watch');
-      $('#buildLocal').removeClass('disabled');
-      $('#buildProduction').removeClass('disabled');
+      $('.btn').removeClass('disabled');
     }else{
       $('#watchStatus').fadeIn();
 
@@ -153,8 +152,9 @@ $(function(){
 
       $('#watchIcon').removeClass('glyphicon-refresh').addClass('glyphicon-stop');
       $('#watchText').text('pause');
-      $('#buildLocal').addClass('disabled');
-      $('#buildProduction').addClass('disabled');
+
+      $('.btn').addClass('disabled');
+      $(this).removeClass('disabled');
     }
   });
 
