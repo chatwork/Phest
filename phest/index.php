@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.7.9b';
+	$ver = 'v0.8.1b';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -420,7 +420,7 @@
 					}
 					$basename = str_replace('.tpl','',$basename);
 					$pathname = $pagepath['dirname'].'/'.$basename;
-					$filepath = $dirname.'/'.$basename;
+					$filepath = ltrim($dirname.'/'.$basename,'/');
 
 					//拡張子 .tpl を抜いたファイル名で出力する
 					file_put_contents($pathname, $source);
@@ -484,15 +484,15 @@
 				$is_css = true;
 			}
 
+			if (isset($assets_smarty_flag[$pathname])){
+				$create_option .= ' (smarty)';
+			}
+
 			if ($is_js or $is_css){
 				if (file_exists($pathname)){
 					$source = file_get_contents($pathname);
 				}else{
 					continue;
-				}
-
-				if (isset($assets_smarty_flag[$pathname])){
-					$create_option .= ' (smarty)';
 				}
 
 				//less

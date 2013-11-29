@@ -355,18 +355,58 @@ Phestには多言語に対応するための仕組みが用意されています
 ビルド時に複数のファイルを1つにまとめたり、
 特定のフォルダをコピーしてきたりといった高度な処理を行うことができます。
 
+組み込みプラグイン
+
+ - concat
+    - ビルド時のタイミングにあわせて、複数のファイルを1つに結合します。複数のjavascriptファイルやcssファイルの結合などに便利。
+ - copydir
+    - ビルド時のタイミングにあわせて、特定のフォルダから特定のフォルダへ中身をすべてコピーします。
+    - 外部のフォルダからサイトに取り込みたい時などに便利です。
+ - s3deploy
+    - Amazon S3へproductionビルドの内容をアップロードします。
+    - ローカルとS3上のファイルの差分を確認し、ローカル側にないものはS3上からも削除します。
+    - ファイルは公開権限でアップロードされるので注意してください。
+
 設定例：
 
     plugins:
-      - concat:
-          output: "all.js"
-          sources:[ "test.js", "test2.js" ]
-      - copydir:
-          from: "cptest1"
-          to: "cptest2"
+      -
+         concat: #test.jsとtest2.jsを結合してall.jsを生成
+           output: "all.js"
+           sources:[ "test.js", "test2.js" ]
+      -
+         copydir: #cptest1/ を cptest2 にコピー
+           from: "cptest1"
+           to: "cptest2"
+      -
+         s3deploy: #S3へデプロイするファイルを確認
+           _button:
+             label: デプロイテスト
+             type: primary
+             icon: ok-circle
+           dryrun: true #ここをtrueにするとS3側のファイルを操作しません
+           prefix: ja/
+           bucket: mybuketname
+           region: tokyo
+           key: myaccesskey
+           secret: mysecretkey
+      -
+         s3deploy: #
+           _button:
+             label: デプロイ
+             type: success
+             icon: cloud-upload
+             confirm: true
+           dryrun: false
+           prefix: ja/
+           bucket: mybuketname
+           region: tokyo
+           key: myaccesskey
+           secret: mysecretkey
 
-※いまのところはファイルを統合する `concat` とフォルダをコピーする `copydir` のみ。
-今後追加予定。sites側でサイトごとに独立してpluginを作成して拡張することが可能。
+`source/plugins` フォルダ以下に、`phest/` というフォルダでPhestのプラグインを、`smarty/` というフォルダでSmartyのプラグインをサイトごとに実装できます。
+プラグインの仕様は今後公開予定です。(まだプラグインの設計はベータ版で変更する可能性が高いです)
+
 
 参考
 ---------------
