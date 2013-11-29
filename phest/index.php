@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.7.8b';
+	$ver = 'v0.7.9b';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -86,7 +86,7 @@
 		$watch = 1;
 	}
 	$plugin_idx = false;
-	if (!empty($_GET['plugin_idx'])){
+	if (isset($_GET['plugin_idx'])){
 		$plugin_idx = $_GET['plugin_idx'];
 	}
 
