@@ -14,3 +14,24 @@ plugins:
   - copydir:
       from: "cptest1"
       to: "cptest2"
+  -
+     s3deploy:
+       _button:
+         label: デプロイテスト
+         type: primary
+         icon: ok-circle
+       dryrun: true
+       prefix: test/
+  -
+     s3deploy:
+       _button:
+         label: デプロイ
+         type: success
+         icon: cloud-upload
+         confirm: true
+       dryrun: false
+       prefix: test/
+       bucket: yourbucketname
+       region: tokyo
+       key: your access key
+       secret: you secret key

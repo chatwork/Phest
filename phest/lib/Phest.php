@@ -116,9 +116,13 @@ class Phest {
         return DIR_SITES.'/'.$this->site.'/source';
     }
 
-    public function getBuildDirName(){
-        $lang = $this->getLang();
-        $buildtype = $this->getBuildType();
+    public function getBuildDirName($lang = null,$buildtype = null){
+        if (!$lang){
+            $lang = $this->getLang();
+        }
+        if (!$buildtype){
+            $buildtype = $this->getBuildType();
+        }
         if ($lang){
             $buildpath = '/output/'.$lang.'/'.$buildtype;
         }else{
@@ -128,8 +132,8 @@ class Phest {
         return $buildpath;
     }
 
-    public function getOutputPath(){
-        return DIR_SITES.'/'.$this->site.$this->getBuildDirName();
+    public function getOutputPath($lang = null,$buildtype = null){
+        return DIR_SITES.'/'.$this->site.$this->getBuildDirName($lang,$buildtype);
     }
 
     /**

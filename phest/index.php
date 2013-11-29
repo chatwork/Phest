@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.7.4b';
+	$ver = 'v0.8.1b';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -44,6 +44,7 @@
 	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
 
 	$phest = new Phest;
+	$current_time = time();
 
 	$site_list = array();
 	foreach (glob(DIR_SITES.'/*') as $site_dir){
@@ -84,6 +85,11 @@
 	if (!empty($_GET['watch'])){
 		$watch = 1;
 	}
+	$plugin_idx = false;
+	if (isset($_GET['plugin_idx'])){
+		$plugin_idx = $_GET['plugin_idx'];
+	}
+
 
 	$build = true;
 	$build_class = '';
@@ -94,6 +100,10 @@
 		case 'production':
 			$build_class = 'text-success';
 			break;
+		case 'plugin':
+			$build_class = 'text-primary';
+			$build = false;
+			break;
 		default:
 			$build = false;
 			break;
@@ -103,6 +113,8 @@
 
 	$lang = '';
 	$lang_list = array();
+	$plugin_list = array();
+	$extra_buttons = array();
 	if ($site){
 		$dir_site = DIR_SITES.'/'.$site;
 		$dir_source = $dir_site.'/source';
@@ -125,6 +137,24 @@
 			die('contentフォルダが見つかりません。path='.$dir_content);
 		}
 		$config_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_config.yml'),spyc_load_file($path_config_yml));
+
+
+		if (isset($config_yaml['plugins'])){
+			foreach ($config_yaml['plugins'] as $idx => $pdat){
+				$plugin_name = key($pdat);
+				$plugin_params = current($pdat);
+
+				$plugin_list[$idx] = array(
+					'name' => $plugin_name,
+					'params' => $plugin_params,
+					);
+
+				if (isset($plugin_params['_button'])){
+					$extra_buttons[$idx] = $plugin_params['_button'];
+				}
+			}
+		}
+
 		$lang_list = $config_yaml['languages'];
 
 		if ($lang_list){
@@ -214,16 +244,14 @@
 
 		//phest pluginを処理
 		$loaded_plugins = array();
-		if (isset($config_yaml['plugins'])){
-			foreach ($config_yaml['plugins'] as $pdat){
-				$plugin_name = key($pdat);
-				$plugin_params = current($pdat);
-				if ($phest->loadPlugin($plugin_name)){
-					$loaded_plugins[$plugin_name] = true;
-					$watch_func_name = 'ChatWork\Phest\plugin_watch_'.$plugin_name;
-					if (function_exists($watch_func_name)){
-						$loaded_plugins[$plugin_name] = $watch_func_name($plugin_params,$phest);
-					}
+		foreach ($plugin_list as $idx => $pdat){
+			$plugin_name = $pdat['name'];
+			$plugin_params = $pdat['params'];
+			if ($phest->loadPlugin($plugin_name)){
+				$loaded_plugins[$plugin_name] = true;
+				$watch_func_name = 'ChatWork\Phest\plugin_watch_'.$plugin_name;
+				if (function_exists($watch_func_name)){
+					$loaded_plugins[$plugin_name] = $watch_func_name($plugin_params,$phest);
 				}
 			}
 		}
@@ -232,15 +260,13 @@
 			exit;
 		}
 
-		if (isset($config_yaml['plugins'])){
-			foreach ($config_yaml['plugins'] as $pdat){
-				$plugin_name = key($pdat);
-				$plugin_params = current($pdat);
-				if (!empty($loaded_plugins[$plugin_name])){
-					$build_func_name = 'ChatWork\Phest\plugin_build_'.$plugin_name;
-					if (function_exists($build_func_name)){
-						$build_func_name($plugin_params,$phest);
-					}
+		foreach ($plugin_list as $idx => $pdat){
+			$plugin_name = $pdat['name'];
+			$plugin_params = $pdat['params'];
+			if (!empty($loaded_plugins[$plugin_name])){
+				$build_func_name = 'ChatWork\Phest\plugin_build_'.$plugin_name;
+				if (function_exists($build_func_name)){
+					$build_func_name($plugin_params,$phest);
 				}
 			}
 		}
@@ -310,10 +336,14 @@
 			//smartyのアサイン変数をクリア
 			$smarty->clearAllAssign();
 
+			$smarty->assign('_phestver','Phest '.$ver);
+			$smarty->assign('_time',$current_time);
 			$smarty->assign('_home',$home);
 			$smarty->assign('_path',$_path);
 			$smarty->assign('_folder',$_folder);
 			$smarty->assign('_content_tpl',$content_tpl);
+			$smarty->assign($core_vars_yaml);
+
 			if ($lang){
 				$smarty->assign('_lang',$lang);
 				$smarty->assign('L',$LG->getLangDat($lang));
@@ -353,7 +383,7 @@
 				}
 				$pages_section[] = $page_tmp.$pagepath['filename'].'.html';
 
-				$page_vars = $core_vars_yaml;
+				$page_vars = array();
 				foreach ($pages_section as $psect){
 					if (isset($vars_yaml['path'][$psect]) and is_array($vars_yaml['path'][$psect])){
 						$page_vars = array_merge_recursive_distinct($page_vars,$vars_yaml['path'][$psect]);
@@ -372,25 +402,25 @@
 					}
 					File::buildPutFile($dir_output.'/'.$filepath,$output_html);
 					$phest->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
-				} catch (SmartyCompilerException $e){
+				} catch (\Exception $e){
 					$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 					continue;
 				}
 			}else{
 				//最後が .tpl 以外のアセットファイル
-				$filepath = $dirname.'/'.$basename;
+				$filepath = ltrim($dirname.'/'.$basename,'/');
 
 				//Smartyの事前処理が必要なファイルを処理
 				if (strpos($basename,'.tpl') !== false){
 					try {
 						$source = $smarty->fetch($filepath);
-					} catch (SmartyCompilerException $e){
+					} catch (\Exception $e){
 						$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
 					$basename = str_replace('.tpl','',$basename);
 					$pathname = $pagepath['dirname'].'/'.$basename;
-					$filepath = $dirname.'/'.$basename;
+					$filepath = ltrim($dirname.'/'.$basename,'/');
 
 					//拡張子 .tpl を抜いたファイル名で出力する
 					file_put_contents($pathname, $source);
@@ -454,15 +484,15 @@
 				$is_css = true;
 			}
 
+			if (isset($assets_smarty_flag[$pathname])){
+				$create_option .= ' (smarty)';
+			}
+
 			if ($is_js or $is_css){
 				if (file_exists($pathname)){
 					$source = file_get_contents($pathname);
 				}else{
 					continue;
-				}
-
-				if (isset($assets_smarty_flag[$pathname])){
-					$create_option .= ' (smarty)';
 				}
 
 				//less
@@ -472,7 +502,7 @@
 						$source = $less->compile($source);
 						$create_option .= ' (less)';
 						$filepath = str_replace('.less','.css',$filepath);
-					} catch (Exception $e){
+					} catch (\Exception $e){
 						$phest->add('lesserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
@@ -485,7 +515,7 @@
 						$source = $scss->compile($source);
 						$create_option .= ' (scss)';
 						$filepath = str_replace('.scss','.css',$filepath);
-					} catch (Exception $e){
+					} catch (\Exception $e){
 						$phest->add('scsserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
@@ -497,7 +527,7 @@
 						$source = \CoffeeScript\Compiler::compile($source,array('filename' => $filepath));
 						$create_option .= ' (coffee)';
 						$filepath = str_replace('.coffee','.js',$filepath);
-					}catch (Exception $e){
+					}catch (\Exception $e){
 						$phest->add('coffeeerror',$e->getMessage());
 						continue;
 					}
@@ -586,19 +616,30 @@
 			$phest->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 
-		if (isset($config_yaml['plugins'])){
-			foreach ($config_yaml['plugins'] as $pdat){
-				$plugin_name = key($pdat);
-				$plugin_params = current($pdat);
-				if (!empty($loaded_plugins[$plugin_name])){
-					$build_func_name = 'ChatWork\Phest\plugin_finish_'.$plugin_name;
-					if (function_exists($build_func_name)){
-						$build_func_name($plugin_params,$phest);
-					}
+		//フィニッシュプラグインの実行
+		foreach ($plugin_list as $idx => $pdat){
+			$plugin_name = $pdat['name'];
+			$plugin_params = $pdat['params'];
+			if (!empty($loaded_plugins[$plugin_name])){
+				$build_func_name = 'ChatWork\Phest\plugin_finish_'.$plugin_name;
+				if (function_exists($build_func_name)){
+					$build_func_name($plugin_params,$phest);
 				}
 			}
 		}
+	}
 
+	//ボタンプラグインの実行
+	if ($plugin_idx !== false){
+		$pdat = $plugin_list[$plugin_idx];
+		$plugin_name = $pdat['name'];
+		$plugin_params = $pdat['params'];
+		if ($phest->loadPlugin($plugin_name)){
+			$build_func_name = 'ChatWork\Phest\plugin_button_'.$plugin_name;
+			if (function_exists($build_func_name)){
+				$build_func_name($plugin_params,$phest);
+			}
+		}
 	}
 
 	if ($watch){
@@ -612,6 +653,7 @@
 
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$phest->getMessageData());
+		$bsmarty->assign('extra_buttons',$extra_buttons);
 		$bsmarty->assign('site',$site);
 		$bsmarty->assign('site_list',$site_list);
 		$bsmarty->assign('lang',$lang);
