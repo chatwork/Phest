@@ -643,11 +643,12 @@
 	}
 
 	if ($watch){
-		header('HTTP/1.1 200 OK');
 		header('Content-type:application/json;charset=UTF-8');
 		echo json_encode(array('code' => 200,'message_list' => $phest->getMessageData()));
 		exit;
 	}else{
+		header('Content-type:text/html;charset=UTF-8');
+		
 		$bsmarty = new Smarty;
 		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
 

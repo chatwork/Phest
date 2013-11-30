@@ -1,4 +1,4 @@
-<?
+<?php
     use \Michelf\Markdown;
     require_once(DIR_PHEST.'/lib/vendor/phpmarkdown/Michelf/Markdown.php');    
     
