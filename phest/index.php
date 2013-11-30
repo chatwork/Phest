@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.1b';
+	$ver = 'v0.8.2b';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
