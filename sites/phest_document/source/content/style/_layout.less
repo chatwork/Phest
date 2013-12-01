@@ -1,0 +1,40 @@
+// layout.less
+// ------------------------------------------------------------------------
+//* Base Layout
+// ------------------------------------------ */
+html, body {
+ overflow: auto;
+}
+
+.wrapper {
+ position: relative;
+ width: 100%;
+ min-height: 100%;
+ text-align: center;
+}
+
+.header {
+ width: 100%;
+ height: 39px;
+ line-height: 39px;
+}
+
+.contentWrapper {
+ position: relative;
+ width: 960px;
+ margin: 0 auto;
+}
+
+.sideContent, .mainContent{
+ text-align: left;
+}
+
+.sideContent{
+ float: left;
+ width: @sideContentWidth;
+}
+
+.mainContent{
+ float: right;
+ width: @mainContentWidth;
+}
