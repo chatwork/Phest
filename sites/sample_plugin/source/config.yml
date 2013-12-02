@@ -22,6 +22,10 @@ plugins:
          icon: ok-circle
        dryrun: true
        prefix: test/
+       bucket: yourbucketname
+       region: tokyo
+       key: your access key
+       secret: you secret key
   -
      s3deploy:
        _button:
