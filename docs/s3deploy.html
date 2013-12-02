@@ -5,7 +5,7 @@
  <head>
   <meta charset="UTF-8" />
   <meta name="description" content="Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"/>
-  <title>プラグイン - Phest ドキュメント</title>
+  <title>Amazon S3へのデプロイ - Phest ドキュメント</title>
   <!--[if lt IE 9]>
    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
@@ -29,83 +29,61 @@
     <li><a href="configurations.html">サイトの設定<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="assets.html">CSS&JavaScript<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="smarty.html">Smartyについて<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
+    <li class="select"><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
-    <li class="select"><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
  </ul>
 </div>
     <div id="_mainContent" class="mainContent">
      <div class="mainContentInner">
-  <h1>プラグイン</h1>
+  <h1>Amazon S3へのデプロイ</h1>
   <div class="contentSection">
-    <p><p><code>config.yml</code> に <code>plugins</code> というキーを定義することで、
-ビルド時に複数のファイルを1つにまとめたり、
-特定のフォルダをコピーしてきたりといった高度な処理を行うことができます。</p>
-
-<p>組み込みプラグイン</p>
-
-<ul>
-<li>concat
-
-<ul>
-<li>ビルド時のタイミングにあわせて、複数のファイルを1つに結合します。複数のjavascriptファイルやcssファイルの結合などに便利。</li>
-</ul></li>
-<li>copydir
-
-<ul>
-<li>ビルド時のタイミングにあわせて、特定のフォルダから特定のフォルダへ中身をすべてコピーします。</li>
-<li>外部のフォルダからサイトに取り込みたい時などに便利です。</li>
-</ul></li>
-<li>s3deploy
-
-<ul>
-<li>Amazon S3へproductionビルドの内容をアップロードします。</li>
-<li>ローカルとS3上のファイルの差分を確認し、ローカル側にないものはS3上からも削除します。</li>
-<li>ファイルは公開権限でアップロードされるので注意してください。</li>
-</ul></li>
-</ul>
-
-<p>設定例：</p>
+    <p><p>PhestにはAmazon S3へ簡単にデプロイする仕組みが用意されています。
+Amazon S3へのデプロイはPhestのプラグインとして実装されており、<code>config.yml</code>に下記の記述を行うことでS3へのデプロイボタンを追加できます。</p>
 
 <pre><code>plugins:
   -
-     concat: #test.jsとtest2.jsを結合してall.jsを生成
-       output: "all.js"
-       sources:[ "test.js",  "test2.js" ]
-  -
-     copydir: #cptest1/ を cptest2 にコピー
-       from: "cptest1"
-       to: "cptest2"
-  -
-     s3deploy: #S3へデプロイするファイルを確認
+     s3deploy: #S3へデプロイするファイルを確認 (実際のデプロイは行いません)
        _button:
          label: デプロイテスト
          type: primary
          icon: ok-circle
        dryrun: true           #ここをtrueにするとS3側のファイルを操作しません
-       prefix: ja/            #アップするオブジェクトにつけるprefix
+       prefix:                #アップするオブジェクトにつけるprefix
        bucket: mybuketname    #バケット名
        region: tokyo          #リージョン名
        key: myaccesskey       #AWSのアクセスキー
        secret: mysecretkey    #AWSのシークレットキー
   -
-     s3deploy: #
+     s3deploy: #S3へデプロイする
        _button:
          label: デプロイ
          type: success
          icon: cloud-upload
          confirm: true
        dryrun: false
-       prefix: ja/
+       prefix:
        bucket: mybuketname
        region: tokyo
        key: myaccesskey
        secret: mysecretkey
 </code></pre>
 
-<p><code>source/plugins</code> フォルダ以下に、<code>phest/</code> というフォルダでPhestのプラグインを、<code>smarty/</code> というフォルダでSmartyのプラグインをサイトごとに実装できます。
-プラグインの仕様は今後公開予定です。(まだプラグインの設計はベータ版で変更する可能性が高いです)</p>
+<p>この設定を追加すると、Phestの実行画面が</p>
+
+<p><img src="image/ja/capture/phest_gui_s3.png" style="width:80%;height:80%" /></p>
+
+<p>のように「プラグイン」という項目にボタンが二つ追加されます。「デプロイテスト」のボタンを押すとドライランという実際のアップロードは行わず、処理内容の確認ができるモードで実行されます。「デプロイ」ボタンを押すと、実際のアップロード処理を行います。</p>
+
+<ul>
+<li>bucket、region、key、secret のところに自分のS3情報を設定してください。</li>
+<li>region には <em>US<em>EAST</em>1, VIRGINIA, NORTHERN<em>VIRGINIA, US</em>WEST<em>1, CALIFORNIA, NORTHERN</em>CALIFORNIA, US<em>WEST</em>2, OREGON, EU<em>WEST</em>1, IRELAND, AP<em>SOUTHEAST</em>1, SINGAPORE, AP<em>SOUTHEAST</em>2, SYDNEY, AP<em>NORTHEAST</em>1, TOKYO, SA<em>EAST</em>1, SAO<em>PAULO, US</em>GOV<em>WEST</em>1, GOV<em>CLOUD</em>US</em> のいずれかを指定してください。(大文字小文字は区別しません)</li>
+</ul>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>実行にあたってのご注意</h2>  <p><p>デプロイされるファイルはpublic-read権限でアップロードされ、すべてのユーザーが閲覧できるので注意してください。</p>
 </p>
  </div>
  

@@ -1,7 +1,7 @@
 common:
   sitename: "Phest ドキュメント"
   description: "Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"
-  navigations:[ index.html, install.html, newsite.html, configurations.html, assets.html, bundles.html, i18n.html, plugins.html ]
+  navigations:[ index.html, install.html, newsite.html, configurations.html, assets.html, smarty.html, s3deploy.html, i18n.html, plugins.html ]
 local:
 production:
 includes: [ contents.yml, changelogs.yml ]
@@ -21,9 +21,12 @@ path:
   assets.html:
     title: "CSS&JavaScript"
     content_keys: [ styles, javascripts ]
-  bundles.html:
-    title: "組み込み変数/関数"
-    content_keys: [ assignedvars, templatefuncs ]
+  smarty.html:
+    title: "Smartyについて"
+    content_keys: [ smartyintro, assignedvars, templatefuncs ]
+  s3deploy.html:
+    title: "Amazon S3へのデプロイ"
+    content_keys: [ s3deploy, s3deploy_detail ]
   i18n.html:
     title: "多言語対応"
     content_keys: [ i18n ]

@@ -28,7 +28,8 @@
     <li><a href="newsite.html">サイトをつくる<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="configurations.html">サイトの設定<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="assets.html">CSS&JavaScript<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="bundles.html">組み込み変数/関数<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="smarty.html">Smartyについて<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
@@ -51,6 +52,8 @@ ChatWork社内で実際にサイト制作に使用しているツールである
  </div>
   <div class="contentSection">
   <h2>特徴</h2>  <p><h3>黒い画面不要！デザイナ向けのツールです。</h3>
+
+<p><img src="image/ja/capture/phest_gui.png" style="width:80%;height:80%" /></p>
 
 <p>一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)によるコマンド操作が必須です。
 PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
@@ -79,6 +82,11 @@ PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミ
 
 <p>ページ一覧を記述した検索エンジン用のsitemap.xmlを自動生成します。
 また、sitemap.xmlのパスを記述したrobots.txtも自動生成します。</p>
+
+<h3>Amazon S3へ簡単にデプロイ可能</h3>
+
+<p>ビルドしたファイルをAmazon S3の特定バケットに一括デプロイ(リリース)できる仕組みがあります。
+S3側にアップされていて、ローカルにないファイルはS3側から自動で削除するなどファイルの同期も可能です。</p>
 
 <h3>ローカル環境用と、本番環境用で別々に生成が可能</h3>
 

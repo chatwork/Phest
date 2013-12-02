@@ -15,6 +15,9 @@ ChatWork社内で実際にサイト制作に使用しているツールである
 ============
  
 ### 黒い画面不要！デザイナ向けのツールです。
+
+<img src="image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
+
 一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)によるコマンド操作が必須です。
 PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
 ファイルの自動更新検知もコマンドを実行する必要はなく、ブラウザ側から実行でき、更新をブラウザのデスクトップ通知でリアルタイムに通知します。
@@ -38,6 +41,10 @@ Smartyの `{include file=""}` や `{if}` `{foreach}` をはじめとした強力
 ### sitemap.xmlを自動生成
 ページ一覧を記述した検索エンジン用のsitemap.xmlを自動生成します。
 また、sitemap.xmlのパスを記述したrobots.txtも自動生成します。
+
+### Amazon S3へ簡単にデプロイ可能
+ビルドしたファイルをAmazon S3の特定バケットに一括デプロイ(リリース)できる仕組みがあります。
+S3側にアップされていて、ローカルにないファイルはS3側から自動で削除するなどファイルの同期も可能です。
 
 ### ローカル環境用と、本番環境用で別々に生成が可能
 ローカル環境時はドメインをlocalhostにして、本番用にはドメインを本番サーバーにしたバージョンで生成など、
@@ -71,5 +78,5 @@ PHPが稼働するドキュメントルート以下(通常 `htdocs/` や `www/` 
 LICENSE
 ============
  
-Licensed under MIT, see [LICENSE](https://github.com/chatwork/Phest/blob/master/LICENSE)
+Licensed under MIT,  see [LICENSE](https://github.com/chatwork/Phest/blob/master/LICENSE)
  

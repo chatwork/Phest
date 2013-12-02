@@ -15,6 +15,11 @@ contents:
     title: 特徴
     content: |
       ### 黒い画面不要！デザイナ向けのツールです。
+
+      <img src="image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
+
+      <img src="image/ja/capture/desktopnotify.png" style="width:50%;height:50%" />
+
       一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)によるコマンド操作が必須です。
       PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
       ファイルの自動更新検知もコマンドを実行する必要はなく、ブラウザ側から実行でき、更新をブラウザのデスクトップ通知でリアルタイムに通知します。
@@ -27,7 +32,7 @@ contents:
 
       ### LESSやSCSS、CoffeeScriptなどのCSS/JSプリプロセッサ、minifyを実行可能
       静的ファイルの書き出しにともなって、LESS/SCSS/CoffeScriptなどのコンパイル、圧縮処理(minify)を実行できます。
-      さらに、CSSやJavaScriptをSmartyで一度処理させてからコンパイルさせることもできます。(CSSやJavaScript内でSmarty構文が使用可能)
+      JavaScriptファイルは自動で構文チェックが行われ、セミコロン忘れ、オブジェクト要素の最後のカンマなどを指摘してくれます。
       なお、圧縮処理は時間がかかるため本番環境用ビルドでのみ実行されます。
 
       ### YAMLで記述した変数定義を使用することが可能
@@ -38,6 +43,10 @@ contents:
       ### sitemap.xmlを自動生成
       ページ一覧を記述した検索エンジン用のsitemap.xmlを自動生成します。
       また、sitemap.xmlのパスを記述したrobots.txtも自動生成します。
+
+      ### Amazon S3へ簡単にデプロイ可能
+      ビルドしたファイルをAmazon S3の特定バケットに一括デプロイ(リリース)できる仕組みがあります。
+      S3側にアップされていて、ローカルにないファイルはS3側から自動で削除するなどファイルの同期も可能です。
 
       ### ローカル環境用と、本番環境用で別々に生成が可能
       ローカル環境時はドメインをlocalhostにして、本番用にはドメインを本番サーバーにしたバージョンで生成など、
@@ -64,12 +73,14 @@ contents:
 
       `phest/` をブラウザから開くとビルドツールが表示されます。
 
+      `docs/` をブラウザから開くと、Phestの使い方をまとめたドキュメントを表示できます。
+
       ※コピーするフォルダは `phest/` だけでも問題ありません。
       リポジトリにコミットされている `sites/` にはあらかじめ参考となるサンプルのサイトデータが設置されていますが、不要であれば削除してください。
   newsite:
     title: サイトの新規作成
     content: |
-      ビルドツールを表示し、`Create new site`リンクをクリックします。
+      ビルドツールを表示し、`新しくサイトを作成`リンクをクリックします。
       作成したいサイト名を半角英数で入力します。 (例:mysite)
 
       - phest/         (ビルドツール)
@@ -108,7 +119,7 @@ contents:
       `source/content/` 以下に、サイトを構成するページやリソースを入れていきます。
       たとえば、ここに `index.tpl` と置いてPhestにてlocalビルドを実行すると、`output/local/index.html` として生成されます。
 
-      [キャプチャ]
+      <img src="image/ja/capture/buildresult.png" style="width:80%;height:80%" />
 
       画像やJavaScriptファイル、スタイルシートなどを置くと、そのままoutputフォルダへとコピーされます。
       フォルダ階層を自由につくることもできるので、通常のサイトをつくるときのように自由にフォルダ構成することができます。
@@ -123,7 +134,7 @@ contents:
       というワークフローにてサイトの制作を行っていきます。
 
       毎回ビルドを手動で行うのは面倒なため、Phestのwatchビルドを実行することで、ファイルの更新を自動で検知してビルドを自動実行することができます。
-      watchビルドを実行中は、ビルドが完了するたびにデスクトップ通知が表示されるので、ブラウザをリロードすることで最新のコードの結果を確認できます。
+      watchビルドを実行中は、ビルドが完了するたびにデスクトップ通知が表示されるので、ビルドが正しく行われたかを簡単に確認できます。
 
       ファイル名の先頭に `_` をつけると、`output`フォルダへと出力されなくなるので、include用のファイルなどに使用してください。
       デフォルトの設定では、 `_base.tpl` がレイアウトのベースとなるテンプレートとなります。(config.ymlによるオプションで変更可能)
@@ -166,7 +177,6 @@ contents:
       他に、 `encode` というキーでエンコードしたい文字コードを入れると、
       その文字コードに変換して出力できます。(HTMLメールの場合はJISにしたいなど)
       PHPの `mb_convert_encoding` 関数で指定できる文字コードの文字列をセットできます。
-
   variables:
     title: vars.yml の設定方法
     content: |
@@ -236,7 +246,7 @@ contents:
       `@import` などでインポートするファイルに使ってください。
 
       `@import` でインポートする場合で、.tpl. を含むSmarty処理後のファイルをインポートしたい場合は、
-      .tpl. をファイル名から除外したファイル名を指定してください。
+      .tpl. をファイル名から除外したファイル名を指定してください。(例：style.tpl.less をimportしたい場合は、`@import "style.less"`と指定)
   javascripts:
     title: JavaScriptのファイル作成方法
     content: |
@@ -257,10 +267,29 @@ contents:
       また、ファイル名の先頭に `@` をつけると、構文チェックが実行されなくなります。
       jQueryなどの外部OSSライブラリでエラーが大量に出てしまうのを無視したい場合に使ってください。
       ※`@`は生成時にはファイル名からカットされて出力されます。
+  smartyintro:
+    title: Smartyについて
+    content: |
+      [Smarty](http://www.smarty.net/)はPHPで広く使われているテンプレートエンジンで、ヘッダーやフッターなど共通コンテンツの読み込みや、繰り返しコンテンツをループして展開したり、条件分岐により生成するHTMLを分けたりなどを柔軟に行うことができます。
+      Smartyの構文を覚えなくてもPhestを使うことはできますが、活用することでより高度な処理が可能となるのでぜひ覚えてみてください。
+
+      ここではSmartyの特に重要な部分のみを抜粋して記載します。ループや条件文などはプログラムがわからないと難解ですが、簡単に意味だけでも理解しておくとデザイナの方でもテンプレートの編集が行いやすくなると思います。
+
+      - {include file="xxx.tpl"}
+         - file=""で指定したテンプレートを読み込みます
+      - {* コメント *}
+         - Smartyのコメント構文で、ビルド時にはHTMLにも残りません
+      - {if 条件文} xxx {else} yyy {/if}
+         - 条件文が一致するとき、xxxが出力され、一致しない時は yyy が出力されます
+      - {foreach 変数1 as 変数2} xxx {/foreach}
+         - 変数1が配列の場合、繰り返しブロックの中をループします。
+
+      その他、詳しい使い方は[公式ドキュメント](http://www.smarty.net/docs/ja/smarty.for.designers.tpl)を参照してください。
+
   assignedvars:
     title: 組み込み変数
     content: |
-      テンプレート内で自動でアサインされる変数の一覧です。
+      Phestでテンプレート内に自動でアサインされる変数の一覧です。
 
       - `{$_home}`
           - ブラウザからアクセスするルートパスを指定します。最後の/は指定しない。
@@ -275,10 +304,12 @@ contents:
           - 表示対象ファイルのテンプレートファイルパスです。システムが内部的に使用しています。
       - `{$_time}`
           - ビルド実行時のタイムスタンプです。
+      - `{$_vars}`
+          - vars.yml の全内容がアサインされます。
   templatefuncs:
     title: 組み込みテンプレート関数
     content: |
-      テンプレート内で実行できる独自のテンプレート関数です。(Smarty標準でないもの)
+      Phestのテンプレート内で実行できる独自のテンプレート関数です。(Smarty標準でないもの)
 
       - `{local}〜{/local}`
           - ローカル環境でだけブロック内の文字列を出力します
@@ -294,6 +325,51 @@ contents:
           - ブロックで囲んだ部分をTextileとして処理します。
       - `{$xxx|print_a}`
           - 変数の内容をビジュアルに出力します(配列などの場合に便利)
+  s3deploy:
+    title: Amazon S3へのデプロイ
+    content: |
+      PhestにはAmazon S3へ簡単にデプロイする仕組みが用意されています。
+      Amazon S3へのデプロイはPhestのプラグインとして実装されており、`config.yml`に下記の記述を行うことでS3へのデプロイボタンを追加できます。
+
+          plugins:
+            -
+               s3deploy: #S3へデプロイするファイルを確認 (実際のデプロイは行いません)
+                 _button:
+                   label: デプロイテスト
+                   type: primary
+                   icon: ok-circle
+                 dryrun: true           #ここをtrueにするとS3側のファイルを操作しません
+                 prefix:                #アップするオブジェクトにつけるprefix
+                 bucket: mybuketname    #バケット名
+                 region: tokyo          #リージョン名
+                 key: myaccesskey       #AWSのアクセスキー
+                 secret: mysecretkey    #AWSのシークレットキー
+            -
+               s3deploy: #S3へデプロイする
+                 _button:
+                   label: デプロイ
+                   type: success
+                   icon: cloud-upload
+                   confirm: true
+                 dryrun: false
+                 prefix:
+                 bucket: mybuketname
+                 region: tokyo
+                 key: myaccesskey
+                 secret: mysecretkey
+
+      この設定を追加すると、Phestの実行画面が
+
+      <img src="image/ja/capture/phest_gui_s3.png" style="width:80%;height:80%" />
+
+      のように「プラグイン」という項目にボタンが二つ追加されます。「デプロイテスト」のボタンを押すとドライランという実際のアップロードは行わず、処理内容の確認ができるモードで実行されます。「デプロイ」ボタンを押すと、実際のアップロード処理を行います。
+
+       * bucket、region、key、secret のところに自分のS3情報を設定してください。
+       * region には *US_EAST_1, VIRGINIA, NORTHERN_VIRGINIA, US_WEST_1, CALIFORNIA, NORTHERN_CALIFORNIA, US_WEST_2, OREGON, EU_WEST_1, IRELAND, AP_SOUTHEAST_1, SINGAPORE, AP_SOUTHEAST_2, SYDNEY, AP_NORTHEAST_1, TOKYO, SA_EAST_1, SAO_PAULO, US_GOV_WEST_1, GOV_CLOUD_US* のいずれかを指定してください。(大文字小文字は区別しません)
+  s3deploy_detail:
+    title: 実行にあたってのご注意
+    content: |
+      デプロイされるファイルはpublic-read権限でアップロードされ、すべてのユーザーが閲覧できるので注意してください。
   i18n:
     title: 多言語対応
     content: |
@@ -302,7 +378,7 @@ contents:
 
       例：日本語、英語、ベトナム語に対応
 
-          languages: [ "ja", "en", "vi" ]
+          languages: [ "ja",  "en",  "vi" ]
 
       このキーを足してビルドツールを表示すると、「言語」という項目が表示されるようになります。
       ("ja"や"en"などは特に決まっておらず、任意の言語を表す文字列を指定できます)
@@ -361,7 +437,7 @@ contents:
             -
                concat: #test.jsとtest2.jsを結合してall.jsを生成
                  output: "all.js"
-                 sources:[ "test.js", "test2.js" ]
+                 sources:[ "test.js",  "test2.js" ]
             -
                copydir: #cptest1/ を cptest2 にコピー
                  from: "cptest1"
@@ -372,12 +448,12 @@ contents:
                    label: デプロイテスト
                    type: primary
                    icon: ok-circle
-                 dryrun: true #ここをtrueにするとS3側のファイルを操作しません
-                 prefix: ja/
-                 bucket: mybuketname
-                 region: tokyo
-                 key: myaccesskey
-                 secret: mysecretkey
+                 dryrun: true           #ここをtrueにするとS3側のファイルを操作しません
+                 prefix: ja/            #アップするオブジェクトにつけるprefix
+                 bucket: mybuketname    #バケット名
+                 region: tokyo          #リージョン名
+                 key: myaccesskey       #AWSのアクセスキー
+                 secret: mysecretkey    #AWSのシークレットキー
             -
                s3deploy: #
                  _button:
@@ -393,7 +469,7 @@ contents:
                  secret: mysecretkey
 
       `source/plugins` フォルダ以下に、`phest/` というフォルダでPhestのプラグインを、`smarty/` というフォルダでSmartyのプラグインをサイトごとに実装できます。
-      プラグインの仕様は今後公開予定です。(まだプラグインの設計はベータ版で変更する可能性が高いです)
+      プラグインの仕様は今後公開予定です。(まだプラグインの設計はベータ版で、変更する可能性が高いです)
   references:
     title: 参考
     content: |
@@ -404,4 +480,4 @@ contents:
   license:
     title: LICENSE
     content: |
-      Licensed under MIT, see [LICENSE](https://github.com/chatwork/Phest/blob/master/LICENSE)
+      Licensed under MIT,  see [LICENSE](https://github.com/chatwork/Phest/blob/master/LICENSE)

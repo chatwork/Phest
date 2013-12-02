@@ -19,10 +19,12 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.3b';
+	$ver = 'v0.8.4';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
+	date_default_timezone_set('Asia/Tokyo');
+	set_time_limit(600);
 
 	require(DIR_PHEST.'/lib/function.php');
 	require(DIR_PHEST.'/lib/Phest.php');
@@ -346,7 +348,7 @@
 			$smarty->assign('_path',$_path);
 			$smarty->assign('_folder',$_folder);
 			$smarty->assign('_content_tpl',$content_tpl);
-			
+
 			$smarty->assign($core_vars_yaml);
 
 			if ($lang){
@@ -363,7 +365,7 @@
 					$page_tmp .= $page.'/';
 				}
 			}
-			
+
 			//拡張子の変換 (最終的に出力されるファイル名へ)
 			$pages_section[] = $page_tmp.strtr($pagepath['basename'],array(
 				'.tpl.' => '.',
@@ -381,7 +383,7 @@
 			}
 
 			$smarty->assign($page_vars);
-			
+
 			//最後が .tpl のテンプレートファイルなら
 			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
 				if ($first_char === '_'){
@@ -661,7 +663,7 @@
 		exit;
 	}else{
 		header('Content-type:text/html;charset=UTF-8');
-		
+
 		$bsmarty = new Smarty;
 		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
 

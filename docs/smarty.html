@@ -5,7 +5,7 @@
  <head>
   <meta charset="UTF-8" />
   <meta name="description" content="Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"/>
-  <title>組み込み変数/関数 - Phest ドキュメント</title>
+  <title>Smartyについて - Phest ドキュメント</title>
   <!--[if lt IE 9]>
    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
@@ -28,7 +28,8 @@
     <li><a href="newsite.html">サイトをつくる<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="configurations.html">サイトの設定<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="assets.html">CSS&JavaScript<i class="icoFontArrowChevronRight"></i></a></li>
-    <li class="select"><a href="bundles.html">組み込み変数/関数<i class="icoFontArrowChevronRight"></i></a></li>
+    <li class="select"><a href="smarty.html">Smartyについて<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
@@ -36,9 +37,41 @@
 </div>
     <div id="_mainContent" class="mainContent">
      <div class="mainContentInner">
-  <h1>組み込み変数/関数</h1>
+  <h1>Smartyについて</h1>
   <div class="contentSection">
-  <h2>組み込み変数</h2>  <p><p>テンプレート内で自動でアサインされる変数の一覧です。</p>
+    <p><p><a href="http://www.smarty.net/">Smarty</a>はPHPで広く使われているテンプレートエンジンで、ヘッダーやフッターなど共通コンテンツの読み込みや、繰り返しコンテンツをループして展開したり、条件分岐により生成するHTMLを分けたりなどを柔軟に行うことができます。
+Smartyの構文を覚えなくてもPhestを使うことはできますが、活用することでより高度な処理が可能となるのでぜひ覚えてみてください。</p>
+
+<p>ここではSmartyの特に重要な部分のみを抜粋して記載します。ループや条件文などはプログラムがわからないと難解ですが、簡単に意味だけでも理解しておくとデザイナの方でもテンプレートの編集が行いやすくなると思います。</p>
+
+<ul>
+<li>{include file="xxx.tpl"}
+
+<ul>
+<li>file=""で指定したテンプレートを読み込みます</li>
+</ul></li>
+<li>{* コメント *}
+
+<ul>
+<li>Smartyのコメント構文で、ビルド時にはHTMLにも残りません</li>
+</ul></li>
+<li>{if 条件文} xxx {else} yyy {/if}
+
+<ul>
+<li>条件文が一致するとき、xxxが出力され、一致しない時は yyy が出力されます</li>
+</ul></li>
+<li>{foreach 変数1 as 変数2} xxx {/foreach}
+
+<ul>
+<li>変数1が配列の場合、繰り返しブロックの中をループします。</li>
+</ul></li>
+</ul>
+
+<p>その他、詳しい使い方は<a href="http://www.smarty.net/docs/ja/smarty.for.designers.tpl">公式ドキュメント</a>を参照してください。</p>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>組み込み変数</h2>  <p><p>Phestでテンプレート内に自動でアサインされる変数の一覧です。</p>
 
 <ul>
 <li><code>{$_home}</code>
@@ -69,11 +102,16 @@
 <ul>
 <li>ビルド実行時のタイムスタンプです。</li>
 </ul></li>
+<li><code>{$_vars}</code>
+
+<ul>
+<li>vars.yml の全内容がアサインされます。</li>
+</ul></li>
 </ul>
 </p>
  </div>
   <div class="contentSection">
-  <h2>組み込みテンプレート関数</h2>  <p><p>テンプレート内で実行できる独自のテンプレート関数です。(Smarty標準でないもの)</p>
+  <h2>組み込みテンプレート関数</h2>  <p><p>Phestのテンプレート内で実行できる独自のテンプレート関数です。(Smarty標準でないもの)</p>
 
 <ul>
 <li><code>{local}〜{/local}</code>
