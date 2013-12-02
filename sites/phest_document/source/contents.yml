@@ -18,8 +18,6 @@ contents:
 
       <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
 
-      <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/desktopnotify.png" style="width:50%;height:50%" />
-
       一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)によるコマンド操作が必須です。
       PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
       ファイルの自動更新検知もコマンドを実行する必要はなく、ブラウザ側から実行でき、更新をブラウザのデスクトップ通知でリアルタイムに通知します。
@@ -135,6 +133,8 @@ contents:
 
       毎回ビルドを手動で行うのは面倒なため、Phestのwatchビルドを実行することで、ファイルの更新を自動で検知してビルドを自動実行することができます。
       watchビルドを実行中は、ビルドが完了するたびにデスクトップ通知が表示されるので、ビルドが正しく行われたかを簡単に確認できます。
+
+      <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/desktopnotify.png" style="width:50%;height:50%" />
 
       ファイル名の先頭に `_` をつけると、`output`フォルダへと出力されなくなるので、include用のファイルなどに使用してください。
       デフォルトの設定では、 `_base.tpl` がレイアウトのベースとなるテンプレートとなります。(config.ymlによるオプションで変更可能)

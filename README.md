@@ -18,8 +18,6 @@ ChatWork社内で実際にサイト制作に使用しているツールである
 
 <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
 
-<img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/desktopnotify.png" style="width:50%;height:50%" />
-
 一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)によるコマンド操作が必須です。
 PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
 ファイルの自動更新検知もコマンドを実行する必要はなく、ブラウザ側から実行でき、更新をブラウザのデスクトップ通知でリアルタイムに通知します。
