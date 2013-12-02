@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html lang="ja" class="ie8"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="ja"><!--<![endif]-->
+<html>
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"/>
+  <title>サイトの設定 - Phest ドキュメント</title>
+  <!--[if lt IE 9]>
+   <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="shortcut icon" href="image/common/logo/favicon.ico?1" type="image/vnd.microsoft.icon"/>
+  <link rel="stylesheet" media="all" type="text/css" href="style/chatwork_api.css">
+  <link rel="stylesheet" media="all" type="text/css" href="style/prism.css">
+ </head>
+ <body>
+  <div id="_wrapper" class="wrapper">
+   <div id="_header" class="header">
+ <h1 id="_logo">
+  <a href="./"><img class="nosvgLogo" src="./image/common/logo/img_logo_chatwork.png" alt="ChatWork" />Phest - PHP Easy Static site generator</a>
+ </h1>
+</div>
+   <div id="_contentWrapper" class="contentWrapper clearfix">
+    <div id="_sideContent" class="sideContent">
+ <ul>
+    <li><a href="index.html">概要<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="install.html">インストール<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="newsite.html">サイトをつくる<i class="icoFontArrowChevronRight"></i></a></li>
+    <li class="select"><a href="configurations.html">サイトの設定<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="assets.html">CSS&JavaScript<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="bundles.html">組み込み変数/関数<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
+ </ul>
+</div>
+    <div id="_mainContent" class="mainContent">
+     <div class="mainContentInner">
+  <h1>サイトの設定</h1>
+  <div class="contentSection">
+  <h2>config.yml の設定方法</h2>  <p><p>下記の内容がデフォルトで入っています。</p>
+
+<pre><code>home:
+  local: "http://localhost/Phest/sites/sample/output/local"
+  production: "http://www.sample.com"
+basetpl: "_base.tpl"
+buildclear: 1
+sitemap: 1
+robotstxt: 1
+compilejs: 1
+compilecss: 1
+</code></pre>
+
+<p><code>home</code> には、ローカル環境時と本番環境時のブラウザから見たルートパスを設定します。
+この設定値は、<code>{$_home}</code> としてテンプレート変数として自動でアサインされるため、<code>&lt;a href="{$_home}/test.html"&gt;&lt;/a&gt;</code> など、
+パスとして使用したい場合に便利です。</p>
+
+<p><code>basetpl</code> は、レイアウトのベースとなるテンプレートファイル名を指定します。(デフォルト:_base.tpl)</p>
+
+<p><code>buildclear</code> は、ビルド時に <code>output/</code> の中身をすべて削除するかどうかのオプションです。
+1 ですべて削除し、0 を指定すると削除しません。(デフォルト:1)</p>
+
+<p><code>sitemap</code> は <code>sitemap.xml</code> ファイルを自動で生成するかどうかのオプションです。
+1 で生成し、0 を指定すると生成しません。(デフォルト:1)</p>
+
+<p><code>robotstxt</code> は <code>robots.txt</code> ファイルを自動で生成するかどうかのオプションです。
+1 で生成し、0 を指定すると生成しません。(デフォルト:1)</p>
+
+<p><code>compilejs</code> は JavaScript の minify 処理を実行するかどうかのオプションです。
+1 の場合は本番環境用に Build した時に minify されます。(デフォルト:1)</p>
+
+<p><code>compilecss</code> はスタイルシートの minify 処理を実行するかどうかのオプションです。
+1 の場合は本番環境用に Build した時に minify されます。(デフォルト:1)</p>
+
+<p>他に、 <code>encode</code> というキーでエンコードしたい文字コードを入れると、
+その文字コードに変換して出力できます。(HTMLメールの場合はJISにしたいなど)
+PHPの <code>mb_convert_encoding</code> 関数で指定できる文字コードの文字列をセットできます。</p>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>vars.yml の設定方法</h2>  <p><p>下記の内容がデフォルトで入っています。</p>
+
+<pre><code>common:
+local:
+production:
+path:
+</code></pre>
+
+<p><code>common</code> 以下には、全ページ共通でアサインされる変数を定義します。
+<code>local</code> 以下には、ローカル環境でビルドしたときのみアサインされる変数を定義します。
+<code>production</code> 以下には、本番環境でビルドしたときのみアサインされる変数を定義します。
+<code>path</code> 以下には、ページごとにアサインされる変数を定義します。</p>
+
+<p>例えば、</p>
+
+<pre><code>common:
+  title:"no title"
+local:
+  title:"local"
+production:
+  title:"production"
+path:
+  index.html:
+    title:"index page"
+    feature/:
+      title:"feature page"
+  feature/index.html:
+    title:"feature index page"
+</code></pre>
+
+<p>と定義した場合は、<code>{$title}</code> というテンプレート変数が、</p>
+
+<p><code>/index.html</code> では <code>index page</code> とアサインされ、
+<code>/feature/index.html</code> では <code>feature index page</code> とアサインされ、
+<code>/feature/abc.html</code> では <code>feature page</code> とアサインされます。</p>
+
+<p>それ以外のページでは、ローカル環境でビルドすると <code>local</code> が、本番環境でビルドすると <code>production</code> がアサインされます。</p>
+
+<p>高度なvars.ymlの設定</p>
+
+<pre><code>includes: []
+</code></pre>
+
+<p>別のYAMLファイルの内容を取り込むことができます。<code>source/</code>フォルダからの相対パスで、YAMLファイル名を指定してください。</p>
+</p>
+ </div>
+ 
+</div>
+     <div id="_footer" class="footer clearfix">
+ <small>(c) 2013 <a href="http://www.chatwork.com/ja/company" target="_blank">ChatWork</a></small>
+</div>
+    </div>
+   </div>
+  </div>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <![endif]-->
+  <!--[if gte IE 9]><!-->
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script type="text/javascript" src="javascript/modernizr.custom.js"></script>
+  <script type="text/javascript" src="javascript/prism.js"></script>
+  <script type="text/javascript" src="javascript/apidoc.js"></script>
+ </body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html lang="ja" class="ie8"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="ja"><!--<![endif]-->
+<html>
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"/>
+  <title>サイトをつくる - Phest ドキュメント</title>
+  <!--[if lt IE 9]>
+   <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="shortcut icon" href="image/common/logo/favicon.ico?1" type="image/vnd.microsoft.icon"/>
+  <link rel="stylesheet" media="all" type="text/css" href="style/chatwork_api.css">
+  <link rel="stylesheet" media="all" type="text/css" href="style/prism.css">
+ </head>
+ <body>
+  <div id="_wrapper" class="wrapper">
+   <div id="_header" class="header">
+ <h1 id="_logo">
+  <a href="./"><img class="nosvgLogo" src="./image/common/logo/img_logo_chatwork.png" alt="ChatWork" />Phest - PHP Easy Static site generator</a>
+ </h1>
+</div>
+   <div id="_contentWrapper" class="contentWrapper clearfix">
+    <div id="_sideContent" class="sideContent">
+ <ul>
+    <li><a href="index.html">概要<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="install.html">インストール<i class="icoFontArrowChevronRight"></i></a></li>
+    <li class="select"><a href="newsite.html">サイトをつくる<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="configurations.html">サイトの設定<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="assets.html">CSS&JavaScript<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="bundles.html">組み込み変数/関数<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
+ </ul>
+</div>
+    <div id="_mainContent" class="mainContent">
+     <div class="mainContentInner">
+  <h1>サイトをつくる</h1>
+  <div class="contentSection">
+  <h2>サイトの新規作成</h2>  <p><p>ビルドツールを表示し、<code>Create new site</code>リンクをクリックします。
+作成したいサイト名を半角英数で入力します。 (例:mysite)</p>
+
+<ul>
+<li>phest/         (ビルドツール)</li>
+<li>sites/         (作成するサイトデータ)</li>
+</ul>
+
+<p>すると、 <code>sites/</code> 以下にサイト名のフォルダが生成されます。</p>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>ファイル構成</h2>  <p><p><code>mysite</code> というサイトを作成したものとして説明します。</p>
+
+<ul>
+<li>phest/         (ビルドツール)</li>
+<li>sites/
+
+<ul>
+<li>mysite/
+
+<ul>
+<li>output/      (静的ファイルの生成先)</li>
+<li>source/
+
+<ul>
+<li>config.yml   (設定ファイル)</li>
+<li>vars.yml     (サイトの変数定義ファイル)</li>
+<li>content/
+
+<ul>
+<li>_base.tpl</li>
+<li>_footer.tpl</li>
+<li>_header.tpl</li>
+<li>index.tpl</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p>というファイル構成になっています。</p>
+
+<p><code>mysite/output</code> は生成されるファイルが出力されるフォルダです。
+local用にビルドした場合は <code>mysite/output/local</code> に、production用にビルドした場合は <code>mysite/output/production</code> に出力されます。
+ここのファイルをサーバーにアップロードしてください。
+このフォルダは毎回buildの度にすべてクリアされます。(config.ymlによるオプションで変更可能)</p>
+
+<p><code>mysite/source</code> 以下が、各サイトのコードやリソースになります。</p>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>サイト制作フロー</h2>  <p><p><code>source/content/</code> 以下に、サイトを構成するページやリソースを入れていきます。
+たとえば、ここに <code>index.tpl</code> と置いてPhestにてlocalビルドを実行すると、<code>output/local/index.html</code> として生成されます。</p>
+
+<p>[キャプチャ]</p>
+
+<p>画像やJavaScriptファイル、スタイルシートなどを置くと、そのままoutputフォルダへとコピーされます。
+フォルダ階層を自由につくることもできるので、通常のサイトをつくるときのように自由にフォルダ構成することができます。</p>
+
+<p>ビルドの実行結果のリンクをクリックすると、outputフォルダに展開されたファイルを表示して確認することができます。
+このように、Phestでは</p>
+
+<ol>
+<li>ファイルの編集・保存</li>
+<li>ビルドの実行</li>
+<li>生成されたファイルの確認</li>
+</ol>
+
+<p>というワークフローにてサイトの制作を行っていきます。</p>
+
+<p>毎回ビルドを手動で行うのは面倒なため、Phestのwatchビルドを実行することで、ファイルの更新を自動で検知してビルドを自動実行することができます。
+watchビルドを実行中は、ビルドが完了するたびにデスクトップ通知が表示されるので、ブラウザをリロードすることで最新のコードの結果を確認できます。</p>
+
+<p>ファイル名の先頭に <code>_</code> をつけると、<code>output</code>フォルダへと出力されなくなるので、include用のファイルなどに使用してください。
+デフォルトの設定では、 <code>_base.tpl</code> がレイアウトのベースとなるテンプレートとなります。(config.ymlによるオプションで変更可能)</p>
+</p>
+ </div>
+ 
+</div>
+     <div id="_footer" class="footer clearfix">
+ <small>(c) 2013 <a href="http://www.chatwork.com/ja/company" target="_blank">ChatWork</a></small>
+</div>
+    </div>
+   </div>
+  </div>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <![endif]-->
+  <!--[if gte IE 9]><!-->
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script type="text/javascript" src="javascript/modernizr.custom.js"></script>
+  <script type="text/javascript" src="javascript/prism.js"></script>
+  <script type="text/javascript" src="javascript/apidoc.js"></script>
+ </body>
+</html>

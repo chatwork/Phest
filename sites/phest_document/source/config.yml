@@ -3,8 +3,8 @@ home:
   production: "http://localhost/phest/sites/phest_document"
 basetpl: "_base.tpl"
 buildclear: 1
-sitemap: 1
-robotstxt: 1
+sitemap: 0
+robotstxt: 0
 compilejs: 1
 compilecss: 1
 plugins:

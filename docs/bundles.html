@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html lang="ja" class="ie8"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="ja"><!--<![endif]-->
+<html>
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"/>
+  <title>組み込み変数/関数 - Phest ドキュメント</title>
+  <!--[if lt IE 9]>
+   <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="shortcut icon" href="image/common/logo/favicon.ico?1" type="image/vnd.microsoft.icon"/>
+  <link rel="stylesheet" media="all" type="text/css" href="style/chatwork_api.css">
+  <link rel="stylesheet" media="all" type="text/css" href="style/prism.css">
+ </head>
+ <body>
+  <div id="_wrapper" class="wrapper">
+   <div id="_header" class="header">
+ <h1 id="_logo">
+  <a href="./"><img class="nosvgLogo" src="./image/common/logo/img_logo_chatwork.png" alt="ChatWork" />Phest - PHP Easy Static site generator</a>
+ </h1>
+</div>
+   <div id="_contentWrapper" class="contentWrapper clearfix">
+    <div id="_sideContent" class="sideContent">
+ <ul>
+    <li><a href="index.html">概要<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="install.html">インストール<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="newsite.html">サイトをつくる<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="configurations.html">サイトの設定<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="assets.html">CSS&JavaScript<i class="icoFontArrowChevronRight"></i></a></li>
+    <li class="select"><a href="bundles.html">組み込み変数/関数<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
+ </ul>
+</div>
+    <div id="_mainContent" class="mainContent">
+     <div class="mainContentInner">
+  <h1>組み込み変数/関数</h1>
+  <div class="contentSection">
+  <h2>組み込み変数</h2>  <p><p>テンプレート内で自動でアサインされる変数の一覧です。</p>
+
+<ul>
+<li><code>{$_home}</code>
+
+<ul>
+<li>ブラウザからアクセスするルートパスを指定します。最後の/は指定しない。</li>
+<li><code>config.yml</code> の <code>home</code> の値がビルドタイプに応じて入ります。</li>
+</ul></li>
+<li><code>{$_path}</code>
+
+<ul>
+<li>ルートパスからのページパスを表します。</li>
+<li>例：www.sample.com/feature/index.html なら <code>feature/index.html</code></li>
+<li>これを使って、特定のパスだけレイアウトを変えるなどが可能です。</li>
+</ul></li>
+<li><code>{$_folder}</code>
+
+<ul>
+<li><code>{$_path}</code> のフォルダ名部分のみが入ります。</li>
+</ul></li>
+<li><code>{$_content_tpl}</code>
+
+<ul>
+<li>表示対象ファイルのテンプレートファイルパスです。システムが内部的に使用しています。</li>
+</ul></li>
+<li><code>{$_time}</code>
+
+<ul>
+<li>ビルド実行時のタイムスタンプです。</li>
+</ul></li>
+</ul>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>組み込みテンプレート関数</h2>  <p><p>テンプレート内で実行できる独自のテンプレート関数です。(Smarty標準でないもの)</p>
+
+<ul>
+<li><code>{local}〜{/local}</code>
+
+<ul>
+<li>ローカル環境でだけブロック内の文字列を出力します</li>
+</ul></li>
+<li><code>{production}〜{/production}</code>
+
+<ul>
+<li>本番環境でだけブロック内の文字列を出力します</li>
+</ul></li>
+<li><code>{$xxx|markdown}</code>
+
+<ul>
+<li>変数をmarkdownとして解釈し、対応するHTMLに変換します。</li>
+</ul></li>
+<li><code>{markdown}〜{/markdown}</code>
+
+<ul>
+<li>ブロックで囲んだ部分をMarkdownとして処理します。</li>
+</ul></li>
+<li><code>{$xxx|textile}</code>
+
+<ul>
+<li>変数をtextileとして解釈し、対応するHTMLに変換します。</li>
+</ul></li>
+<li><code>{textile}〜{/textile}</code>
+
+<ul>
+<li>ブロックで囲んだ部分をTextileとして処理します。</li>
+</ul></li>
+<li><code>{$xxx|print_a}</code>
+
+<ul>
+<li>変数の内容をビジュアルに出力します(配列などの場合に便利)</li>
+</ul></li>
+</ul>
+</p>
+ </div>
+ 
+</div>
+     <div id="_footer" class="footer clearfix">
+ <small>(c) 2013 <a href="http://www.chatwork.com/ja/company" target="_blank">ChatWork</a></small>
+</div>
+    </div>
+   </div>
+  </div>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <![endif]-->
+  <!--[if gte IE 9]><!-->
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script type="text/javascript" src="javascript/modernizr.custom.js"></script>
+  <script type="text/javascript" src="javascript/prism.js"></script>
+  <script type="text/javascript" src="javascript/apidoc.js"></script>
+ </body>
+</html>
