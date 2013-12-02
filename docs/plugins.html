@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html lang="ja" class="ie8"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="ja"><!--<![endif]-->
+<html>
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"/>
+  <title>プラグイン - Phest ドキュメント</title>
+  <!--[if lt IE 9]>
+   <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="shortcut icon" href="image/common/logo/favicon.ico?1" type="image/vnd.microsoft.icon"/>
+  <link rel="stylesheet" media="all" type="text/css" href="style/chatwork_api.css">
+  <link rel="stylesheet" media="all" type="text/css" href="style/prism.css">
+ </head>
+ <body>
+  <div id="_wrapper" class="wrapper">
+   <div id="_header" class="header">
+ <h1 id="_logo">
+  <a href="./"><img class="nosvgLogo" src="./image/common/logo/img_logo_chatwork.png" alt="ChatWork" />Phest - PHP Easy Static site generator</a>
+ </h1>
+</div>
+   <div id="_contentWrapper" class="contentWrapper clearfix">
+    <div id="_sideContent" class="sideContent">
+ <ul>
+    <li><a href="index.html">概要<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="install.html">インストール<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="newsite.html">サイトをつくる<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="configurations.html">サイトの設定<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="assets.html">CSS&JavaScript<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="smarty.html">Smartyについて<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
+    <li class="select"><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
+ </ul>
+</div>
+    <div id="_mainContent" class="mainContent">
+     <div class="mainContentInner">
+  <h1>プラグイン</h1>
+  <div class="contentSection">
+    <p><p><code>config.yml</code> に <code>plugins</code> というキーを定義することで、
+ビルド時に複数のファイルを1つにまとめたり、
+特定のフォルダをコピーしてきたりといった高度な処理を行うことができます。</p>
+
+<p>組み込みプラグイン</p>
+
+<ul>
+<li>concat
+
+<ul>
+<li>ビルド時のタイミングにあわせて、複数のファイルを1つに結合します。複数のjavascriptファイルやcssファイルの結合などに便利。</li>
+</ul></li>
+<li>copydir
+
+<ul>
+<li>ビルド時のタイミングにあわせて、特定のフォルダから特定のフォルダへ中身をすべてコピーします。</li>
+<li>外部のフォルダからサイトに取り込みたい時などに便利です。</li>
+</ul></li>
+<li>s3deploy
+
+<ul>
+<li>Amazon S3へproductionビルドの内容をアップロードします。</li>
+<li>ローカルとS3上のファイルの差分を確認し、ローカル側にないものはS3上からも削除します。</li>
+<li>ファイルは公開権限でアップロードされるので注意してください。</li>
+</ul></li>
+</ul>
+
+<p>設定例：</p>
+
+<pre><code>plugins:
+  -
+     concat: #test.jsとtest2.jsを結合してall.jsを生成
+       output: "all.js"
+       sources:[ "test.js",  "test2.js" ]
+  -
+     copydir: #cptest1/ を cptest2 にコピー
+       from: "cptest1"
+       to: "cptest2"
+  -
+     s3deploy: #S3へデプロイするファイルを確認
+       _button:
+         label: デプロイテスト
+         type: primary
+         icon: ok-circle
+       dryrun: true           #ここをtrueにするとS3側のファイルを操作しません
+       prefix: ja/            #アップするオブジェクトにつけるprefix
+       bucket: mybuketname    #バケット名
+       region: tokyo          #リージョン名
+       key: myaccesskey       #AWSのアクセスキー
+       secret: mysecretkey    #AWSのシークレットキー
+  -
+     s3deploy: #
+       _button:
+         label: デプロイ
+         type: success
+         icon: cloud-upload
+         confirm: true
+       dryrun: false
+       prefix: ja/
+       bucket: mybuketname
+       region: tokyo
+       key: myaccesskey
+       secret: mysecretkey
+</code></pre>
+
+<p><code>source/plugins</code> フォルダ以下に、<code>phest/</code> というフォルダでPhestのプラグインを、<code>smarty/</code> というフォルダでSmartyのプラグインをサイトごとに実装できます。
+プラグインの仕様は今後公開予定です。(まだプラグインの設計はベータ版で変更する可能性が高いです)</p>
+</p>
+ </div>
+ 
+</div>
+     <div id="_footer" class="footer clearfix">
+ <small>(c) 2013 <a href="http://www.chatwork.com/ja/company" target="_blank">ChatWork</a></small>
+</div>
+    </div>
+   </div>
+  </div>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <![endif]-->
+  <!--[if gte IE 9]><!-->
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script type="text/javascript" src="javascript/modernizr.custom.js"></script>
+  <script type="text/javascript" src="javascript/prism.js"></script>
+  <script type="text/javascript" src="javascript/apidoc.js"></script>
+ </body>
+</html>

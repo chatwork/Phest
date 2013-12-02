@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html lang="ja" class="ie8"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="ja"><!--<![endif]-->
+<html>
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"/>
+  <title>CSS&JavaScript - Phest ドキュメント</title>
+  <!--[if lt IE 9]>
+   <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="shortcut icon" href="image/common/logo/favicon.ico?1" type="image/vnd.microsoft.icon"/>
+  <link rel="stylesheet" media="all" type="text/css" href="style/chatwork_api.css">
+  <link rel="stylesheet" media="all" type="text/css" href="style/prism.css">
+ </head>
+ <body>
+  <div id="_wrapper" class="wrapper">
+   <div id="_header" class="header">
+ <h1 id="_logo">
+  <a href="./"><img class="nosvgLogo" src="./image/common/logo/img_logo_chatwork.png" alt="ChatWork" />Phest - PHP Easy Static site generator</a>
+ </h1>
+</div>
+   <div id="_contentWrapper" class="contentWrapper clearfix">
+    <div id="_sideContent" class="sideContent">
+ <ul>
+    <li><a href="index.html">概要<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="install.html">インストール<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="newsite.html">サイトをつくる<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="configurations.html">サイトの設定<i class="icoFontArrowChevronRight"></i></a></li>
+    <li class="select"><a href="assets.html">CSS&JavaScript<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="smarty.html">Smartyについて<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
+ </ul>
+</div>
+    <div id="_mainContent" class="mainContent">
+     <div class="mainContentInner">
+  <h1>CSS&JavaScript</h1>
+  <div class="contentSection">
+  <h2>スタイルシートのファイル作成方法</h2>  <p><p>スタイルシートで使用する拡張子のファイルを <code>content/</code> 以下に置くと、拡張子に応じて自動でコンパイル処理などが行われます。</p>
+
+<ul>
+<li>*.css
+
+<ul>
+<li>そのままコピーされます</li>
+</ul></li>
+<li>*.tpl.css
+
+<ul>
+<li>Smartyで処理します</li>
+</ul></li>
+<li>*.less
+
+<ul>
+<li>Lessでコンパイルします</li>
+</ul></li>
+<li>*.tpl.less
+
+<ul>
+<li>Smartyで処理後、Lessでコンパイルします</li>
+</ul></li>
+<li>*.scss
+
+<ul>
+<li>SCSSでコンパイルします</li>
+</ul></li>
+<li>*.tpl.scss
+
+<ul>
+<li>martyで処理後、SCSSでコンパイルします</li>
+</ul></li>
+</ul>
+
+<p>生成後は、<code>.less</code> や <code>.tpl</code> などの拡張子はカットされ、すべて <code>.css</code> として出力されます。
+同名で拡張子だけが違う xxx.less xxx.scss などファイルを作ると上書きされるので注意してください。</p>
+
+<p>また、ファイル名の先頭に <code>_</code> をつけると、単体でコンパイルされなくなります。
+<code>@import</code> などでインポートするファイルに使ってください。</p>
+
+<p><code>@import</code> でインポートする場合で、.tpl. を含むSmarty処理後のファイルをインポートしたい場合は、
+.tpl. をファイル名から除外したファイル名を指定してください。(例：style.tpl.less をimportしたい場合は、<code>@import "style.less"</code>と指定)</p>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>JavaScriptのファイル作成方法</h2>  <p><p>JavaScriptのファイルを <code>content/</code> 以下に置くと、拡張子に応じて自動で構文チェックやコンパイル処理などが行われます。</p>
+
+<ul>
+<li>*.js
+
+<ul>
+<li>そのままコピーします</li>
+</ul></li>
+<li>*.tpl.js
+
+<ul>
+<li>Smartyで処理してコピーします</li>
+</ul></li>
+<li>*.coffee
+
+<ul>
+<li>CoffeeScriptでコンパイルします</li>
+</ul></li>
+<li>*.tpl.coffee
+
+<ul>
+<li>Smartyで処理後、CoffeeScriptでコンパイルします</li>
+</ul></li>
+</ul>
+
+<p>config.yml に <code>compilejs:1</code> を指定している場合は、本番環境でビルドするとGoogle Closure Compilerでminifyします。</p>
+
+<p>また、ファイル名の先頭に <code>@</code> をつけると、構文チェックが実行されなくなります。
+jQueryなどの外部OSSライブラリでエラーが大量に出てしまうのを無視したい場合に使ってください。
+※<code>@</code>は生成時にはファイル名からカットされて出力されます。</p>
+</p>
+ </div>
+ 
+</div>
+     <div id="_footer" class="footer clearfix">
+ <small>(c) 2013 <a href="http://www.chatwork.com/ja/company" target="_blank">ChatWork</a></small>
+</div>
+    </div>
+   </div>
+  </div>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <![endif]-->
+  <!--[if gte IE 9]><!-->
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script type="text/javascript" src="javascript/modernizr.custom.js"></script>
+  <script type="text/javascript" src="javascript/prism.js"></script>
+  <script type="text/javascript" src="javascript/apidoc.js"></script>
+ </body>
+</html>

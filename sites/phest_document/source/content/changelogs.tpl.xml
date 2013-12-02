@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:rss="http://purl.org/rss/1.0/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+  <title>{$sitename} - 変更履歴</title>
+  <link>{$_home}/changelogs.html</link>
+  <copyright>ChatWork Inc</copyright>
+  <description>{$description}</description>
+  <pubDate>{$_time|date_format:"r"}</pubDate>
+  <generator>{$_phestver}</generator>
+  {foreach from=$changelogs item="item"}
+  <item>
+   {if isset($item.title)}<title>{$item.title|strip_tags}</title>{/if}
+   {if isset($item.date)}<pubDate>{$item.date|date_format:"r"}</pubDate>{/if}
+   {if isset($item.link)}<link>{$_home}/{$item.link}</link>{/if}
+  </item>
+  {/foreach}
+ </channel>
+</rss>

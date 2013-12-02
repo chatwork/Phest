@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html lang="ja" class="ie8"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="ja"><!--<![endif]-->
+<html>
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"/>
+  <title>多言語対応 - Phest ドキュメント</title>
+  <!--[if lt IE 9]>
+   <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="shortcut icon" href="image/common/logo/favicon.ico?1" type="image/vnd.microsoft.icon"/>
+  <link rel="stylesheet" media="all" type="text/css" href="style/chatwork_api.css">
+  <link rel="stylesheet" media="all" type="text/css" href="style/prism.css">
+ </head>
+ <body>
+  <div id="_wrapper" class="wrapper">
+   <div id="_header" class="header">
+ <h1 id="_logo">
+  <a href="./"><img class="nosvgLogo" src="./image/common/logo/img_logo_chatwork.png" alt="ChatWork" />Phest - PHP Easy Static site generator</a>
+ </h1>
+</div>
+   <div id="_contentWrapper" class="contentWrapper clearfix">
+    <div id="_sideContent" class="sideContent">
+ <ul>
+    <li><a href="index.html">概要<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="install.html">インストール<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="newsite.html">サイトをつくる<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="configurations.html">サイトの設定<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="assets.html">CSS&JavaScript<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="smarty.html">Smartyについて<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
+    <li class="select"><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
+ </ul>
+</div>
+    <div id="_mainContent" class="mainContent">
+     <div class="mainContentInner">
+  <h1>多言語対応</h1>
+  <div class="contentSection">
+    <p><p>Phestには多言語に対応するための仕組みが用意されています。
+<code>config.yml</code> に <code>languages</code> というキーを定義することで有効になります。</p>
+
+<p>例：日本語、英語、ベトナム語に対応</p>
+
+<pre><code>languages: [ "ja",  "en",  "vi" ]
+</code></pre>
+
+<p>このキーを足してビルドツールを表示すると、「言語」という項目が表示されるようになります。
+("ja"や"en"などは特に決まっておらず、任意の言語を表す文字列を指定できます)</p>
+
+<p>上記の設定をしたあと、1度ビルドを実行するとサイトの <code>source/</code> フォルダに <code>languages.yml</code> という空ファイルが作成されます。
+そのYAMLファイルに多言語の言語キーをセットしていくことで多言語対応が可能です。</p>
+
+<p><code>language.yml</code> の記述は下記の様に定義します。</p>
+
+<pre><code>testkey:
+  description:"テストキー"
+  lang:
+    ja: "日本語"
+    en: "English"
+    vi: "Tiếng Việt"
+</code></pre>
+
+<p>こう記述しておくと、<code>.tpl</code> ファイル内で</p>
+
+<pre><code>{$L.testkey}
+</code></pre>
+
+<p>と書くことでビルド時に選択している言語を埋め込むことができます。</p>
+
+<p>また、言語キー内で別の言語キーを読み込むこともできます。</p>
+
+<p>例：testkey2 を読み込み</p>
+
+<pre><code>testkey:
+  lang:
+    ja: "読み込み {{testkey2}}"
+</code></pre>
+
+<p>これを使うことで共通で使う文言などをまとめることができます。</p>
+
+<p>その他、詳しくはリポジトリの <code>sites/sample_i18n</code> の設定を参照してください。</p>
+</p>
+ </div>
+ 
+</div>
+     <div id="_footer" class="footer clearfix">
+ <small>(c) 2013 <a href="http://www.chatwork.com/ja/company" target="_blank">ChatWork</a></small>
+</div>
+    </div>
+   </div>
+  </div>
+  <!--[if lt IE 9]>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <![endif]-->
+  <!--[if gte IE 9]><!-->
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script type="text/javascript" src="javascript/modernizr.custom.js"></script>
+  <script type="text/javascript" src="javascript/prism.js"></script>
+  <script type="text/javascript" src="javascript/apidoc.js"></script>
+ </body>
+</html>

@@ -19,10 +19,12 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.1b';
+	$ver = 'v0.8.4';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
+	date_default_timezone_set('Asia/Tokyo');
+	set_time_limit(600);
 
 	require(DIR_PHEST.'/lib/function.php');
 	require(DIR_PHEST.'/lib/Phest.php');
@@ -182,7 +184,9 @@
 		$dir_output = $phest->getOutputPath();
 
 		File::buildMakeDir($dir_output);
-		$vars_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_vars.yml'),spyc_load_file($path_vars_yml));
+		$default_vars_yaml = spyc_load_file(DIR_PHEST.'/default_vars.yml');
+		$source_vars_yaml = spyc_load_file($path_vars_yml);
+		$vars_yaml = array_merge_recursive_distinct($default_vars_yaml,$source_vars_yaml);
 
 		if (!isset($vars_yaml['common']) or !is_array($vars_yaml['common'])){
 			$vars_yaml['common'] = array();
@@ -337,17 +341,48 @@
 			$smarty->clearAllAssign();
 
 			$smarty->assign('_phestver','Phest '.$ver);
+			$smarty->assign('_vars',$vars_yaml);
+			$smarty->assign('_config',$config_yaml);
 			$smarty->assign('_time',$current_time);
 			$smarty->assign('_home',$home);
 			$smarty->assign('_path',$_path);
 			$smarty->assign('_folder',$_folder);
 			$smarty->assign('_content_tpl',$content_tpl);
+
 			$smarty->assign($core_vars_yaml);
 
 			if ($lang){
 				$smarty->assign('_lang',$lang);
 				$smarty->assign('L',$LG->getLangDat($lang));
 			}
+
+			//vars.ymlで読み出すセクションのリストを生成
+			$pages_section = array();
+			$page_tmp = '';
+			foreach (explode('/',$dirname) as $page) {
+				if ($page){
+					$pages_section[] = $page_tmp.$page.'/';
+					$page_tmp .= $page.'/';
+				}
+			}
+
+			//拡張子の変換 (最終的に出力されるファイル名へ)
+			$pages_section[] = $page_tmp.strtr($pagepath['basename'],array(
+				'.tpl.' => '.',
+				'.tpl' => '.html',
+				'.less' => '.css',
+				'.scss' => '.css',
+				'.coffee' => '.js',
+				));
+
+			$page_vars = array();
+			foreach ($pages_section as $psect){
+				if (isset($vars_yaml['path'][$psect]) and is_array($vars_yaml['path'][$psect])){
+					$page_vars = array_merge_recursive_distinct($page_vars,$vars_yaml['path'][$psect]);
+				}
+			}
+
+			$smarty->assign($page_vars);
 
 			//最後が .tpl のテンプレートファイルなら
 			if (isset($pagepath['extension'] ) and $pagepath['extension'] == 'tpl'){
@@ -371,26 +406,6 @@
 				if (!in_array($_path,$config_yaml['ignoresitemaps'])){
 					$urls[] = array('path' => $path_current,'lastmod' => date('c',filemtime($pathname)),'changefreq' => $changefreq,'priority' => $priority);
 				}
-
-				//vars.ymlで読み出すセクションのリストを生成
-				$pages_section = array();
-				$page_tmp = '';
-				foreach (explode('/',$dirname) as $page) {
-					if ($page){
-						$pages_section[] = $page_tmp.$page.'/';
-						$page_tmp .= $page.'/';
-					}
-				}
-				$pages_section[] = $page_tmp.$pagepath['filename'].'.html';
-
-				$page_vars = array();
-				foreach ($pages_section as $psect){
-					if (isset($vars_yaml['path'][$psect]) and is_array($vars_yaml['path'][$psect])){
-						$page_vars = array_merge_recursive_distinct($page_vars,$vars_yaml['path'][$psect]);
-					}
-				}
-
-				$smarty->assign($page_vars);
 
 				$filepath = ltrim($dirname.'/'.$pagepath['filename'].'.html','/');
 
@@ -643,11 +658,12 @@
 	}
 
 	if ($watch){
-		header('HTTP/1.1 200 OK');
 		header('Content-type:application/json;charset=UTF-8');
 		echo json_encode(array('code' => 200,'message_list' => $phest->getMessageData()));
 		exit;
 	}else{
+		header('Content-type:text/html;charset=UTF-8');
+
 		$bsmarty = new Smarty;
 		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
 

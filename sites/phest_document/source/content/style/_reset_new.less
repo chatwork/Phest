@@ -1,0 +1,156 @@
+// Reset.less
+// ------------------------------------------------------------------------
+
+html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,
+code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,
+form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,
+figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+body {
+ line-height: 1;
+}
+
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
+ display: block;
+}
+
+blockquote,q {
+ quotes: none;
+}
+
+blockquote:before,blockquote:after,q:before,q:after {
+ content: '';
+ content: none;
+}
+
+body, pre, input, select, textarea, button {
+ font-family:'ヒラギノ角ゴ Pro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;
+ font-size: @medium;
+ line-height: 1.5;
+}
+
+ul, ol {
+ list-style: none;
+}
+
+img, a img {
+ border: 0;
+ vertical-align: middle;
+}
+
+mark {
+ font-weight: 700;
+}
+
+small {
+ font-size: @x-small;
+}
+
+code {
+ direction: ltr;
+ font-family: Consolas,Monaco,'Andale Mono',monospace;
+ text-align: left;
+ word-wrap: break-word;
+}
+
+a {
+ margin: 0;
+ padding: 0;
+ font-size: 100%;
+ vertical-align: baseline;
+ background: transparent;
+ text-decoration: none;
+ color: @linkcolor;
+ cursor: pointer;
+
+ &:hover {
+  text-decoration: underline;
+ }
+
+ img {
+  text-decoration: none;
+ }
+}
+
+ins {
+ background-color: #ff9;
+ color: #000;
+ text-decoration: none;
+}
+
+del {
+ text-decoration: line-through;
+}
+
+abbr[title],dfn[title] {
+ border-bottom: 1px dotted inherit;
+ cursor: help;
+}
+
+table {
+ border-collapse: collapse;
+ border-spacing: 0;
+}
+
+h1 {
+ font-weight: normal;
+}
+
+dt, dd {
+ display: inline-block;
+}
+
+input[type="color"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="email"], input[type="month"], input[type="number"], input[type="password"], input[type="tel"], input[type="text"], input[type="time"], input[type="url"], input[type="week"] {
+ padding: 0px;
+}
+
+:focus {
+ outline: -webkit-focus-ring-color auto 5px;
+}
+
+input, textarea {
+ margin-left: 0;
+}
+
+label, input, button, select, textarea {
+ font-size: 13px;
+ font-weight: normal;
+ line-height: 18px;
+}
+
+label.linkStatus:hover {
+ color: @black;
+ text-decoration: none;
+}
+
+button, input {
+ line-height: normal;
+}
+
+button, input, select, textarea {
+ margin: 0;
+ font-size: 100%;
+ vertical-align: middle;
+}
+
+/* Reset input[type="search"] */
+input[type="search"] {
+ -webkit-appearance: textfield;
+ -webkit-box-sizing: content-box;
+}
+
+input[type="search"]:focus {
+ outline-offset: -2px;
+}
+
+input[type="search"]::-webkit-search-decoration {
+ display: none;
+}

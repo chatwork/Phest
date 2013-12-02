@@ -1,0 +1,1 @@
+$(function(){var a=$("#_header").height();$(window).scroll(function(){$(this).scrollTop()>a?($("#_sideContent").css({position:"fixed",top:"0px"}),$("#_mainContent").css({marginLeft:"230px"})):($("#_sideContent").css({position:"static",top:!1}),$("#_mainContent").css({marginLeft:"0px"}))});$(".mainContentInner").find("a").attr("target","_blank")});
