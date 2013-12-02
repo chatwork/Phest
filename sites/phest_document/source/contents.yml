@@ -16,9 +16,9 @@ contents:
     content: |
       ### 黒い画面不要！デザイナ向けのツールです。
 
-      <img src="image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
+      <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
 
-      <img src="image/ja/capture/desktopnotify.png" style="width:50%;height:50%" />
+      <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/desktopnotify.png" style="width:50%;height:50%" />
 
       一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)によるコマンド操作が必須です。
       PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
@@ -119,7 +119,7 @@ contents:
       `source/content/` 以下に、サイトを構成するページやリソースを入れていきます。
       たとえば、ここに `index.tpl` と置いてPhestにてlocalビルドを実行すると、`output/local/index.html` として生成されます。
 
-      <img src="image/ja/capture/buildresult.png" style="width:80%;height:80%" />
+      <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/buildresult.png" style="width:80%;height:80%" />
 
       画像やJavaScriptファイル、スタイルシートなどを置くと、そのままoutputフォルダへとコピーされます。
       フォルダ階層を自由につくることもできるので、通常のサイトをつくるときのように自由にフォルダ構成することができます。
@@ -360,7 +360,7 @@ contents:
 
       この設定を追加すると、Phestの実行画面が
 
-      <img src="image/ja/capture/phest_gui_s3.png" style="width:80%;height:80%" />
+      <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/phest_gui_s3.png" style="width:80%;height:80%" />
 
       のように「プラグイン」という項目にボタンが二つ追加されます。「デプロイテスト」のボタンを押すとドライランという実際のアップロードは行わず、処理内容の確認ができるモードで実行されます。「デプロイ」ボタンを押すと、実際のアップロード処理を行います。
 

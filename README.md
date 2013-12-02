@@ -16,7 +16,9 @@ ChatWork社内で実際にサイト制作に使用しているツールである
  
 ### 黒い画面不要！デザイナ向けのツールです。
 
-<img src="image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
+<img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
+
+<img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/desktopnotify.png" style="width:50%;height:50%" />
 
 一般的な静的サイトジェネレータはプログラマ向けで、黒い画面(ターミナル)によるコマンド操作が必須です。
 PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミナルによるコマンド操作は必要ありません。
@@ -30,7 +32,7 @@ Smartyの `{include file=""}` や `{if}` `{foreach}` をはじめとした強力
 
 ### LESSやSCSS、CoffeeScriptなどのCSS/JSプリプロセッサ、minifyを実行可能
 静的ファイルの書き出しにともなって、LESS/SCSS/CoffeScriptなどのコンパイル、圧縮処理(minify)を実行できます。
-さらに、CSSやJavaScriptをSmartyで一度処理させてからコンパイルさせることもできます。(CSSやJavaScript内でSmarty構文が使用可能)
+JavaScriptファイルは自動で構文チェックが行われ、セミコロン忘れ、オブジェクト要素の最後のカンマなどを指摘してくれます。
 なお、圧縮処理は時間がかかるため本番環境用ビルドでのみ実行されます。
 
 ### YAMLで記述した変数定義を使用することが可能
@@ -71,6 +73,8 @@ PHPが稼働するドキュメントルート以下(通常 `htdocs/` や `www/` 
 となっています。
 
 `phest/` をブラウザから開くとビルドツールが表示されます。
+
+`docs/` をブラウザから開くと、Phestの使い方をまとめたドキュメントを表示できます。
 
 ※コピーするフォルダは `phest/` だけでも問題ありません。
 リポジトリにコミットされている `sites/` にはあらかじめ参考となるサンプルのサイトデータが設置されていますが、不要であれば削除してください。

@@ -39,7 +39,7 @@
      <div class="mainContentInner">
   <h1>サイトをつくる</h1>
   <div class="contentSection">
-  <h2>サイトの新規作成</h2>  <p><p>ビルドツールを表示し、<code>Create new site</code>リンクをクリックします。
+  <h2>サイトの新規作成</h2>  <p><p>ビルドツールを表示し、<code>新しくサイトを作成</code>リンクをクリックします。
 作成したいサイト名を半角英数で入力します。 (例:mysite)</p>
 
 <ul>
@@ -94,7 +94,7 @@ local用にビルドした場合は <code>mysite/output/local</code> に、produ
   <h2>サイト制作フロー</h2>  <p><p><code>source/content/</code> 以下に、サイトを構成するページやリソースを入れていきます。
 たとえば、ここに <code>index.tpl</code> と置いてPhestにてlocalビルドを実行すると、<code>output/local/index.html</code> として生成されます。</p>
 
-<p><img src="image/ja/capture/buildresult.png" style="width:80%;height:80%" /></p>
+<p><img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/buildresult.png" style="width:80%;height:80%" /></p>
 
 <p>画像やJavaScriptファイル、スタイルシートなどを置くと、そのままoutputフォルダへとコピーされます。
 フォルダ階層を自由につくることもできるので、通常のサイトをつくるときのように自由にフォルダ構成することができます。</p>
@@ -111,7 +111,7 @@ local用にビルドした場合は <code>mysite/output/local</code> に、produ
 <p>というワークフローにてサイトの制作を行っていきます。</p>
 
 <p>毎回ビルドを手動で行うのは面倒なため、Phestのwatchビルドを実行することで、ファイルの更新を自動で検知してビルドを自動実行することができます。
-watchビルドを実行中は、ビルドが完了するたびにデスクトップ通知が表示されるので、ブラウザをリロードすることで最新のコードの結果を確認できます。</p>
+watchビルドを実行中は、ビルドが完了するたびにデスクトップ通知が表示されるので、ビルドが正しく行われたかを簡単に確認できます。</p>
 
 <p>ファイル名の先頭に <code>_</code> をつけると、<code>output</code>フォルダへと出力されなくなるので、include用のファイルなどに使用してください。
 デフォルトの設定では、 <code>_base.tpl</code> がレイアウトのベースとなるテンプレートとなります。(config.ymlによるオプションで変更可能)</p>

@@ -10,13 +10,13 @@
   <link>http://localhost/phest/sites/phest_document/changelogs.html</link>
   <copyright>ChatWork Inc</copyright>
   <description>Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです</description>
-  <pubDate>Mon, 02 Dec 2013 08:01:38 +0100</pubDate>
-  <generator>Phest v0.8.3b</generator>
+  <pubDate>Mon, 02 Dec 2013 19:59:40 +0900</pubDate>
+  <generator>Phest v0.8.4</generator>
     <item>
-   <title> ChatWork Creator's Note にてPhestの正式公開開始</title>   <pubDate>Tue, 03 Dec 2013 00:00:00 +0100</pubDate>     </item>
+   <title> ChatWork Creator's Note にてPhestの正式公開開始</title>   <pubDate>Tue, 03 Dec 2013 00:00:00 +0900</pubDate>     </item>
     <item>
-   <title>SmartBuilderからPhestに名称変更</title>   <pubDate>Wed, 20 Nov 2013 00:00:00 +0100</pubDate>     </item>
+   <title>SmartBuilderからPhestに名称変更</title>   <pubDate>Wed, 20 Nov 2013 00:00:00 +0900</pubDate>     </item>
     <item>
-   <title> 俺聞け6 in Tokyo にて プレビュー公開 (旧名：SmartBuilder)</title>   <pubDate>Sat, 05 Oct 2013 00:00:00 +0200</pubDate>     </item>
+   <title> 俺聞け6 in Tokyo にて プレビュー公開 (旧名：SmartBuilder)</title>   <pubDate>Sat, 05 Oct 2013 00:00:00 +0900</pubDate>     </item>
    </channel>
 </rss>
