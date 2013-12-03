@@ -1,10 +1,18 @@
 <?php
 	namespace ChatWork\Phest;
-	
+
 	require(DIR_PHEST.'/lib/vendor/CoffeeScript/Init.php');
 	\CoffeeScript\Init::load();
-	
 
+
+/**
+ * array_merge_recursiveの同じキーを配列化せず上書きするバージョン
+ *
+ * @method array_merge_recursive_distinct
+ * @param array $array1 配列
+ * @param array $array2 マージ対象の配列
+ * @return array マージされた配列
+ */
 function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 {
   $merged = $array1;
@@ -25,7 +33,10 @@ function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 }
 
 /**
- * コンパイルを実行
+ * JavaScriptコンパイルを実行 (Google Closure Compiler)
+ *
+ * @param string $source_from コンパイル元
+ * @param string $output_to コンパイル先
  */
 function compile($source_from,$output_to){
 	//OS判定
@@ -41,19 +52,19 @@ function compile($source_from,$output_to){
 			die('サポートしていないOSです:'.PHP_OS);
 			break;
 	}
-	
+
 	if (file_exists($output_to)){
 		unlink($output_to);
 	}
-	
+
 	$compile_command = 'java -jar "'.DIR_PHEST.'/lib/vendor/closurecompiler/compiler.jar" --compilation_level SIMPLE_OPTIMIZATIONS --js "'.$source_from.'" --js_output_file "'.$output_to.'"';
-	
+
 	$compile_output = array();
 	if ($os == 'mac'){
 		$compile_command = 'export DYLD_LIBRARY_PATH="";'.$compile_command;
 	}
 	exec($compile_command,$compile_output);
-	
+
 	if (file_exists($output_to)){
 		chmod($output_to,0777);
 	}
@@ -61,6 +72,9 @@ function compile($source_from,$output_to){
 
 /**
  * JavaScriptの構文チェック
+ *
+ * @param string $jspath JavaScriptのパス
+ * @return array エラーの配列
  */
 function jslint($jspath){
 	//OS判定
@@ -76,23 +90,35 @@ function jslint($jspath){
 			die('サポートしていないOSです:'.PHP_OS);
 			break;
 	}
-	
+
 	$lint_output = array();
 	$cmd = './lib/vendor/jsl/'.$os.'/jsl -conf ./lib/vendor/jsl/ec.conf -process "'.$jspath.'" 2>&1';
 	$cmd = strtr($cmd,'/',DIRECTORY_SEPARATOR);
-	
+
 	exec($cmd,$lint_output);
-	
+
 	$lint_error = array();
 	if (count($lint_output) > 6){
 		for ($i = 4;$i < (count($lint_output) - 2);$i++){
 			$lint_error[] = $lint_output[$i];
 		}
 	}
-	
+
 	return $lint_error;
 }
 
+/**
+ * 数値をバイトサイズ表記にする
+ *
+ * <code>
+ * $size = 23432342;
+ * echo bytename($size); //22.35 MB
+ * </code>
+ *
+ * @param int $size サイズ
+ * @param string $unit 単位
+ * @return string バイトサイズ表記の文字列
+ */
 function bytename($size,$unit = 'B'){
 	$unim = array('','K','M','G','T','P');
 	$c = 0;

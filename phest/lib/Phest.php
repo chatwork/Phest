@@ -3,6 +3,9 @@
 
     use \ChatWork\Utility\File;
 
+/**
+ * Phestの様々な処理を行う
+ */
 class Phest {
     protected $message_data = array();
     protected $site = '';
@@ -14,11 +17,33 @@ class Phest {
     protected $site_last_buildhash = 0;
     protected $plugins_dir = array();
 
+    /**
+     * インスタンスの取得 (Singleton)
+     *
+     * @method getInstance
+     * @return Phest Phestオブジェクト
+     */
+    public static function getInstance(){
+        static $phest = null;
+
+        if (!$phest){
+            $phest = new Phest;
+        }
+
+        return $phest;
+    }
+
     public function __construct(){
         $this->plugins_dir = array(DIR_PHEST.'/plugins/phest');
         return $this;
     }
 
+    /**
+     * ビルド種類 (local|production) をセット
+     *
+     * @method setBuildType
+     * @param ｓ
+     */
     public function setBuildType($buildtype){
         $this->buildtype = $buildtype;
         return $this;
@@ -51,6 +76,8 @@ class Phest {
      * 言語をセット
      *
      * @method setLang
+     * @param string $lang 言語タイプ
+     * @chainable
      */
     public function setLang($lang){
         $this->lang = $lang;
@@ -61,7 +88,7 @@ class Phest {
      * 言語を取得
      *
      * @method getLang
-     * @return string 言語
+     * @return string 言語キー
      */
     public function getLang(){
         return $this->lang;
@@ -112,10 +139,24 @@ class Phest {
         return true;
     }
 
+    /**
+     * サイトのsource/パスを返す
+     *
+     * @method getSourcePath
+     * @return string パス
+     */
     public function getSourcePath(){
         return DIR_SITES.'/'.$this->site.'/source';
     }
 
+    /**
+     * ビルド先のディレクトリ名を返す (/output 以下)
+     *
+     * @method getBuildDirName
+     * @param string $lang 言語キー
+     * @param string $buildtype ビルド種類(local|production)
+     * @return string ディレクトリ名
+     */
     public function getBuildDirName($lang = null,$buildtype = null){
         if (!$lang){
             $lang = $this->getLang();
@@ -124,14 +165,22 @@ class Phest {
             $buildtype = $this->getBuildType();
         }
         if ($lang){
-            $buildpath = '/output/'.$lang.'/'.$buildtype;
+            $builddirname = '/output/'.$lang.'/'.$buildtype;
         }else{
-            $buildpath = '/output/'.$buildtype;
+            $builddirname = '/output/'.$buildtype;
         }
 
-        return $buildpath;
+        return $builddirname;
     }
 
+    /**
+     * ビルド先のパスを返す
+     *
+     * @method getOutputPath
+     * @param string $lang 言語キー
+     * @param string $buildtype ビルド種類(local|production)
+     * @return string パス
+     */
     public function getOutputPath($lang = null,$buildtype = null){
         return DIR_SITES.'/'.$this->site.$this->getBuildDirName($lang,$buildtype);
     }

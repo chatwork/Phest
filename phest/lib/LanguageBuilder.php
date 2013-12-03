@@ -1,6 +1,9 @@
 <?php
 	namespace ChatWork\Phest;
 
+/**
+ * 多言語処理を行うクラス
+ */
 class LanguageBuilder {
 	protected $bmsg = null;
 	protected $lang_list = array();
@@ -14,6 +17,14 @@ class LanguageBuilder {
 		$this->lang_list = $lang_list;
 	}
 
+	/**
+	 * YAMLを読み込んで、言語キーとして使える準備をする
+	 *
+	 * {{key}} の参照処理や、対応する言語が設定されていない場合はenを優先したりなど
+	 *
+	 * @method process
+	 * @param string $yaml_path 言語が定義されたYAMLパス
+	 */
 	public function process($yaml_path){
 		$lang_dat = spyc_load_file($yaml_path);
 
@@ -122,6 +133,13 @@ class LanguageBuilder {
 		$this->lang_dat = $lang_file_dat;
 	}
 
+	/**
+	 * 言語データを連想配列で返す
+	 *
+	 * @method getLangDat
+	 * @param string $lang 言語キー
+	 * @return assoc 言語データ
+	 */
 	public function getLangDat($lang){
 		if (isset($this->lang_dat[$lang])){
 			return $this->lang_dat[$lang];

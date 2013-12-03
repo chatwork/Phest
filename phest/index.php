@@ -45,7 +45,7 @@
 	require(DIR_PHEST.'/lib/vendor/debuglib.php');
 	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
 
-	$phest = new Phest;
+	$phest = Phest::getInstance();
 	$current_time = time();
 
 	$site_list = array();
