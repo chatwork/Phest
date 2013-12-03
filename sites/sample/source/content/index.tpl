@@ -13,7 +13,7 @@
 <section>
 {markdown}
 # this is headline.
-hello **smart builder!**
+hello **Phest!**
 {/markdown}
 </section>
 
@@ -23,7 +23,7 @@ hello **smart builder!**
 <section>
 {textile}
 h1. this is headline.
-hello *smart builder!*
+hello *Phest!*
 {/textile}
 </section>
 
