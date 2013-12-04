@@ -32,7 +32,7 @@
     <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="changelogs.html">変更履歴 (12/03)<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (12/04)<i class="icoFontArrowChevronRight"></i></a></li>
  </ul>
 </div>
     <div id="_mainContent" class="mainContent">
@@ -91,6 +91,12 @@ Smartyの構文を覚えなくてもPhestを使うことはできますが、活
 
 <ul>
 <li><code>{$_path}</code> のフォルダ名部分のみが入ります。</li>
+</ul></li>
+<li><code>{$_top}</code>
+
+<ul>
+<li>トップフォルダへの相対パス(../ など)が入ります。</li>
+<li>例： <code>&lt;script src="{$_top}/javascript/common.js"&gt;&lt;/script&gt;</code> などと指定すると、どの階層からでも正しく読み込めます</li>
 </ul></li>
 <li><code>{$_content_tpl}</code>
 

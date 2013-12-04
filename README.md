@@ -13,6 +13,8 @@ Phest (フェスト) はPHPでできた、デザイナ向けの静的サイト�
 Phestはクラウド型ビジネスチャットツール「[チャットワーク](http://www.chatwork.com/ja/)」を開発するChatWork社が開発しています。
 ChatWork社内で実際にサイト制作に使用しているツールであるため、随時継続的なバージョンアップが行われています。
 
+詳しくは、公開時の[ブログ記事](http://c-note.chatwork.com/post/68781816704/phest-php-easy-static-site-generator)を参照してください。
+
 特徴
 ============
 

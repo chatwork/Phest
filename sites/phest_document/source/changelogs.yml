@@ -1,7 +1,10 @@
 changelogs:
   -
+    date: 2013-12-04
+    title: {$_top}変数を追加。相対的にトップフォルダを指定できます。
+  -
     date: 2013-12-03
-    title: <a href="http://c-note.chatwork.com/" target="_blank">ChatWork Creator's Note</a>にてPhestの正式公開開始
+    title: <a href="http://c-note.chatwork.com/post/68781816704/phest-php-easy-static-site-generator" target="_blank">ChatWork Creator's Note</a>にてPhestの正式公開開始
   -
     date: 2013-11-20
     title: SmartBuilderからPhestに名称変更

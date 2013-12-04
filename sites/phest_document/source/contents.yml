@@ -11,6 +11,8 @@ contents:
 
       Phestはクラウド型ビジネスチャットツール「[チャットワーク](http://www.chatwork.com/ja/)」を開発するChatWork社が開発しています。
       ChatWork社内で実際にサイト制作に使用しているツールであるため、随時継続的なバージョンアップが行われています。
+
+      詳しくは、公開時の[ブログ記事](http://c-note.chatwork.com/post/68781816704/phest-php-easy-static-site-generator)を参照してください。
   features:
     title: 特徴
     content: |
@@ -300,6 +302,9 @@ contents:
           - これを使って、特定のパスだけレイアウトを変えるなどが可能です。
       - `{$_folder}`
           - `{$_path}` のフォルダ名部分のみが入ります。
+      - `{$_top}`
+          - トップフォルダへの相対パス(../ など)が入ります。
+          - 例： `<script src="{$_top}/javascript/common.js"></script>` などと指定すると、どの階層からでも正しく読み込めます
       - `{$_content_tpl}`
           - 表示対象ファイルのテンプレートファイルパスです。システムが内部的に使用しています。
       - `{$_time}`

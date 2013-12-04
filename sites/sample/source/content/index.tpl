@@ -4,27 +4,12 @@
  <li>$_home = {$_home}</li>
  <li>$_path = {$_path}</li>
  <li>$_folder = {$_folder}</li>
+ <li>$_top = {$_top}</li>
  <li>$test = {$test}</li>
 </ul>
 
-<div>
-{"Markdown `<b>Test</b>` *aaa* "|markdown}
-
-<section>
-{markdown}
-# this is headline.
-hello **Phest!**
-{/markdown}
-</section>
-
-
-{"Textile *test* _test test_"|textile}
-
-<section>
-{textile}
-h1. this is headline.
-hello *Phest!*
-{/textile}
-</section>
-
-</div>
+<ol>
+ <li{if $_path == "index.html"} class="selected" {/if}><a href="{$_top}/index.html">index.html</a></li>
+ <li{if $_path == "feature/index.html"} class="selected" {/if}><a href="{$_top}/feature/index.html">feature/index.html</a></li>
+ <li{if $_path == "feature/subfeature/subfeature.html"} class="selected"{/if}><a href="{$_top}/feature/subfeature/subfeature.html">feature/subfeature/subfeature.html</a></li>
+</ol>
