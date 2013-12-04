@@ -31,6 +31,7 @@ function compile($source_from,$output_to){
 	//OS判定
 	switch(PHP_OS){
 		case 'Darwin':
+		case 'Linux':
 			$os = 'mac';
 			break;
 		case 'WIN32':
@@ -71,6 +72,9 @@ function jslint($jspath){
 		case 'WIN32':
 		case 'WINNT':
 			$os = 'win';
+			break;
+		case 'Linux':
+			$os = 'linux';
 			break;
 		default:
 			die('サポートしていないOSです:'.PHP_OS);
