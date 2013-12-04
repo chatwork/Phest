@@ -1,6 +1,16 @@
 common:
   test:"ABC"
   title:"no title"
+  contents:
+    -
+      title:タイトル1
+      content:コンテンツ1
+    -
+      title:タイトル2
+      content:|
+        コンテンツ2
+        **コンテンツ2**
+        コンテンツ2
 local:
   title:'local'
 production:

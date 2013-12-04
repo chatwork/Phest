@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.4';
+	$ver = 'v0.8.5';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -347,6 +347,12 @@
 			$smarty->assign('_home',$home);
 			$smarty->assign('_path',$_path);
 			$smarty->assign('_folder',$_folder);
+			if ($_folder){
+				$_top = rtrim(str_repeat('../',substr_count($_folder, '/') + 1),'/');
+			}else{
+				$_top = '.';
+			}
+			$smarty->assign('_top',$_top);
 			$smarty->assign('_content_tpl',$content_tpl);
 
 			$smarty->assign($core_vars_yaml);
