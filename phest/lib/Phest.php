@@ -26,7 +26,7 @@ class Phest {
             'path' => '',
             ),
         'coffee' => array(
-            'type' => 'coffescript',
+            'type' => 'coffeescript',
             'path' => '',
             ),
         );

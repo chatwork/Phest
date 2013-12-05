@@ -36,10 +36,42 @@ class Compiler {
  * コンパイラのベースクラス
  */
 abstract class CompilerBase {
+    /**
+     * コンパイル処理を実行
+     *
+     * @param string $source ソースコードの中身
+     * @param string $pathname ファイルパス
+     * @return string コンパイル後のソールコード
+     */
     public abstract function compile($source,$pathname);
+    
+    /**
+     * Phestのメッセージ用のセクション名を返す
+     * 
+     * @return string セクション名
+     */
     public abstract function getSectionKey();
+    
+    /**
+     * 変換前の拡張子
+     * 
+     * @return string 拡張子
+     */
     protected abstract function getConvertFromExtension();
+    
+    /**
+     * 変換後の拡張子
+     * 
+     * @return string 拡張子
+     */
     protected abstract function getConvertToExtension();
+    
+    /**
+     * ファイル名の拡張子を変換 .less -> .css など
+     * 
+     * @param string $filepath ファイルパス
+     * @return string 新しいファイル名
+     */
     public function convertFileName($filepath){
 
         $from = $this->getConvertFromExtension();
