@@ -1,9 +1,9 @@
 <?php
 	namespace ChatWork\Phest;
-	
+
 	require(DIR_PHEST.'/lib/vendor/CoffeeScript/Init.php');
 	\CoffeeScript\Init::load();
-	
+
 
 function array_merge_recursive_distinct ( array &$array1, array &$array2 )
 {
@@ -42,19 +42,19 @@ function compile($source_from,$output_to){
 			die('サポートしていないOSです:'.PHP_OS);
 			break;
 	}
-	
+
 	if (file_exists($output_to)){
 		unlink($output_to);
 	}
-	
+
 	$compile_command = 'java -jar "'.DIR_PHEST.'/lib/vendor/closurecompiler/compiler.jar" --compilation_level SIMPLE_OPTIMIZATIONS --js "'.$source_from.'" --js_output_file "'.$output_to.'"';
-	
+
 	$compile_output = array();
 	if ($os == 'mac'){
 		$compile_command = 'export DYLD_LIBRARY_PATH="";'.$compile_command;
 	}
 	exec($compile_command,$compile_output);
-	
+
 	if (file_exists($output_to)){
 		chmod($output_to,0777);
 	}
@@ -74,26 +74,27 @@ function jslint($jspath){
 			$os = 'win';
 			break;
 		case 'Linux':
-			$os = 'linux';
-			break;
+			//$os = 'linux';
+			//TODO Linuxで動くJavaScriptLintがほしい・・・
+			return;
 		default:
 			die('サポートしていないOSです:'.PHP_OS);
 			break;
 	}
-	
+
 	$lint_output = array();
 	$cmd = './lib/vendor/jsl/'.$os.'/jsl -conf ./lib/vendor/jsl/ec.conf -process "'.$jspath.'" 2>&1';
 	$cmd = strtr($cmd,'/',DIRECTORY_SEPARATOR);
-	
+
 	exec($cmd,$lint_output);
-	
+
 	$lint_error = array();
 	if (count($lint_output) > 6){
 		for ($i = 4;$i < (count($lint_output) - 2);$i++){
 			$lint_error[] = $lint_output[$i];
 		}
 	}
-	
+
 	return $lint_error;
 }
 
