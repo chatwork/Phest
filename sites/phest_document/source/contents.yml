@@ -57,6 +57,7 @@ contents:
     content: |
       PHP5.3以上がインストールされている必要があります。
       Windowsでは[XAMPP](http://www.apachefriends.org/jp/xampp.html)、Macでは[MAMP](http://www.mamp.info/en/index.html)が簡単にインストールできるのでオススメです。
+      LinuxでもPHPが動けば基本動作しますが、JavaScriptの構文チェックは動作しませんのでご注意ください。(今後対応予定)
       また、ツール内部でGoogle Closure Compilerを実行するためJavaの実行環境が必要です。
 
       PHPが稼働するドキュメントルート以下(通常 `htdocs/` や `www/` 、 `public_html/` など)に、リポジトリ内のデータをコピーするだけでokです。

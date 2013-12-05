@@ -1,5 +1,11 @@
 changelogs:
   -
+    date: 2013-12-05
+    title: Linuxで動作するように対応。ただしJavaScript構文チェックは動作しない。
+  -
+    date: 2013-12-04
+    title: {$_top}変数を追加。
+  -
     date: 2013-12-03
     title: <a href="http://c-note.chatwork.com/" target="_blank">ChatWork Creator's Note</a>にてPhestの正式公開開始
   -

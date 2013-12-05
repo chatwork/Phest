@@ -1,8 +1,6 @@
-<img src="https://raw.github.com/chatwork/Phest/master/docs/image/common/logo/logo_phest_white.png"/>
-
 Phestとは
 ============
-
+ 
 Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです。
 (Phest = **PH**P **E**asy **St**atic Site Generator)
 
@@ -12,10 +10,10 @@ Phest (フェスト) はPHPでできた、デザイナ向けの静的サイト�
 
 Phestはクラウド型ビジネスチャットツール「[チャットワーク](http://www.chatwork.com/ja/)」を開発するChatWork社が開発しています。
 ChatWork社内で実際にサイト制作に使用しているツールであるため、随時継続的なバージョンアップが行われています。
-
+ 
 特徴
 ============
-
+ 
 ### 黒い画面不要！デザイナ向けのツールです。
 
 <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
@@ -54,12 +52,13 @@ S3側にアップされていて、ローカルにないファイルはS3側か�
 
 ### HTMLメールの生成などにも便利
 encodeオプションでJISコードに文字コード変換して生成させることもできます。
-
+ 
 インストール
 ============
-
+ 
 PHP5.3以上がインストールされている必要があります。
 Windowsでは[XAMPP](http://www.apachefriends.org/jp/xampp.html)、Macでは[MAMP](http://www.mamp.info/en/index.html)が簡単にインストールできるのでオススメです。
+LinuxでもPHPが動けば基本動作しますが、JavaScriptの構文チェックは動作しませんのでご注意ください。(今後対応予定)
 また、ツール内部でGoogle Closure Compilerを実行するためJavaの実行環境が必要です。
 
 PHPが稼働するドキュメントルート以下(通常 `htdocs/` や `www/` 、 `public_html/` など)に、リポジトリ内のデータをコピーするだけでokです。
@@ -78,9 +77,9 @@ PHPが稼働するドキュメントルート以下(通常 `htdocs/` や `www/` 
 
 ※コピーするフォルダは `phest/` だけでも問題ありません。
 リポジトリにコミットされている `sites/` にはあらかじめ参考となるサンプルのサイトデータが設置されていますが、不要であれば削除してください。
-
+ 
 LICENSE
 ============
-
+ 
 Licensed under MIT,  see [LICENSE](https://github.com/chatwork/Phest/blob/master/LICENSE)
-
+ 

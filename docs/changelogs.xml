@@ -10,8 +10,12 @@
   <link>http://localhost/phest/sites/phest_document/changelogs.html</link>
   <copyright>ChatWork Inc</copyright>
   <description>Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです</description>
-  <pubDate>Mon, 02 Dec 2013 22:02:16 +0900</pubDate>
-  <generator>Phest v0.8.4</generator>
+  <pubDate>Thu, 05 Dec 2013 09:44:08 +0900</pubDate>
+  <generator>Phest v0.8.5</generator>
+    <item>
+   <title>Linuxで動作するように対応。ただしJavaScript構文チェックは動作しない。</title>   <pubDate>Thu, 05 Dec 2013 00:00:00 +0900</pubDate>     </item>
+    <item>
+   <title>{$_top}変数を追加。</title>   <pubDate>Wed, 04 Dec 2013 00:00:00 +0900</pubDate>     </item>
     <item>
    <title> ChatWork Creator's Note にてPhestの正式公開開始</title>   <pubDate>Tue, 03 Dec 2013 00:00:00 +0900</pubDate>     </item>
     <item>
