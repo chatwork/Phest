@@ -20,7 +20,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.8';
+	$ver = 'v0.8.9';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -573,7 +573,7 @@
 				}else{
 					continue;
 				}
-
+				
 				foreach ($compile_list as $compile_type){
 					try {
 						$compiler = Compiler::factory($compile_type);

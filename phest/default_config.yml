@@ -1,3 +1,4 @@
+# デフォルト設定
 home:
   local:
   production: http://www.example.com
@@ -12,11 +13,11 @@ compileless: 1 #lessをコンパイルするか
 compilesass: 1 #sassをコンパイルするか
 compilecoffee: 1 #CoffeeScriptをコンパイルするか
 uselessnode: 1 #node.jsのlesscを使うか
-pathlessnode: /usr/local/bin/lessc
+pathlessnode: /usr/local/bin/lessc #lesscのパス
 usesassruby: 1 #ruby gemのsassを使うか
-pathsassruby: /usr/bin/sass
+pathsassruby: /usr/bin/sass #sassのパス
 usecoffeescriptnode: 1 #ruby gemのsassを使うか
-pathcoffeescriptnode: /usr/local/bin/coffee
+pathcoffeescriptnode: /usr/local/bin/coffee #coffeeのパス
 languages: []
 ignoresitemaps: [ 404.html ]
 smartypluginsdir: []

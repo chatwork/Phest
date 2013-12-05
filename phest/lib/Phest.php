@@ -359,6 +359,43 @@ class Phest {
 
         return false;
     }
+    
+    /**
+     * コンパイラコマンドを実行
+     * 
+     * @param  string $extension 拡張子
+     * @param  string $pathname  ファイルパス
+     * @param  string $option    オプション
+     * @return array コマンド出力結果の配列
+     */
+    public function execCompiler($extension,$pathname,$option = ''){
+        $compiler_path = $this->getCompilerPath($extension);
+        $compiler_dir = dirname($compiler_path);
+        $compiler_command = basename($compiler_path);
+        
+        switch(PHP_OS){
+            case 'Darwin':
+            case 'Linux':
+                $os = 'unix';
+                break;
+            case 'WIN32':
+            case 'WINNT':
+                $os = 'win';
+                break;
+            default:
+                die('サポートしていないOSです:'.PHP_OS);
+                break;
+        }
+        
+        $output = array();
+        if ($os == 'unix'){
+            exec('export PATH=$PATH:'.$compiler_dir.'; export DYLD_LIBRARY_PATH=;'.$compiler_command.' '.$option.' "'.$pathname.'" 2>&1',$output);
+        }else{
+            exec($compiler_path.' '.$option.' "'.$pathname.'" 2>&1',$output);
+        }
+        
+        return $output;
+    }
 
     /**
      * コンパイラを設定
