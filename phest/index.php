@@ -20,7 +20,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.7';
+	$ver = 'v0.8.8';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -176,23 +176,36 @@
 
 		$phest->setLang($lang);
 
+		//コンパイラの設定
 		//コマンドラインのインストール状況を確認
-		if ($config_yaml['uselessnode']){
-			$compiler_path = $config_yaml['pathlessnode'];
-			if (file_exists($compiler_path)){
-				$phest->setCompiler('less','lessnode',$compiler_path);
+		if (empty($config_yaml['compileless'])){
+			$phest->setCompiler('less',false);
+		}else{
+			if ($config_yaml['uselessnode']){
+				$compiler_path = $config_yaml['pathlessnode'];
+				if (file_exists($compiler_path)){
+					$phest->setCompiler('less','lessnode',$compiler_path);
+				}
 			}
 		}
-		if ($config_yaml['usesassruby']){
-			$compiler_path = $config_yaml['pathsassruby'];
-			if (file_exists($compiler_path)){
-				$phest->setCompiler('scss','sassruby',$compiler_path);
+		if (empty($config_yaml['compilesass'])){
+			$phest->setCompiler('scss',false);
+		}else{
+			if ($config_yaml['usesassruby']){
+				$compiler_path = $config_yaml['pathsassruby'];
+				if (file_exists($compiler_path)){
+					$phest->setCompiler('scss','sassruby',$compiler_path);
+				}
 			}
 		}
-		if ($config_yaml['usecoffeescriptnode']){
-			$compiler_path = $config_yaml['pathcoffeescriptnode'];
-			if (file_exists($compiler_path)){
-				$phest->setCompiler('coffee','coffeescriptnode',$compiler_path);
+		if (empty($config_yaml['compilecoffee'])){
+			$phest->setCompiler('coffee',false);
+		}else{
+			if ($config_yaml['usecoffeescriptnode']){
+				$compiler_path = $config_yaml['pathcoffeescriptnode'];
+				if (file_exists($compiler_path)){
+					$phest->setCompiler('coffee','coffeescriptnode',$compiler_path);
+				}
 			}
 		}
 	}
@@ -522,15 +535,24 @@
 			}
 
 			if (isset($extensions['less'])){
-				$compile_list[] = $phest->getCompilerType('less');
+				$ctype = $phest->getCompilerType('less');
+				if ($ctype !== false){
+					$compile_list[] = $ctype;
+				}
 				$is_css = true;
 			}
 			if (isset($extensions['scss'])){
-				$compile_list[] = $phest->getCompilerType('scss');
+				$ctype = $phest->getCompilerType('scss');
+				if ($ctype !== false){
+					$compile_list[] = $ctype;
+				}
 				$is_css = true;
 			}
 			if (isset($extensions['coffee'])){
-				$compile_list[] = $phest->getCompilerType('coffee');
+				$ctype = $phest->getCompilerType('coffee');
+				if ($ctype !== false){
+					$compile_list[] = $ctype;
+				}
 				$is_nolint = true;
 				$is_js = true;
 			}
