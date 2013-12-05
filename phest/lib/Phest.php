@@ -391,6 +391,7 @@ class Phest {
         if ($os == 'unix'){
             exec('export PATH=$PATH:'.$compiler_dir.'; export DYLD_LIBRARY_PATH=;'.$compiler_command.' '.$option.' "'.$pathname.'" 2>&1',$output);
         }else{
+            putenv('PATH=' . getenv('PATH').';'.$compiler_dir);
             exec($compiler_path.' '.$option.' "'.$pathname.'" 2>&1',$output);
         }
         
