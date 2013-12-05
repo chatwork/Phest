@@ -1,6 +1,7 @@
 <?php
 	namespace ChatWork\Phest;
 
+
 /**
  * Phest - PHP Easy Static Site Generator
  * https://github.com/chatwork/Phest
@@ -19,7 +20,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.6';
+	$ver = 'v0.8.7';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -28,6 +29,7 @@
 
 	require(DIR_PHEST.'/lib/function.php');
 	require(DIR_PHEST.'/lib/Phest.php');
+	require(DIR_PHEST.'/lib/Compiler.php');
 	require(DIR_PHEST.'/lib/LanguageBuilder.php');
 
 	require(DIR_PHEST.'/lib/File.php');
@@ -35,15 +37,19 @@
 
 	require(DIR_PHEST.'/lib/vendor/smarty/Smarty.class.php');
 	use \Smarty;
-	require(DIR_PHEST.'/lib/vendor/lessphp/lessc.inc.php');
-	use \lessc;
-	require(DIR_PHEST.'/lib/vendor/scssphp/scss.inc.php');
-	use \scssc;
 	require(DIR_PHEST.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
 	use \CssMin;
 
 	require(DIR_PHEST.'/lib/vendor/debuglib.php');
 	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
+
+	//lessc detection
+	// /home/bin/
+	// /bin/
+	// /usr/bin
+	if (file_exists('/usr/local/bin/lessc')){
+		//echo 'exists!';
+	}
 
 	$phest = Phest::getInstance();
 	$current_time = time();
@@ -117,6 +123,7 @@
 	$lang_list = array();
 	$plugin_list = array();
 	$extra_buttons = array();
+
 	if ($site){
 		$dir_site = DIR_SITES.'/'.$site;
 		$dir_source = $dir_site.'/source';
@@ -168,6 +175,26 @@
 		}
 
 		$phest->setLang($lang);
+
+		//コマンドラインのインストール状況を確認
+		if ($config_yaml['uselessnode']){
+			$compiler_path = $config_yaml['pathlessnode'];
+			if (file_exists($compiler_path)){
+				$phest->setCompiler('less','lessnode',$compiler_path);
+			}
+		}
+		if ($config_yaml['usesassruby']){
+			$compiler_path = $config_yaml['pathsassruby'];
+			if (file_exists($compiler_path)){
+				$phest->setCompiler('scss','sassruby',$compiler_path);
+			}
+		}
+		if ($config_yaml['usecoffeescriptnode']){
+			$compiler_path = $config_yaml['pathcoffeescriptnode'];
+			if (file_exists($compiler_path)){
+				$phest->setCompiler('coffee','coffeescriptnode',$compiler_path);
+			}
+		}
 	}
 
 	//build実行
@@ -219,15 +246,13 @@
 		$phest->registerSection('smartyerror','Smarty コンパイルエラー',array('type' => 'danger'));
 
 		//less
-		$less = new lessc;
 		$phest->registerSection('lesserror','LESS 構文エラー',array('type' => 'danger'));
 
 		//scss
-		$scss = new scssc;
-		$phest->registerSection('scsserror','SCSS 構文エラー',array('type' => 'danger'));
+		$phest->registerSection('sasserror','SCSS 構文エラー',array('type' => 'danger'));
 
 		//coffee
-		$phest->registerSection('coffeeerror','Coffee Script 構文エラー',array('type' => 'danger'));
+		$phest->registerSection('coffeescripterror','CoffeeScript 構文エラー',array('type' => 'danger'));
 
 		//jslint
 		$phest->registerSection('jslint','JavaScript 文法エラー',array('type' => 'danger'));
@@ -470,12 +495,11 @@
 			$first_char = $path_dat['first_char'];
 
 			$is_output = true; //ファイル出力が必要か
-			$is_less = false; //Lessファイルか
-			$is_scss = false; //Scssファイルか
-			$is_coffee = false; //CoffeeScriptか
 			$is_js = false; //JavaScriptファイルか
 			$is_css = false; //CSSファイルか
 			$is_nolint = false; //Lintエラーを無視するか
+
+			$compile_list = array();
 
 			switch ($first_char){
 				//@ ならLintしない
@@ -485,23 +509,35 @@
 					break;
 			}
 
-			if (strpos($filepath,'.less') !== false){
-				$is_less = true;
+			//拡張子をバラして、対応するコンパイラを特定
+			$filepart = explode('.',$filepath);
+			$filebase = '';
+			$extensions = array();
+			for ($i = 0;$i < count($filepart);$i++){
+				if ($i == 0){
+					$filebase = $filepart[0];
+				}else{
+					$extensions[$filepart[$i]] = true;
+				}
+			}
+
+			if (isset($extensions['less'])){
+				$compile_list[] = $phest->getCompilerType('less');
 				$is_css = true;
 			}
-			if (strpos($filepath,'.scss') !== false){
-				$is_scss = true;
+			if (isset($extensions['scss'])){
+				$compile_list[] = $phest->getCompilerType('scss');
 				$is_css = true;
 			}
-			if (strpos($filepath,'.coffee') !== false){
-				$is_coffee = true;
+			if (isset($extensions['coffee'])){
+				$compile_list[] = $phest->getCompilerType('coffee');
 				$is_nolint = true;
 				$is_js = true;
 			}
-			if (strpos($filepath,'.js') !== false){
+			if (isset($extensions['js'])){
 				$is_js = true;
 			}
-			if (strpos($filepath,'.css') !== false){
+			if (isset($extensions['css'])){
 				$is_css = true;
 			}
 
@@ -516,40 +552,14 @@
 					continue;
 				}
 
-				//less
-				if ($is_less){
+				foreach ($compile_list as $compile_type){
 					try {
-						$less->setImportDir(dirname($pathname));
-						$source = $less->compile($source);
-						$create_option .= ' (less)';
-						$filepath = str_replace('.less','.css',$filepath);
+						$compiler = Compiler::factory($compile_type);
+						$source = $compiler->compile($source,$pathname);
+						$create_option .= ' ('.$compile_type.')';
+						$filepath = $compiler->convertFileName($filepath);
 					} catch (\Exception $e){
-						$phest->add('lesserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
-						continue;
-					}
-				}
-
-				//scss
-				if ($is_scss){
-					try {
-						$scss->setImportPaths(dirname($pathname));
-						$source = $scss->compile($source);
-						$create_option .= ' (scss)';
-						$filepath = str_replace('.scss','.css',$filepath);
-					} catch (\Exception $e){
-						$phest->add('scsserror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
-						continue;
-					}
-				}
-
-				//coffee
-				if ($is_coffee){
-					try {
-						$source = \CoffeeScript\Compiler::compile($source,array('filename' => $filepath));
-						$create_option .= ' (coffee)';
-						$filepath = str_replace('.coffee','.js',$filepath);
-					}catch (\Exception $e){
-						$phest->add('coffeeerror',$e->getMessage());
+						$phest->add($compiler->getSectionKey().'error','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 						continue;
 					}
 				}

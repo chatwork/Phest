@@ -16,6 +16,20 @@ class Phest {
     protected $site_last_buildtime = 0;
     protected $site_last_buildhash = 0;
     protected $plugins_dir = array();
+    protected $compiler_type = array(
+        'less' => array(
+            'type' => 'less',
+            'path' => '',
+            ),
+        'scss' => array(
+            'type' => 'sass',
+            'path' => '',
+            ),
+        'coffee' => array(
+            'type' => 'coffescript',
+            'path' => '',
+            ),
+        );
 
     /**
      * インスタンスの取得 (Singleton)
@@ -314,5 +328,49 @@ class Phest {
         }
 
         return $has_new;
+    }
+
+    /**
+     * コンパイラの種類を取得
+     *
+     * @method getCompilerType
+     * @param string $extension 対応する拡張子
+     * @return string|false コンパイラtypeの文字列 見つからなかったらfalse
+     */
+    public function getCompilerType($extension){
+        if (isset($this->compiler_type[$extension]['type'])){
+            return $this->compiler_type[$extension]['type'];
+        }
+
+        return false;
+    }
+
+    /**
+     * コンパイラの実行コマンドのパスを返す
+     *
+     * @method getCompilerPath
+     * @param string $extension 対応する拡張子
+     * @return string|false コンパイラの実行コマンドのパス 見つからなかったらfalse
+     */
+    public function getCompilerPath($extension){
+        if (isset($this->compiler_type[$extension]['path'])){
+            return $this->compiler_type[$extension]['path'];
+        }
+
+        return false;
+    }
+
+    /**
+     * コンパイラを設定
+     *
+     * @method setCompiler
+     * @param string $extension 対応する拡張子
+     * @param string $type コンパイラtypeの文字列
+     * @param string $path コンパイラの実行コマンドのパス 見つからなかったらfalse
+     * @chainable
+     */
+    public function setCompiler($extension,$type,$path = ''){
+        $this->compiler_type[$extension] = array('type' => $type,'path' => $path);
+        return $this;
     }
 }
