@@ -1,5 +1,8 @@
 changelogs:
   -
+    date: 2013-12-05
+    title: Linuxで動作するように対応。ただしJavaScript構文チェックは動作しない。
+  -
     date: 2013-12-04
     title: {$_top}変数を追加。相対的にトップフォルダを指定できます。
   -
