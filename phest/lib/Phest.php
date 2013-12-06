@@ -16,17 +16,27 @@ class Phest {
     protected $site_last_buildtime = 0;
     protected $site_last_buildhash = 0;
     protected $plugins_dir = array();
+
+    /**
+     * デフォルトコンパイラの設定
+     */
     protected $compiler_type = array(
         'less' => array(
             'type' => 'less',
+            'nativetype' => 'lessnode',
+            'nativecommand' => 'lessc',
             'path' => '',
             ),
         'scss' => array(
             'type' => 'sass',
+            'nativetype' => 'sassruby',
+            'nativecommand' => 'sass',
             'path' => '',
             ),
         'coffee' => array(
             'type' => 'coffeescript',
+            'nativetype' => 'coffeescriptnode',
+            'nativecommand' => 'coffee',
             'path' => '',
             ),
         );
@@ -337,9 +347,13 @@ class Phest {
      * @param string $extension 対応する拡張子
      * @return string|false コンパイラtypeの文字列 見つからなかったらfalse
      */
-    public function getCompilerType($extension){
-        if (isset($this->compiler_type[$extension]['type'])){
-            return $this->compiler_type[$extension]['type'];
+    public function getCompilerType($extension = ''){
+        if ($extension){
+            if (isset($this->compiler_type[$extension]['type'])){
+                return $this->compiler_type[$extension]['type'];
+            }
+        }else{
+            return $this->compiler_type;
         }
 
         return false;
@@ -359,10 +373,36 @@ class Phest {
 
         return false;
     }
-    
+
+    /**
+     * コマンドがインストールされているかを検知
+     *
+     * @method detectCommand
+     * @param string $command コマンド名
+     * @return string|false 見つかったらコマンドのフルパスを返す
+     */
+    public function detectCommand($command){
+        static $command_path = array(
+            '/usr/local/bin',
+            '/opt/local/bin',
+            '/usr/bin',
+            '/opt/bin',
+            '/home/bin',
+            '/bin',
+            );
+
+        foreach ($command_path as $path){
+            if (file_exists($path.'/'.$command)){
+                return $path.'/'.$command;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * コンパイラコマンドを実行
-     * 
+     *
      * @param  string $extension 拡張子
      * @param  string $pathname  ファイルパス
      * @param  string $option    オプション
@@ -372,7 +412,7 @@ class Phest {
         $compiler_path = $this->getCompilerPath($extension);
         $compiler_dir = dirname($compiler_path);
         $compiler_command = basename($compiler_path);
-        
+
         switch(PHP_OS){
             case 'Darwin':
             case 'Linux':
@@ -386,7 +426,7 @@ class Phest {
                 die('サポートしていないOSです:'.PHP_OS);
                 break;
         }
-        
+
         $output = array();
         if ($os == 'unix'){
             exec('export PATH=$PATH:'.$compiler_dir.'; export DYLD_LIBRARY_PATH=;'.$compiler_command.' '.$option.' "'.$pathname.'" 2>&1',$output);
@@ -394,7 +434,7 @@ class Phest {
             putenv('PATH=' . getenv('PATH').';'.$compiler_dir);
             exec($compiler_path.' '.$option.' "'.$pathname.'" 2>&1',$output);
         }
-        
+
         return $output;
     }
 

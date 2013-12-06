@@ -11,13 +11,13 @@ compilejs: 1 #JavaScriptをminifyするか
 compilecss: 1 #CSSをminifyするか
 compileless: 1 #lessをコンパイルするか
 compilesass: 1 #sassをコンパイルするか
-compilecoffee: 1 #CoffeeScriptをコンパイルするか
+compilecoffeescript: 1 #CoffeeScriptをコンパイルするか
 uselessnode: 1 #node.jsのlesscを使うか
-pathlessnode: /usr/local/bin/lessc #lesscのパス
+pathlessnode: auto #lesscのパス
 usesassruby: 1 #ruby gemのsassを使うか
-pathsassruby: /usr/bin/sass #sassのパス
+pathsassruby: auto #sassのパス
 usecoffeescriptnode: 1 #ruby gemのsassを使うか
-pathcoffeescriptnode: /usr/local/bin/coffee #coffeeのパス
+pathcoffeescriptnode: auto #coffeeのパス
 languages: []
 ignoresitemaps: [ 404.html ]
 smartypluginsdir: []

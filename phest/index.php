@@ -1,7 +1,6 @@
 <?php
 	namespace ChatWork\Phest;
 
-
 /**
  * Phest - PHP Easy Static Site Generator
  * https://github.com/chatwork/Phest
@@ -178,33 +177,22 @@
 
 		//コンパイラの設定
 		//コマンドラインのインストール状況を確認
-		if (empty($config_yaml['compileless'])){
-			$phest->setCompiler('less',false);
-		}else{
-			if ($config_yaml['uselessnode']){
-				$compiler_path = $config_yaml['pathlessnode'];
-				if (file_exists($compiler_path)){
-					$phest->setCompiler('less','lessnode',$compiler_path);
-				}
-			}
-		}
-		if (empty($config_yaml['compilesass'])){
-			$phest->setCompiler('scss',false);
-		}else{
-			if ($config_yaml['usesassruby']){
-				$compiler_path = $config_yaml['pathsassruby'];
-				if (file_exists($compiler_path)){
-					$phest->setCompiler('scss','sassruby',$compiler_path);
-				}
-			}
-		}
-		if (empty($config_yaml['compilecoffee'])){
-			$phest->setCompiler('coffee',false);
-		}else{
-			if ($config_yaml['usecoffeescriptnode']){
-				$compiler_path = $config_yaml['pathcoffeescriptnode'];
-				if (file_exists($compiler_path)){
-					$phest->setCompiler('coffee','coffeescriptnode',$compiler_path);
+		$compiler_type = $phest->getCompilerType();
+
+		foreach ($compiler_type as $ext => $cmp_dat){
+			if (empty($config_yaml['compile'.$cmp_dat['type']])){
+				$phest->setCompiler($ext,false);
+			}else{
+				if ($config_yaml['use'.$cmp_dat['nativetype']]){
+					$compiler_path = $config_yaml['path'.$cmp_dat['nativetype']];
+					if ($compiler_path == 'auto'){
+						$compiler_path = $phest->detectCommand($cmp_dat['nativecommand']);
+					}else if (!file_exists($compiler_path)){
+						$compiler_path = '';
+					}
+					if ($compiler_path){
+						$phest->setCompiler($ext,$cmp_dat['nativetype'],$compiler_path);
+					}
 				}
 			}
 		}
@@ -573,7 +561,7 @@
 				}else{
 					continue;
 				}
-				
+
 				foreach ($compile_list as $compile_type){
 					try {
 						$compiler = Compiler::factory($compile_type);
