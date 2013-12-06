@@ -14,7 +14,7 @@
   <generator>{$_phestver}</generator>
   {foreach from=$changelogs item="item"}
   <item>
-   {if isset($item.title)}<title>{$item.title|strip_tags}</title>{/if}
+   {if isset($item.title)}<title>{$item.title|markdown|strip_tags}</title>{/if}
    {if isset($item.date)}<pubDate>{$item.date|date_format:"r"}</pubDate>{/if}
    {if isset($item.link)}<link>{$_home}/{$item.link}</link>{/if}
   </item>

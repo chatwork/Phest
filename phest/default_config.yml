@@ -1,13 +1,23 @@
+# デフォルト設定
 home:
-  local: ""
-  production: "http://www.example.com"
-basetpl: "_base.tpl"
-encode: ""
-buildclear:1
-sitemap:1
-robotstxt:1
-compilejs:1
-compilecss:1
-languages:[]
+  local:
+  production: http://www.example.com
+basetpl: _base.tpl #起点となるテンプレート
+encode:  #出力する文字エンコード
+buildclear: 1 #outputディレクトリをbuild時に中身を削除するか
+sitemap: 1 #sitemap.xmlをつくるか
+robotstxt: 1 #robots.txtをつくるか
+compilejs: 1 #JavaScriptをminifyするか
+compilecss: 1 #CSSをminifyするか
+compileless: 1 #lessをコンパイルするか
+compilesass: 1 #sassをコンパイルするか
+compilecoffeescript: 1 #CoffeeScriptをコンパイルするか
+uselessnode: 1 #node.jsのlesscを使うか
+pathlessnode: auto #lesscのパス
+usesassruby: 1 #ruby gemのsassを使うか
+pathsassruby: auto #sassのパス
+usecoffeescriptnode: 1 #ruby gemのsassを使うか
+pathcoffeescriptnode: auto #coffeeのパス
+languages: []
 ignoresitemaps: [ 404.html ]
 smartypluginsdir: []

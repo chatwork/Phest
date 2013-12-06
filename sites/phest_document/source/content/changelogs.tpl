@@ -6,7 +6,7 @@
   <div class="changeLog">
    <div class="changeLogContent">
     <time>{$item.date|date_format:"Y年n月d日"}</time>
-    <p>{if isset($item.link)}<a href="{$item.link}">{$item.title}</a>{else}{$item.title}{/if}</p>
+    {$item.title|markdown}
    </div>
   </div>
   {/foreach}
