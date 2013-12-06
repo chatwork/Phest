@@ -566,7 +566,7 @@
 					try {
 						$compiler = Compiler::factory($compile_type);
 						$source = $compiler->compile($source,$pathname);
-						$create_option .= ' ('.$compile_type.')';
+						$create_option .= ' ('.$compiler->getOptionLabel().')';
 						$filepath = $compiler->convertFileName($filepath);
 					} catch (\Exception $e){
 						$phest->add($compiler->getSectionKey().'error','<strong>'.$filepath.'</strong>: '.$e->getMessage());

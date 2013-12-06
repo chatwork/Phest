@@ -13,6 +13,10 @@ class CompilerCoffeescript extends CompilerBase {
         return 'coffeescript';
     }
 
+    public function getOptionLabel(){
+        return 'coffeescript-php';
+    }
+
     protected function getConvertFromExtension(){
         return 'coffee';
     }

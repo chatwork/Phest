@@ -16,6 +16,10 @@ class CompilerLess extends CompilerBase {
         return 'less';
     }
 
+    public function getOptionLabel(){
+        return 'less-php';
+    }
+
     protected function getConvertFromExtension(){
         return 'less';
     }

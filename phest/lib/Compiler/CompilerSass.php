@@ -16,6 +16,10 @@ class CompilerSass extends CompilerBase {
         return 'sass';
     }
 
+    public function getOptionLabel(){
+        return 'sass-php';
+    }
+
     protected function getConvertFromExtension(){
         return 'scss';
     }

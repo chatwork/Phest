@@ -17,6 +17,10 @@ class CompilerCoffeescriptnode extends CompilerBase {
         return 'coffeescript';
     }
 
+    public function getOptionLabel(){
+        return 'coffeescript-node';
+    }
+
     protected function getConvertFromExtension(){
         return 'coffee';
     }

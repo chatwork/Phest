@@ -44,31 +44,39 @@ abstract class CompilerBase {
      * @return string コンパイル後のソールコード
      */
     public abstract function compile($source,$pathname);
-    
+
     /**
      * Phestのメッセージ用のセクション名を返す
-     * 
+     *
      * @return string セクション名
      */
     public abstract function getSectionKey();
-    
+
+    /**
+     * ビルド時にファイルの横に出すラベル名
+     *
+     * @method getSectionKey
+     * @return string ラベル名
+     */
+    public abstract function getOptionLabel();
+
     /**
      * 変換前の拡張子
-     * 
+     *
      * @return string 拡張子
      */
     protected abstract function getConvertFromExtension();
-    
+
     /**
      * 変換後の拡張子
-     * 
+     *
      * @return string 拡張子
      */
     protected abstract function getConvertToExtension();
-    
+
     /**
      * ファイル名の拡張子を変換 .less -> .css など
-     * 
+     *
      * @param string $filepath ファイルパス
      * @return string 新しいファイル名
      */
