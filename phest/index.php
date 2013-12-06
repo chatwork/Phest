@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.9';
+	$ver = 'v0.8.7';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -55,6 +55,8 @@
 	$site = '';
 	if (isset($_GET['site']) and in_array($_GET['site'],$site_list)){
 		$site = $_GET['site'];
+	}else{
+		$site = current($site_list);
 	}
 
 	$buildtype = '';
