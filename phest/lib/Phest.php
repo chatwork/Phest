@@ -382,14 +382,34 @@ class Phest {
      * @return string|false 見つかったらコマンドのフルパスを返す
      */
     public function detectCommand($command){
-        static $command_path = array(
-            '/usr/local/bin',
-            '/opt/local/bin',
-            '/usr/bin',
-            '/opt/bin',
-            '/home/bin',
-            '/bin',
-            );
+        static $command_path = array();
+
+        if (!$command_path){
+            switch(PHP_OS){
+                case 'Darwin':
+                case 'Linux':
+                    $command_path = array(
+                        '/usr/local/bin',
+                        '/opt/local/bin',
+                        '/usr/bin',
+                        '/opt/bin',
+                        '/home/bin',
+                        '/bin',
+                        );
+                    break;
+                case 'WIN32':
+                case 'WINNT':
+                    $profdir = getenv('USERPROFILE');
+                    $command_path = array(
+                        $profdir.'/AppData/Roaming/npm',
+                        'c:/Ruby200/bin'
+                        );
+                    break;
+                default:
+                    die('サポートしていないOSです:'.PHP_OS);
+                    break;
+            }
+        }
 
         foreach ($command_path as $path){
             if (file_exists($path.'/'.$command)){
@@ -431,7 +451,7 @@ class Phest {
         if ($os == 'unix'){
             exec('export PATH=$PATH:'.$compiler_dir.'; export DYLD_LIBRARY_PATH=;'.$compiler_command.' '.$option.' "'.$pathname.'" 2>&1',$output);
         }else{
-            putenv('PATH=' . getenv('PATH').';'.$compiler_dir);
+            putenv('PATH='.getenv('PATH').';C:\\Program Files\\nodejs;C:\\Program Files (x86)\\nodejs;'.$compiler_dir);
             exec($compiler_path.' '.$option.' "'.$pathname.'" 2>&1',$output);
         }
 

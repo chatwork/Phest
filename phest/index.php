@@ -42,14 +42,6 @@
 	require(DIR_PHEST.'/lib/vendor/debuglib.php');
 	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
 
-	//lessc detection
-	// /home/bin/
-	// /bin/
-	// /usr/bin
-	if (file_exists('/usr/local/bin/lessc')){
-		//echo 'exists!';
-	}
-
 	$phest = Phest::getInstance();
 	$current_time = time();
 
