@@ -17,7 +17,7 @@ path:
     content_keys: [ newsite, filetree, workflow ]
   configurations.html:
     title: "サイトの設定"
-    content_keys: [ configurations, variables ]
+    content_keys: [ configurations, variables, advanceconfigurations ]
   assets.html:
     title: "CSS&JavaScript"
     content_keys: [ styles, javascripts ]

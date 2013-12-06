@@ -18,6 +18,30 @@ class Phest {
     protected $plugins_dir = array();
 
     /**
+     * デフォルトコンパイラの設定
+     */
+    protected $compiler_type = array(
+        'less' => array(
+            'type' => 'less',
+            'nativetype' => 'lessnode',
+            'nativecommand' => 'lessc',
+            'path' => '',
+            ),
+        'scss' => array(
+            'type' => 'sass',
+            'nativetype' => 'sassruby',
+            'nativecommand' => 'sass',
+            'path' => '',
+            ),
+        'coffee' => array(
+            'type' => 'coffeescript',
+            'nativetype' => 'coffeescriptnode',
+            'nativecommand' => 'coffee',
+            'path' => '',
+            ),
+        );
+
+    /**
      * インスタンスの取得 (Singleton)
      *
      * @method getInstance
@@ -314,5 +338,137 @@ class Phest {
         }
 
         return $has_new;
+    }
+
+    /**
+     * コンパイラの種類を取得
+     *
+     * @method getCompilerType
+     * @param string $extension 対応する拡張子
+     * @return string|false コンパイラtypeの文字列 見つからなかったらfalse
+     */
+    public function getCompilerType($extension = ''){
+        if ($extension){
+            if (isset($this->compiler_type[$extension]['type'])){
+                return $this->compiler_type[$extension]['type'];
+            }
+        }else{
+            return $this->compiler_type;
+        }
+
+        return false;
+    }
+
+    /**
+     * コンパイラの実行コマンドのパスを返す
+     *
+     * @method getCompilerPath
+     * @param string $extension 対応する拡張子
+     * @return string|false コンパイラの実行コマンドのパス 見つからなかったらfalse
+     */
+    public function getCompilerPath($extension){
+        if (isset($this->compiler_type[$extension]['path'])){
+            return $this->compiler_type[$extension]['path'];
+        }
+
+        return false;
+    }
+
+    /**
+     * コマンドがインストールされているかを検知
+     *
+     * @method detectCommand
+     * @param string $command コマンド名
+     * @return string|false 見つかったらコマンドのフルパスを返す
+     */
+    public function detectCommand($command){
+        static $command_path = array();
+
+        if (!$command_path){
+            switch(PHP_OS){
+                case 'Darwin':
+                case 'Linux':
+                    $command_path = array(
+                        '/usr/local/bin',
+                        '/opt/local/bin',
+                        '/usr/bin',
+                        '/opt/bin',
+                        '/home/bin',
+                        '/bin',
+                        );
+                    break;
+                case 'WIN32':
+                case 'WINNT':
+                    $profdir = getenv('USERPROFILE');
+                    $command_path = array(
+                        $profdir.'/AppData/Roaming/npm',
+                        'c:/Ruby200/bin'
+                        );
+                    break;
+                default:
+                    die('サポートしていないOSです:'.PHP_OS);
+                    break;
+            }
+        }
+
+        foreach ($command_path as $path){
+            if (file_exists($path.'/'.$command)){
+                return $path.'/'.$command;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * コンパイラコマンドを実行
+     *
+     * @param  string $extension 拡張子
+     * @param  string $pathname  ファイルパス
+     * @param  string $option    オプション
+     * @return array コマンド出力結果の配列
+     */
+    public function execCompiler($extension,$pathname,$option = ''){
+        $compiler_path = $this->getCompilerPath($extension);
+        $compiler_dir = dirname($compiler_path);
+        $compiler_command = basename($compiler_path);
+
+        switch(PHP_OS){
+            case 'Darwin':
+            case 'Linux':
+                $os = 'unix';
+                break;
+            case 'WIN32':
+            case 'WINNT':
+                $os = 'win';
+                break;
+            default:
+                die('サポートしていないOSです:'.PHP_OS);
+                break;
+        }
+
+        $output = array();
+        if ($os == 'unix'){
+            exec('export PATH=$PATH:'.$compiler_dir.'; export DYLD_LIBRARY_PATH=;'.$compiler_command.' '.$option.' "'.$pathname.'" 2>&1',$output);
+        }else{
+            putenv('PATH='.getenv('PATH').';C:\\Program Files\\nodejs;C:\\Program Files (x86)\\nodejs;'.$compiler_dir);
+            exec($compiler_path.' '.$option.' "'.$pathname.'" 2>&1',$output);
+        }
+
+        return $output;
+    }
+
+    /**
+     * コンパイラを設定
+     *
+     * @method setCompiler
+     * @param string $extension 対応する拡張子
+     * @param string $type コンパイラtypeの文字列
+     * @param string $path コンパイラの実行コマンドのパス 見つからなかったらfalse
+     * @chainable
+     */
+    public function setCompiler($extension,$type,$path = ''){
+        $this->compiler_type[$extension] = array('type' => $type,'path' => $path);
+        return $this;
     }
 }

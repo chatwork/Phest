@@ -180,6 +180,31 @@ contents:
       他に、 `encode` というキーでエンコードしたい文字コードを入れると、
       その文字コードに変換して出力できます。(HTMLメールの場合はJISにしたいなど)
       PHPの `mb_convert_encoding` 関数で指定できる文字コードの文字列をセットできます。
+  advanceconfigurations:
+    title: config.yml の高度な設定方法
+    content:|
+      下記のオプションはconfig.ymlにあらかじめ入っていませんが、追記することで設定できます。
+
+      `compileless` はLESSでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)
+
+      `compilesass` はSassでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)
+
+      `compilecoffeescript` はCoffeeScriptでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)
+
+      `uselessnode` はLESSの公式コンパイラを使用するかどうかのオプションです。(デフォルト:1)
+
+      `usesassruby` はSassの公式コンパイラを使用するかどうかのオプションです。(デフォルト:1)
+
+      `usecoffeescriptnode` はCoffeeScriptの公式コンパイラを使用するかどうかのオプションです。(デフォルト:1)
+
+      `pathlessnode` はLESSの公式コンパイラのパスを指定するオプションです。autoを指定すると一般的なパスに入っていた場合自動検知します。(デフォルト:auto)
+
+      `pathsassruby` はSassの公式コンパイラのパスを指定するオプションです。autoを指定すると一般的なパスに入っていた場合自動検知します。(デフォルト:auto)
+
+      `pathcoffeescriptnode` はCoffeeScriptの公式コンパイラのパスを指定するオプションです。autoを指定すると一般的なパスに入っていた場合自動検知します。(デフォルト:auto)
+
+      `ignoresitemaps` はsitemap.xmlに含めないファイルパスを指定できます。(デフォルト：[ 404.html ])
+
   variables:
     title: vars.yml の設定方法
     content: |
@@ -245,6 +270,13 @@ contents:
       生成後は、`.less` や `.tpl` などの拡張子はカットされ、すべて `.css` として出力されます。
       同名で拡張子だけが違う xxx.less xxx.scss などファイルを作ると上書きされるので注意してください。
 
+      LESSやSassのコンパイラはデフォルトの設定では、公式コンパイラ([LESS](http://lesscss.org/)/[Sass](http://sass-lang.com/))がインストールされていればそちらを使用し、
+      インストールされていなければ組み込みのPHPライブラリが選択されます。
+      (ビルド後のラベルでどちらが使用されているか判別できます。例：LESSは公式コンパイラだと `less-node` 、PHP版は `less-php` と表示されます)
+      公式コンパイラをインストールしていても使用されない場合は、config.ymlの`uselessnode` `usesassruby`オプションを指定してください。
+
+      config.yml に `compilecss:1` を指定している場合は、本番環境でビルドするとCssMinでminifyします。
+
       また、ファイル名の先頭に `_` をつけると、単体でコンパイルされなくなります。
       `@import` などでインポートするファイルに使ってください。
 
@@ -264,6 +296,10 @@ contents:
       - *.tpl.coffee
           - Smartyで処理後、CoffeeScriptでコンパイルします
 
+      CoffeScriptのコンパイラはデフォルトの設定では、[公式コンパイラ](http://coffeescript.org/)がインストールされていればそちらを使用し、
+      インストールされていなければ組み込みのPHPライブラリが選択されます。
+      (ビルド後のラベルでどちらが使用されているか判別できます。例：公式コンパイラだと `coffeescript-node` 、PHP版は `coffeescript-php` と表示されます)
+      公式コンパイラをインストールしていても使用されない場合は、config.ymlの`usecoffeescriptnode`オプションを指定してください。
 
       config.yml に `compilejs:1` を指定している場合は、本番環境でビルドするとGoogle Closure Compilerでminifyします。
 

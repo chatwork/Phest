@@ -1,9 +1,6 @@
 <?php
 	namespace ChatWork\Phest;
 
-	require(DIR_PHEST.'/lib/vendor/CoffeeScript/Init.php');
-	\CoffeeScript\Init::load();
-
 
 /**
  * array_merge_recursiveの同じキーを配列化せず上書きするバージョン

@@ -32,7 +32,7 @@
     <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="changelogs.html">変更履歴 (12/05)<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (12/06)<i class="icoFontArrowChevronRight"></i></a></li>
  </ul>
 </div>
     <div id="_mainContent" class="mainContent">
@@ -123,6 +123,30 @@ path:
 </code></pre>
 
 <p>別のYAMLファイルの内容を取り込むことができます。<code>source/</code>フォルダからの相対パスで、YAMLファイル名を指定してください。</p>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>config.yml の高度な設定方法</h2>  <p><p>下記のオプションはconfig.ymlにあらかじめ入っていませんが、追記することで設定できます。</p>
+
+<p><code>compileless</code> はLESSでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)</p>
+
+<p><code>compilesass</code> はSassでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)</p>
+
+<p><code>compilecoffeescript</code> はCoffeeScriptでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)</p>
+
+<p><code>uselessnode</code> はLESSの公式コンパイラを使用するかどうかのオプションです。(デフォルト:1)</p>
+
+<p><code>usesassruby</code> はSassの公式コンパイラを使用するかどうかのオプションです。(デフォルト:1)</p>
+
+<p><code>usecoffeescriptnode</code> はCoffeeScriptの公式コンパイラを使用するかどうかのオプションです。(デフォルト:1)</p>
+
+<p><code>pathlessnode</code> はLESSの公式コンパイラのパスを指定するオプションです。autoを指定すると一般的なパスに入っていた場合自動検知します。(デフォルト:auto)</p>
+
+<p><code>pathsassruby</code> はSassの公式コンパイラのパスを指定するオプションです。autoを指定すると一般的なパスに入っていた場合自動検知します。(デフォルト:auto)</p>
+
+<p><code>pathcoffeescriptnode</code> はCoffeeScriptの公式コンパイラのパスを指定するオプションです。autoを指定すると一般的なパスに入っていた場合自動検知します。(デフォルト:auto)</p>
+
+<p><code>ignoresitemaps</code> はsitemap.xmlに含めないファイルパスを指定できます。(デフォルト：[ 404.html ])</p>
 </p>
  </div>
  
