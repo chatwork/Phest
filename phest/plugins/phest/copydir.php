@@ -7,6 +7,16 @@ $phest_plugin_copydir_list = array();
 function plugin_watch_copydir(array $params, Phest $phest){
     global $phest_plugin_copydir_list;
 
+    if (empty($params['from'])){
+        $phest->add('builderror','[copydir] fromオプションが指定されていません');
+        return false;
+    }
+
+    if (empty($params['to'])){
+        $phest->add('builderror','[copydir] toオプションが指定されていません');
+        return false;
+    }
+
     $dir_source = $phest->getSourcePath();
     $from_dpath = $dir_source.'/'.$params['from'];
     $to_dpath = $dir_source.'/'.$params['to'];

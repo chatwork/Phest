@@ -17,9 +17,7 @@ function plugin_watch_concat(array $params, Phest $phest){
         return false;
     }
 
-    if (!isset($concat_list[$params['output']])){
-        $phest_plugin_concat_list[$params['output']] = array();
-    }
+    $phest_plugin_concat_list[$params['output']] = array();
     foreach ($params['sources'] as $spath){
         $spath = $phest->getSourcePath().'/'.$spath;
         if (file_exists($spath)){
@@ -43,6 +41,7 @@ function plugin_build_concat(array $params,Phest $phest){
         }
         $phest->add('build','[concat] '.count($cpath_list).'個のファイルを結合: /<b>'.$output_to.'</b>');
         File::buildPutFile($phest->getSourcePath().'/'.$output_to, $output_source);
+        unset($phest_plugin_concat_list[$output_to]);
     }
 
     return true;
