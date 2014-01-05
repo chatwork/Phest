@@ -24,6 +24,10 @@ function plugin_watch_copydir(array $params, Phest $phest){
         $phest->add('builderror','[copydir] from はディレクトリではありません: '.$from_dpath);
         return false;
     }
+    if (!is_dir($to_dpath)){
+        $phest->add('builderror','[copydir] to はディレクトリではありません: '.$to_dpath);
+        return false;
+    }
 
     $phest->addWatchList(File::getFileList($from_dpath));
     $phest_plugin_copydir_list[$from_dpath] = $to_dpath;
@@ -36,7 +40,7 @@ function plugin_build_copydir(array $params, Phest $phest){
 
     foreach ($phest_plugin_copydir_list as $copyfrom => $copyto){
         $phest->add('build','[copydir] <b>'.$copyfrom.'</b> から <b>'.$copyto.'</b> へコピー');
-        File::copyDir($copyfrom, $copyto);
+        File::copyDir($copyfrom, $copyto, true);
     }
 
     return true;
