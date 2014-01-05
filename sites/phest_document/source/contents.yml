@@ -468,6 +468,8 @@ contents:
        - copydir
           - ビルド時のタイミングにあわせて、特定のフォルダから特定のフォルダへ中身をすべてコピーします。
           - 外部のフォルダからサイトに取り込みたい時などに便利です。
+       - removedir
+          - ビルド時のタイミングにあわせて、特定のフォルダを削除します。
        - s3deploy
           - Amazon S3へproductionビルドの内容をアップロードします。
           - ローカルとS3上のファイルの差分を確認し、ローカル側にないものはS3上からも削除します。
@@ -484,6 +486,9 @@ contents:
                copydir: #cptest1/ を cptest2 にコピー
                  from: "cptest1"
                  to: "cptest2"
+            -
+               removedir: #removetest/ を削除
+                 dir: "removetest"
             -
                s3deploy: #S3へデプロイするファイルを確認
                  _button:

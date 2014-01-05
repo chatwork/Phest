@@ -1,5 +1,8 @@
 changelogs:
   -
+    date: 2014-01-05
+    title: **v0.8.9** removedirプラグインを追加。LESSコンパイラでエラー検知できないメッセージがあるのに対応。
+  -
     date: 2013-12-06
     title: **v0.8.7** LESS、Sass、CoffeeScriptで公式コンパイラを使用できるように。デフォルトでは自動検知する。
   -

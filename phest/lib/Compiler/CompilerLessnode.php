@@ -7,7 +7,7 @@ class CompilerLessnode extends CompilerBase {
         $output = $phest->execCompiler('less',$pathname);
 
         //ParseErrorが一行目にあったらエラーとみなす
-        if (strpos($output[0],'ParseError: ') !== false){
+        if (strpos($output[0],'Error: ') !== false){
             throw new \Exception(preg_replace('/[\x00-\x1f\x7f]\[.[^m]?m/', '', implode('<br />',$output)));
         }
         return implode("\n",$output);

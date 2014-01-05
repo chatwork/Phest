@@ -32,7 +32,7 @@
     <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li class="select"><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="changelogs.html">変更履歴 (12/06)<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (1/05)<i class="icoFontArrowChevronRight"></i></a></li>
  </ul>
 </div>
     <div id="_mainContent" class="mainContent">
@@ -57,6 +57,11 @@
 <li>ビルド時のタイミングにあわせて、特定のフォルダから特定のフォルダへ中身をすべてコピーします。</li>
 <li>外部のフォルダからサイトに取り込みたい時などに便利です。</li>
 </ul></li>
+<li>removedir
+
+<ul>
+<li>ビルド時のタイミングにあわせて、特定のフォルダを削除します。</li>
+</ul></li>
 <li>s3deploy
 
 <ul>
@@ -77,6 +82,9 @@
      copydir: #cptest1/ を cptest2 にコピー
        from: "cptest1"
        to: "cptest2"
+  -
+     removedir: #removetest/ を削除
+       dir: "removetest"
   -
      s3deploy: #S3へデプロイするファイルを確認
        _button:
@@ -111,7 +119,7 @@
  
 </div>
      <div id="_footer" class="footer clearfix">
- <small>(c) 2013 <a href="http://www.chatwork.com/ja/company" target="_blank">ChatWork</a></small>
+ <small>(c) 2014 <a href="http://www.chatwork.com/ja/company" target="_blank">ChatWork</a></small>
 </div>
     </div>
    </div>
