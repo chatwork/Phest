@@ -1,6 +1,0 @@
-common:
-local:
-production:
-path:
-  index.html:
-    title: "title"

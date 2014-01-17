@@ -1,1 +1,0 @@
-<div>{$L.testkey} - {$L.testkey2}</div>

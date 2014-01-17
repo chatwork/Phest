@@ -1,9 +1,0 @@
-home:
-  local: "http://localhost/Phest/sites/{{site}}/output/local"
-  production: "http://www.{{site}}.com"
-basetpl: "_base.tpl"
-buildclear: 1
-sitemap: 1
-robotstxt: 1
-compilejs: 1
-compilecss: 1

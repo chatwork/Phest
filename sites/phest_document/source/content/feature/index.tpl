@@ -1,1 +1,0 @@
-<div>This is Feature index content!</div>

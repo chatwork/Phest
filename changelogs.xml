@@ -10,7 +10,7 @@
   <link>http://localhost/phest/sites/phest_document/changelogs.html</link>
   <copyright>ChatWork Inc</copyright>
   <description>Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです</description>
-  <pubDate>Sun, 05 Jan 2014 19:22:07 +0900</pubDate>
+  <pubDate>Fri, 17 Jan 2014 18:52:34 +0900</pubDate>
   <generator>Phest v0.8.9</generator>
     <item>
    <title>  v0.8.9  removedirプラグインを追加。LESSコンパイラでエラー検知できないメッセージがあるのに対応。 
