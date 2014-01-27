@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.9';
+	$ver = 'v0.9.1';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -84,8 +84,12 @@
 	//watch mode
 	$watch = 0;
 	if (!empty($_GET['watch'])){
+		header('Content-type:application/json;charset=UTF-8');
 		$watch = 1;
+	}else{
+		header('Content-type:text/html;charset=UTF-8');
 	}
+
 	$plugin_idx = false;
 	if (isset($_GET['plugin_idx'])){
 		$plugin_idx = $_GET['plugin_idx'];
@@ -143,8 +147,13 @@
 
 		if (isset($config_yaml['plugins'])){
 			foreach ($config_yaml['plugins'] as $idx => $pdat){
-				$plugin_name = key($pdat);
-				$plugin_params = current($pdat);
+				if (is_array($pdat)){
+					$plugin_name = key($pdat);
+					$plugin_params = current($pdat);
+				}else{
+					$plugin_name = $pdat;
+					$plugin_params = array();
+				}
 
 				$plugin_list[$idx] = array(
 					'name' => $plugin_name,
@@ -575,6 +584,9 @@
 
 						//ignorecomilejsオプションで、コンパイルしないjsを検証
 						if (!check_path_match($filepath,$config_yaml['ignorecompilejs'])){
+							//何か出力しないとブラウザ側でタイムアウトするので空白を出力
+							echo '<span></span>';flush();ob_flush();
+
 							//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
 							$output_to = $dir_output.'/'.$filepath;
 							$source_tmp = $dir_output.'/'.$filepath.'.tmp';
@@ -688,12 +700,9 @@
 	}
 
 	if ($watch){
-		header('Content-type:application/json;charset=UTF-8');
 		echo json_encode(array('code' => 200,'message_list' => $phest->getMessageData()));
 		exit;
 	}else{
-		header('Content-type:text/html;charset=UTF-8');
-
 		$bsmarty = new Smarty;
 		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
 
