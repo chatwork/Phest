@@ -155,6 +155,29 @@ class File {
 	}
 
 	/**
+	 * ディレクトリが存在しない場合、作成を試みてファイルのコピー作成を行う
+	 *
+	 * @param string $filepath ファイルのパス
+	 * @param string $hook_func ファイル、ディレクトリ作成ごとに実行する関数を指定。
+	 * @return resouce ファイルポインタ
+	 */
+	public static function buildCopy($source,$dest,$hook_func = ''){
+		File::buildMakeDir(dirname($dest),$hook_func);
+
+		if (is_file($source)){
+			if (copy($source,$dest)){
+				if ($hook_func){
+					call_user_func($hook_func,'make_file',$dest);
+				}
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * 与えられたパスのディレクトリを全て作成する
 	 *
 	 * <code>

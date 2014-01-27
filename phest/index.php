@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.9';
+	$ver = 'v0.9';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -429,7 +429,7 @@
 					$priority = '0.5';
 				}
 
-				if (!in_array($_path,$config_yaml['ignoresitemaps'])){
+				if (!check_path_match($_path,$config_yaml['ignoresitemaps'])){
 					$urls[] = array('path' => $path_current,'lastmod' => date('c',filemtime($pathname)),'changefreq' => $changefreq,'priority' => $priority);
 				}
 
@@ -572,23 +572,29 @@
 				if ($is_js){
 					//本番環境かつcompilejs=1なら圧縮
 					if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
-						//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
-						$output_to = $dir_output.'/'.$filepath;
-						$source_tmp = $dir_output.'/'.$filepath.'.tmp';
-						File::buildPutFile($source_tmp,$source);
 
-						//コンパイル
-						compile($source_tmp,$output_to);
-						//完了したらテンポラリファイルを削除
-						unlink($source_tmp);
+						//ignorecomilejsオプションで、コンパイルしないjsを検証
+						if (!check_path_match($filepath,$config_yaml['ignorecompilejs'])){
+							//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
+							$output_to = $dir_output.'/'.$filepath;
+							$source_tmp = $dir_output.'/'.$filepath.'.tmp';
+							File::buildPutFile($source_tmp,$source);
 
-						$org_filesize = filesize($pathname);
-						if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
-							$phest->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
-							continue;
+							//コンパイル
+							compile($source_tmp,$output_to);
+							//完了したらテンポラリファイルを削除
+							unlink($source_tmp);
+
+							$org_filesize = filesize($pathname);
+							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
+								$phest->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
+								continue;
+							}
+							$is_output = false;
+							$create_option .= ' (minified)';
+						}else{
+							$create_option .= ' (ignore minify)';
 						}
-						$is_output = false;
-						$create_option .= ' (minified)';
 					}
 				}
 
@@ -596,8 +602,12 @@
 				if ($is_css){
 					//本番環境かつcompilecss=1なら圧縮
 					if ($buildtype == 'production' and !empty($config_yaml['compilecss'])){
-						$source = CssMin::minify($source);
-						$create_option .= ' (minified)';
+						if (!check_path_match($filepath,$config_yaml['ignorecompilecss'])){
+							$source = CssMin::minify($source);
+							$create_option .= ' (minified)';
+						}else{
+							$create_option .= ' (ignore minify)';
+						}
 					}
 				}
 
@@ -696,3 +706,17 @@
 		$bsmarty->assign('lang_list',$lang_list);
 		$bsmarty->display('phest_internal/build.tpl');
 	}
+
+function check_path_match($filepath,array $path_list){
+	foreach ($path_list as $igval){
+		if (is_array($igval) and key($igval) == 'regex'){
+			if (preg_match('@'.current($igval).'@',$filepath)){
+				return true;
+			}
+		}else if ($filepath == $igval){
+			return true;
+		}
+	}
+
+	return false;
+}

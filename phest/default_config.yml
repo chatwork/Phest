@@ -20,4 +20,6 @@ usecoffeescriptnode: 1 #ruby gemのsassを使うか
 pathcoffeescriptnode: auto #coffeeのパス
 languages: []
 ignoresitemaps: [ 404.html ]
+ignorecompilejs: []
+ignorecompilecss: []
 smartypluginsdir: []

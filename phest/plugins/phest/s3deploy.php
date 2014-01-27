@@ -8,16 +8,16 @@
 /**
  * Amazon S3へProductionビルドをアップロード
  *
- * @method plugin_finish_s3deploy
- * @param  array $params パラメータ
- * @param  bool   $params.enable trueを指定すると実行
+ * @param  array  $params パラメータ
+ * @param  bool    $params.enable trueを指定すると実行
  * @param  string  $params.bucket バケット名
  * @param  enum    $params.region リージョン
  * @param  string  [$params.prefix] アップロードするキー名につけるPrefix
  * @param  string  $params.bucket バケット名
  * @param  string  $params.key AWSのアクセスキー
  * @param  string  $params.secret AWSのシークレットキー
- * @param  Phest $phest Phestオブジェクト
+ * @param  Phest   $phest Phestオブジェクト
+ * @return bool プラグインの成功判定
  */
 function plugin_button_s3deploy(array $params, Phest $phest){
     $phest->registerSection('s3deploy','デプロイ完了');
