@@ -15,6 +15,7 @@ class Phest {
     protected $path_buildstatus_site = '';
     protected $site_last_buildtime = 0;
     protected $site_last_buildhash = 0;
+    protected $credentials = array();
     protected $plugins_dir = array();
 
     /**
@@ -161,6 +162,34 @@ class Phest {
         }
 
         return true;
+    }
+
+    /**
+     * 認証情報をロードする
+     *
+     * ロードに失敗したらfalseを返し、エラーメッセージを出力
+     *
+     * @method loadPlugin
+     * @param string $plugin_name プラグイン名
+     * @return bool 成功したか
+     */
+    public function loadCredential($yaml_path){
+        $this->credentials = spyc_load_file($yaml_path);
+    }
+
+    /**
+     * 認証情報を取得する
+     *
+     * @method getCredential
+     * @param string $key 認証情報ごとのキー
+     * @return array/false 認証データ
+     */
+    public function getCredential($key){
+        if (isset($this->credentials[$key])){
+            return $this->credentials[$key];
+        }else{
+            return false;
+        }
     }
 
     /**

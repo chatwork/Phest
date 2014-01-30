@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.9.1';
+	$ver = 'v0.9.2';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -144,7 +144,17 @@
 		}
 		$config_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_config.yml'),spyc_load_file($path_config_yml));
 
+		//認証情報の読み込み
+		if (!empty($config_yaml['credential'])){
+			$path_credential = $config_yaml['credential'];
+	        if (!file_exists($path_credential)){
+	            echo 'エラー: config.ymlのcredentailで指定されているファイルが存在しません。path='.$path_credential;
+	        }else{
+				$phest->loadCredential($path_credential);
+	        }
+		}
 
+		//プラグイン設定の読み込み
 		if (isset($config_yaml['plugins'])){
 			foreach ($config_yaml['plugins'] as $idx => $pdat){
 				if (is_array($pdat)){
@@ -166,6 +176,7 @@
 			}
 		}
 
+		//言語設定
 		$lang_list = $config_yaml['languages'];
 
 		if ($lang_list){
