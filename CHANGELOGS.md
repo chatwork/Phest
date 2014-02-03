@@ -1,3 +1,7 @@
+### 2014年1月30日
+
+**v0.9.2** ignorecompilejs, ignorecompilecss, credential オプションを追加
+
 ### 2014年1月05日
 
 **v0.8.9** removedirプラグインを追加。LESSコンパイラでエラー検知できないメッセージがあるのに対応。
