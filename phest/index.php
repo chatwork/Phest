@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.8.9';
+	$ver = 'v0.9.2';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -84,8 +84,12 @@
 	//watch mode
 	$watch = 0;
 	if (!empty($_GET['watch'])){
+		header('Content-type:application/json;charset=UTF-8');
 		$watch = 1;
+	}else{
+		header('Content-type:text/html;charset=UTF-8');
 	}
+
 	$plugin_idx = false;
 	if (isset($_GET['plugin_idx'])){
 		$plugin_idx = $_GET['plugin_idx'];
@@ -140,11 +144,26 @@
 		}
 		$config_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_config.yml'),spyc_load_file($path_config_yml));
 
+		//認証情報の読み込み
+		if (!empty($config_yaml['credential'])){
+			$path_credential = $config_yaml['credential'];
+	        if (!file_exists($path_credential)){
+	            echo 'エラー: config.ymlのcredentailで指定されているファイルが存在しません。path='.$path_credential;
+	        }else{
+				$phest->loadCredential($path_credential);
+	        }
+		}
 
+		//プラグイン設定の読み込み
 		if (isset($config_yaml['plugins'])){
 			foreach ($config_yaml['plugins'] as $idx => $pdat){
-				$plugin_name = key($pdat);
-				$plugin_params = current($pdat);
+				if (is_array($pdat)){
+					$plugin_name = key($pdat);
+					$plugin_params = current($pdat);
+				}else{
+					$plugin_name = $pdat;
+					$plugin_params = array();
+				}
 
 				$plugin_list[$idx] = array(
 					'name' => $plugin_name,
@@ -157,6 +176,7 @@
 			}
 		}
 
+		//言語設定
 		$lang_list = $config_yaml['languages'];
 
 		if ($lang_list){
@@ -429,7 +449,7 @@
 					$priority = '0.5';
 				}
 
-				if (!in_array($_path,$config_yaml['ignoresitemaps'])){
+				if (!check_path_match($_path,$config_yaml['ignoresitemaps'])){
 					$urls[] = array('path' => $path_current,'lastmod' => date('c',filemtime($pathname)),'changefreq' => $changefreq,'priority' => $priority);
 				}
 
@@ -572,23 +592,32 @@
 				if ($is_js){
 					//本番環境かつcompilejs=1なら圧縮
 					if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
-						//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
-						$output_to = $dir_output.'/'.$filepath;
-						$source_tmp = $dir_output.'/'.$filepath.'.tmp';
-						File::buildPutFile($source_tmp,$source);
 
-						//コンパイル
-						compile($source_tmp,$output_to);
-						//完了したらテンポラリファイルを削除
-						unlink($source_tmp);
+						//ignorecomilejsオプションで、コンパイルしないjsを検証
+						if (!check_path_match($filepath,$config_yaml['ignorecompilejs'])){
+							//何か出力しないとブラウザ側でタイムアウトするので空白を出力
+							echo '<span></span>';flush();ob_flush();
 
-						$org_filesize = filesize($pathname);
-						if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
-							$phest->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
-							continue;
+							//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
+							$output_to = $dir_output.'/'.$filepath;
+							$source_tmp = $dir_output.'/'.$filepath.'.tmp';
+							File::buildPutFile($source_tmp,$source);
+
+							//コンパイル
+							compile($source_tmp,$output_to);
+							//完了したらテンポラリファイルを削除
+							unlink($source_tmp);
+
+							$org_filesize = filesize($pathname);
+							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
+								$phest->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
+								continue;
+							}
+							$is_output = false;
+							$create_option .= ' (minified)';
+						}else{
+							$create_option .= ' (ignore minify)';
 						}
-						$is_output = false;
-						$create_option .= ' (minified)';
 					}
 				}
 
@@ -596,8 +625,12 @@
 				if ($is_css){
 					//本番環境かつcompilecss=1なら圧縮
 					if ($buildtype == 'production' and !empty($config_yaml['compilecss'])){
-						$source = CssMin::minify($source);
-						$create_option .= ' (minified)';
+						if (!check_path_match($filepath,$config_yaml['ignorecompilecss'])){
+							$source = CssMin::minify($source);
+							$create_option .= ' (minified)';
+						}else{
+							$create_option .= ' (ignore minify)';
+						}
 					}
 				}
 
@@ -678,12 +711,9 @@
 	}
 
 	if ($watch){
-		header('Content-type:application/json;charset=UTF-8');
 		echo json_encode(array('code' => 200,'message_list' => $phest->getMessageData()));
 		exit;
 	}else{
-		header('Content-type:text/html;charset=UTF-8');
-
 		$bsmarty = new Smarty;
 		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
 
@@ -696,3 +726,17 @@
 		$bsmarty->assign('lang_list',$lang_list);
 		$bsmarty->display('phest_internal/build.tpl');
 	}
+
+function check_path_match($filepath,array $path_list){
+	foreach ($path_list as $igval){
+		if (is_array($igval) and key($igval) == 'regex'){
+			if (preg_match('@'.current($igval).'@',$filepath)){
+				return true;
+			}
+		}else if ($filepath == $igval){
+			return true;
+		}
+	}
+
+	return false;
+}

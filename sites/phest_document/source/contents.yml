@@ -203,7 +203,13 @@ contents:
 
       `pathcoffeescriptnode` はCoffeeScriptの公式コンパイラのパスを指定するオプションです。autoを指定すると一般的なパスに入っていた場合自動検知します。(デフォルト:auto)
 
-      `ignoresitemaps` はsitemap.xmlに含めないファイルパスを指定できます。(デフォルト：[ 404.html ])
+      `credential` は認証情報が記載されたYAMLファイルのパスを指定します。s3deployプラグインなどで、認証情報を別ファイルにしたい場合などに使えます。詳しくは[AmazonS3へのデプロイ](http://cwhost.jp/Phest/sites/phest_document/output/local/s3deploy.html)を参照してください。 (デフォルト:"")
+
+      `ignoresitemaps` はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、`regex: test/.*\.html` などの記法で正規表現での指定も可能です。 (デフォルト：[ 404.html ])
+
+      `ignorecompilejs` はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、`regex: test/.*\.css` などの記法で正規表現での指定も可能です。　(デフォルト：[ ])
+
+      `ignorecompilecss` はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、`regex: test/.*\.js` などの記法で正規表現での指定も可能です。(デフォルト：[ ])
 
   variables:
     title: vars.yml の設定方法
@@ -412,6 +418,49 @@ contents:
     title: 実行にあたってのご注意
     content: |
       デプロイされるファイルはpublic-read権限でアップロードされ、すべてのユーザーが閲覧できるので注意してください。
+  s3deploy_credential:
+    title: "[高度な設定] 認証ファイルを別のパスで管理する"
+    content: |
+      config.ymlに直接AWSの ACCESSKEY や SECRET KEY を書き込むと、バージョン管理システムなどを用いた複数人での共有作業ではセキュリティに問題があるケースがあります。
+
+      その場合、`config.yml` に `credential` というキーでYAMLへのパスを設定できるので、バージョン管理システム外のパスを指定することでその危険性を回避できます。
+
+      config.yml の設定例
+
+          credential: ~/phest_credential.yml #認証情報ファイルへのパス
+          plugins:
+            -
+               s3deploy: #S3へデプロイするファイルを確認 (実際のデプロイは行いません)
+                 _button:
+                   label: デプロイテスト
+                   type: primary
+                   icon: ok-circle
+                 dryrun: true           #ここをtrueにするとS3側のファイルを操作しません
+                 prefix:                #アップするオブジェクトにつけるprefix
+                 bucket: mybuketname    #バケット名
+                 region: tokyo          #リージョン名
+                 credentialkey: aws-s3  #認証情報のキー
+            -
+               s3deploy: #S3へデプロイする
+                 _button:
+                   label: デプロイ
+                   type: success
+                   icon: cloud-upload
+                   confirm: true
+                 dryrun: false
+                 prefix:
+                 bucket: mybuketname
+                 region: tokyo
+                 credentialkey: aws-s3  #認証情報のキー
+
+      自分のホームディレクトリに、`phest_credential.yml` という認証情報ファイルを作成し、中に
+
+          aws-s3: #認証情報のキー
+            key: myaccesskey
+            secret: mysecretkey
+
+      と記述します。認証情報は複数のキーを設定できるので、ユーザーをわけることもできます。
+      また、`key`と`secret`以外にも、`prefix`、`bucket`、`region` なども設定できます。
   i18n:
     title: 多言語対応
     content: |

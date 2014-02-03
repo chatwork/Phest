@@ -18,6 +18,9 @@ usesassruby: 1 #ruby gemのsassを使うか
 pathsassruby: auto #sassのパス
 usecoffeescriptnode: 1 #ruby gemのsassを使うか
 pathcoffeescriptnode: auto #coffeeのパス
+credential:  #認証情報などを記載したYAMLファイルのパス
 languages: []
 ignoresitemaps: [ 404.html ]
+ignorecompilejs: []
+ignorecompilecss: []
 smartypluginsdir: []

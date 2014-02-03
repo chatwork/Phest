@@ -3,29 +3,21 @@
 
     use \ChatWork\Utility\File;
 
-$phest_plugin_copydir_list = array();
+/**
+ * フォルダをコピーする
+ *
+ * @param  array   $params パラメータ
+ * @param  string   $params.from コピー元のフォルダパス (source/ からの相対パス)
+ * @param  string   $params.to コピー先のフォルダパス (source/ からの相対パス)
+ * @param  Phest    $phest Phestオブジェクト
+ * @return bool プラグインの成功判定
+ */
 function plugin_watch_copydir(array $params, Phest $phest){
-    global $phest_plugin_copydir_list;
-
-    if (empty($params['from'])){
-        $phest->add('builderror','[copydir] fromオプションが指定されていません');
-        return false;
-    }
-
-    if (empty($params['to'])){
-        $phest->add('builderror','[copydir] toオプションが指定されていません');
-        return false;
-    }
-
     $dir_source = $phest->getSourcePath();
     $from_dpath = $dir_source.'/'.$params['from'];
     $to_dpath = $dir_source.'/'.$params['to'];
     if (!is_dir($from_dpath)){
         $phest->add('builderror','[copydir] from はディレクトリではありません: '.$from_dpath);
-        return false;
-    }
-    if (!is_dir($to_dpath)){
-        $phest->add('builderror','[copydir] to はディレクトリではありません: '.$to_dpath);
         return false;
     }
 
@@ -36,12 +28,12 @@ function plugin_watch_copydir(array $params, Phest $phest){
 }
 
 function plugin_build_copydir(array $params, Phest $phest){
-    global $phest_plugin_copydir_list;
+    $dir_source = $phest->getSourcePath();
+    $from_dpath = $dir_source.'/'.$params['from'];
+    $to_dpath = $dir_source.'/'.$params['to'];
 
-    foreach ($phest_plugin_copydir_list as $copyfrom => $copyto){
-        $phest->add('build','[copydir] <b>'.$copyfrom.'</b> から <b>'.$copyto.'</b> へコピー');
-        File::copyDir($copyfrom, $copyto, true);
-    }
+    $phest->add('build','[copydir] <b>'.$from_dpath.'</b> から <b>'.$to_dpath.'</b> へコピー');
+    File::copyDir($from_dpath, $to_dpath, true);
 
     return true;
 }

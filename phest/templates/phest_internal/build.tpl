@@ -3,6 +3,7 @@
 <head>
  <title>Phest {$ver}</title>
  <link href="./assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+ <link rel="icon" href="./assets/image/icon_phest.png" sizes="48x48" type="image/png" />
 <!--[if lt IE 9]>
 <script type="text/javascript" src="./assets/jquery-1.10.2.min.js"></script>
 <![endif]-->
@@ -38,6 +39,7 @@ a {
 </style>
 <script type="text/javascript">
 $(function(){
+  var title = 'Phest {$ver}';
   var query = {};
   parse_str(window.location.search.substr(1),query);
 
@@ -109,12 +111,17 @@ $(function(){
       $('#watchIcon').removeClass('glyphicon-stop').addClass('glyphicon-refresh');
       $('#watchText').text('Local watch');
       $('.btn').removeClass('disabled');
+
+      document.title = title;
     }else{
       $('#watchStatus').fadeIn();
 
+      //Watch開始
+      document.title = '[watching] - ' + title;
       watch_timer = setInterval(function(){
         if (!watching){
           watching = true;
+
           $.getJSON(create_query('local',1),function(data){
             if (data){
               build_result(data.message_list);

@@ -8,16 +8,16 @@
 /**
  * Amazon S3へProductionビルドをアップロード
  *
- * @method plugin_finish_s3deploy
- * @param  array $params パラメータ
- * @param  bool   $params.enable trueを指定すると実行
+ * @param  array  $params パラメータ
+ * @param  bool    $params.enable trueを指定すると実行
  * @param  string  $params.bucket バケット名
  * @param  enum    $params.region リージョン
  * @param  string  [$params.prefix] アップロードするキー名につけるPrefix
  * @param  string  $params.bucket バケット名
  * @param  string  $params.key AWSのアクセスキー
  * @param  string  $params.secret AWSのシークレットキー
- * @param  Phest $phest Phestオブジェクト
+ * @param  Phest   $phest Phestオブジェクト
+ * @return bool プラグインの成功判定
  */
 function plugin_button_s3deploy(array $params, Phest $phest){
     $phest->registerSection('s3deploy','デプロイ完了');
@@ -50,6 +50,15 @@ function plugin_button_s3deploy(array $params, Phest $phest){
         return false;
     }
 
+    //認証情報を読み込み
+    if (isset($params['credentialkey'])){
+        $credential = $phest->getCredential($params['credentialkey']);
+        if (!$credential){
+            $phest->add('s3deployerror','credentialkeyで指定されたキーの認証情報が読み出せません: '.$params['credentialkey']);
+        }else{
+            $params = array_merge($params,$credential);
+        }
+    }
 
     $is_error = false;
 
@@ -120,9 +129,6 @@ function plugin_button_s3deploy(array $params, Phest $phest){
 
         //upload
         $keyname = $prefix.$key;
-        if (isset($object_flag[$keyname])){
-            unset($object_flag[$keyname]);
-        }
         try {
             if (!$dryrun){
                 $result = $s3->putObject(array(
@@ -133,7 +139,12 @@ function plugin_button_s3deploy(array $params, Phest $phest){
                     ));
             }
 
-            $phest->add('s3deploy','追加: '.$keyname.$message_option);
+            if (isset($object_flag[$keyname])){
+                unset($object_flag[$keyname]);
+                $phest->add('s3deploy','更新: '.$keyname.$message_option);
+            }else{
+                $phest->add('s3deploy','追加: '.$keyname.$message_option);
+            }
         } catch (S3Exception $e){
             $phest->add('s3deployerror',$e->getMessage());
         } catch (\Exception $e){

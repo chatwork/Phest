@@ -3,6 +3,14 @@
 
     use \ChatWork\Utility\File;
 
+/**
+ * フォルダを削除する
+ *
+ * @param  array  $params パラメータ
+ * @param  string  $params.dir 削除対象のフォルダパス (source/ からの相対パス)
+ * @param  Phest   $phest Phestオブジェクト
+ * @return bool プラグインの成功判定
+ */
 function plugin_build_removedir(array $params, Phest $phest){
     if (empty($params['dir'])){
         $phest->add('builderror','[removedir] dirオプションが指定されていません');
