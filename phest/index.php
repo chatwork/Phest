@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.9.2';
+	$ver = 'v0.9.3';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -596,7 +596,7 @@
 						//ignorecomilejsオプションで、コンパイルしないjsを検証
 						if (!check_path_match($filepath,$config_yaml['ignorecompilejs'])){
 							//何か出力しないとブラウザ側でタイムアウトするので空白を出力
-							echo '<span></span>';flush();ob_flush();
+							echo '<span></span>';@flush();@ob_flush();
 
 							//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
 							$output_to = $dir_output.'/'.$filepath;
