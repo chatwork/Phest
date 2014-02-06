@@ -4,3 +4,5 @@
 {$item.title}
 
 {/foreach}
+
+{$_phestver}
