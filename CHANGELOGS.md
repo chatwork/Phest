@@ -1,3 +1,15 @@
+### 2014年2月06日
+
+**v0.9.4** leftdelimiter, rightdelimiter オプションを追加
+
+### 2014年2月04日
+
+**v0.9.3** scssphpをアップデート、productionビルド時にエラーメッセージが出る場合があるのを抑制
+
+### 2014年1月30日
+
+**v0.9.2** ignorecompilejs, ignorecompilecss, credential オプションを追加
+
 ### 2014年1月05日
 
 **v0.8.9** removedirプラグインを追加。LESSコンパイラでエラー検知できないメッセージがあるのに対応。
@@ -26,3 +38,5 @@ SmartBuilderからPhestに名称変更
 
 [俺聞け6 in Tokyo](http://www.msng.info/archives/2013/09/orekike6-schedule.php)にて[プレビュー公開](http://www.slideshare.net/mskmasaki/web-26886030)(旧名：SmartBuilder)
 
+
+Phest v0.9.4

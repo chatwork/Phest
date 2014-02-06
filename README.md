@@ -1,6 +1,6 @@
 <img src="https://raw.github.com/chatwork/Phest/master/docs/image/common/logo/logo_phest_white.png"/>
 
-Phestとは
+Phest v0.9.4
 ============
 
 Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです。

@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.9.3';
+	$ver = 'v0.9.4';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -251,6 +251,8 @@
 		$smarty = new Smarty;
 		$smarty->template_dir = array($dir_content,DIR_PHEST.'/templates');
 		$smarty->compile_dir = DIR_PHEST.'/cache/templates_c/'.$site;
+		$smarty->left_delimiter = $config_yaml['leftdelimiter'];
+		$smarty->right_delimiter = $config_yaml['rightdelimiter'];
 		$smarty->addPluginsDir(array(DIR_PHEST.'/plugins/smarty',$dir_source.'/plugins/smarty'));
 		if ($config_yaml['smartypluginsdir']){
 			foreach ($config_yaml['smartypluginsdir'] as $pdir){

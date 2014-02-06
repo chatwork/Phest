@@ -2,25 +2,51 @@
 home:
   local:
   production: http://www.example.com
-basetpl: _base.tpl #起点となるテンプレート
-encode:  #出力する文字エンコード
-buildclear: 1 #outputディレクトリをbuild時に中身を削除するか
-sitemap: 1 #sitemap.xmlをつくるか
-robotstxt: 1 #robots.txtをつくるか
-compilejs: 1 #JavaScriptをminifyするか
-compilecss: 1 #CSSをminifyするか
-compileless: 1 #lessをコンパイルするか
-compilesass: 1 #sassをコンパイルするか
-compilecoffeescript: 1 #CoffeeScriptをコンパイルするか
-uselessnode: 1 #node.jsのlesscを使うか
-pathlessnode: auto #lesscのパス
-usesassruby: 1 #ruby gemのsassを使うか
-pathsassruby: auto #sassのパス
-usecoffeescriptnode: 1 #ruby gemのsassを使うか
-pathcoffeescriptnode: auto #coffeeのパス
-credential:  #認証情報などを記載したYAMLファイルのパス
+#起点となるテンプレート
+basetpl: _base.tpl
+#Smartyの左デリミタ
+leftdelimiter: "{"
+#Smartyの右デリミタ
+rightdelimiter: "}"
+#出力する文字エンコード
+encode:
+#outputディレクトリをbuild時に中身を削除するか
+buildclear: 1
+#sitemap.xmlをつくるか
+sitemap: 1
+#robots.txtをつくるか
+robotstxt: 1
+#JavaScriptをminifyするか
+compilejs: 1
+#CSSをminifyするか
+compilecss: 1
+#lessをコンパイルするか
+compileless: 1
+#sassをコンパイルするか
+compilesass: 1
+#CoffeeScriptをコンパイルするか
+compilecoffeescript: 1
+#node.jsのlesscを使うか
+uselessnode: 1
+#lesscのパス
+pathlessnode: auto
+#ruby gemのsassを使うか
+usesassruby: 1
+#sassのパス
+pathsassruby: auto
+#ruby gemのsassを使うか
+usecoffeescriptnode: 1
+#coffeeのパス
+pathcoffeescriptnode: auto
+#認証情報などを記載したYAMLファイルのパス
+credential:
+#対応する言語の種類
 languages: []
+#sitemap.xmlで無視するファイル
 ignoresitemaps: [ 404.html ]
+#JavaScriptのminifyを行わないファイル
 ignorecompilejs: []
+#CSSのminifyを行わないファイル
 ignorecompilecss: []
+#Smartyの追加プラグインディレクトリ
 smartypluginsdir: []

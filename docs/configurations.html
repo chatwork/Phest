@@ -32,7 +32,7 @@
     <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="changelogs.html">変更履歴 (1/05)<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (2/06)<i class="icoFontArrowChevronRight"></i></a></li>
  </ul>
 </div>
     <div id="_mainContent" class="mainContent">
@@ -128,6 +128,10 @@ path:
   <div class="contentSection">
   <h2>config.yml の高度な設定方法</h2>  <p><p>下記のオプションはconfig.ymlにあらかじめ入っていませんが、追記することで設定できます。</p>
 
+<p><code>leftdelimiter</code> はSmartyの左デリミタの文字を指定できます。(デフォルト:"{")</p>
+
+<p><code>rightdelimiter</code> はSmartyの右デリミタの文字を指定できます。(デフォルト:"}")</p>
+
 <p><code>compileless</code> はLESSでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)</p>
 
 <p><code>compilesass</code> はSassでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)</p>
@@ -146,7 +150,13 @@ path:
 
 <p><code>pathcoffeescriptnode</code> はCoffeeScriptの公式コンパイラのパスを指定するオプションです。autoを指定すると一般的なパスに入っていた場合自動検知します。(デフォルト:auto)</p>
 
-<p><code>ignoresitemaps</code> はsitemap.xmlに含めないファイルパスを指定できます。(デフォルト：[ 404.html ])</p>
+<p><code>credential</code> は認証情報が記載されたYAMLファイルのパスを指定します。s3deployプラグインなどで、認証情報を別ファイルにしたい場合などに使えます。詳しくは<a href="http://cwhost.jp/Phest/sites/phest_document/output/local/s3deploy.html">AmazonS3へのデプロイ</a>を参照してください。 (デフォルト:"")</p>
+
+<p><code>ignoresitemaps</code> はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、<code>regex: test/.*\.html</code> などの記法で正規表現での指定も可能です。 (デフォルト：[ 404.html ])</p>
+
+<p><code>ignorecompilejs</code> はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、<code>regex: test/.*\.css</code> などの記法で正規表現での指定も可能です。　(デフォルト：[ ])</p>
+
+<p><code>ignorecompilecss</code> はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、<code>regex: test/.*\.js</code> などの記法で正規表現での指定も可能です。(デフォルト：[ ])</p>
 </p>
  </div>
  

@@ -185,6 +185,10 @@ contents:
     content:|
       下記のオプションはconfig.ymlにあらかじめ入っていませんが、追記することで設定できます。
 
+      `leftdelimiter` はSmartyの左デリミタの文字を指定できます。(デフォルト:"{")
+
+      `rightdelimiter` はSmartyの右デリミタの文字を指定できます。(デフォルト:"}")
+
       `compileless` はLESSでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)
 
       `compilesass` はSassでコンパイル処理を実行するかどうかのオプションです。(デフォルト:1)
