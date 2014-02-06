@@ -32,7 +32,7 @@
     <li class="select"><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="changelogs.html">変更履歴 (1/05)<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (1/30)<i class="icoFontArrowChevronRight"></i></a></li>
  </ul>
 </div>
     <div id="_mainContent" class="mainContent">
@@ -84,6 +84,51 @@ Amazon S3へのデプロイはPhestのプラグインとして実装されてお
  </div>
   <div class="contentSection">
   <h2>実行にあたってのご注意</h2>  <p><p>デプロイされるファイルはpublic-read権限でアップロードされ、すべてのユーザーが閲覧できるので注意してください。</p>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>[高度な設定] 認証ファイルを別のパスで管理する</h2>  <p><p>config.ymlに直接AWSの ACCESSKEY や SECRET KEY を書き込むと、バージョン管理システムなどを用いた複数人での共有作業ではセキュリティに問題があるケースがあります。</p>
+
+<p>その場合、<code>config.yml</code> に <code>credential</code> というキーでYAMLへのパスを設定できるので、バージョン管理システム外のパスを指定することでその危険性を回避できます。</p>
+
+<p>config.yml の設定例</p>
+
+<pre><code>credential: ~/phest_credential.yml #認証情報ファイルへのパス
+plugins:
+  -
+     s3deploy: #S3へデプロイするファイルを確認 (実際のデプロイは行いません)
+       _button:
+         label: デプロイテスト
+         type: primary
+         icon: ok-circle
+       dryrun: true           #ここをtrueにするとS3側のファイルを操作しません
+       prefix:                #アップするオブジェクトにつけるprefix
+       bucket: mybuketname    #バケット名
+       region: tokyo          #リージョン名
+       credentialkey: aws-s3  #認証情報のキー
+  -
+     s3deploy: #S3へデプロイする
+       _button:
+         label: デプロイ
+         type: success
+         icon: cloud-upload
+         confirm: true
+       dryrun: false
+       prefix:
+       bucket: mybuketname
+       region: tokyo
+       credentialkey: aws-s3  #認証情報のキー
+</code></pre>
+
+<p>自分のホームディレクトリに、<code>phest_credential.yml</code> という認証情報ファイルを作成し、中に</p>
+
+<pre><code>aws-s3: #認証情報のキー
+  key: myaccesskey
+  secret: mysecretkey
+</code></pre>
+
+<p>と記述します。認証情報は複数のキーを設定できるので、ユーザーをわけることもできます。
+また、<code>key</code>と<code>secret</code>以外にも、<code>prefix</code>、<code>bucket</code>、<code>region</code> なども設定できます。</p>
 </p>
  </div>
  
