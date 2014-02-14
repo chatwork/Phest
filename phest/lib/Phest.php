@@ -425,6 +425,22 @@ class Phest {
                         '/home/bin',
                         '/bin',
                         );
+                    
+                    //NVMをスキャン
+                    $dir_user = '/Users/'.$_ENV['USER'];
+                    if (is_dir($dir_user.'/.nvm')){
+                        $version_list = array();
+                        foreach (glob($dir_user.'/.nvm/v*') as $dirname){
+                            if (is_dir($dirname)){
+                                $version_list[] = $dirname.'/bin';
+                            }
+                        }
+                        
+                        //バージョン番号が高い順にソート
+                        natsort($version_list);
+                        $command_path = array_merge($command_path,array_reverse($version_list));
+                    }
+                    
                     break;
                 case 'WIN32':
                 case 'WINNT':
