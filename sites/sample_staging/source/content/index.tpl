@@ -1,0 +1,1 @@
+<div>This is index content! $_home = {$_home}</div>

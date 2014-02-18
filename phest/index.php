@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.9.4';
+	$ver = 'v0.9.5';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -98,12 +98,18 @@
 
 	$build = true;
 	$build_class = '';
+	$finalize = false;
 	switch ($buildtype){
 		case 'local':
 			$build_class = 'text-primary';
 			break;
+		case 'staging':
+			$build_class = 'text-success';
+			$finalize = true;
+			break;
 		case 'production':
 			$build_class = 'text-success';
+			$finalize = true;
 			break;
 		case 'plugin':
 			$build_class = 'text-primary';
@@ -593,7 +599,7 @@
 				//js
 				if ($is_js){
 					//本番環境かつcompilejs=1なら圧縮
-					if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
+					if ($finalize and !empty($config_yaml['compilejs'])){
 
 						//ignorecomilejsオプションで、コンパイルしないjsを検証
 						if (!check_path_match($filepath,$config_yaml['ignorecompilejs'])){
@@ -626,7 +632,7 @@
 				//css
 				if ($is_css){
 					//本番環境かつcompilecss=1なら圧縮
-					if ($buildtype == 'production' and !empty($config_yaml['compilecss'])){
+					if ($finalize and !empty($config_yaml['compilecss'])){
 						if (!check_path_match($filepath,$config_yaml['ignorecompilecss'])){
 							$source = CssMin::minify($source);
 							$create_option .= ' (minified)';
@@ -726,6 +732,7 @@
 		$bsmarty->assign('site_list',$site_list);
 		$bsmarty->assign('lang',$lang);
 		$bsmarty->assign('lang_list',$lang_list);
+		$bsmarty->assign('enablestaging',$config_yaml['enablestaging']);
 		$bsmarty->display('phest_internal/build.tpl');
 	}
 

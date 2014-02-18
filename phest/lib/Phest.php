@@ -64,16 +64,21 @@ class Phest {
     }
 
     /**
-     * ビルド種類 (local|production) をセット
+     * ビルド種類 (local|staging|production) をセット
      *
      * @method setBuildType
-     * @param ｓ
+     * @param string $buildtype
      */
     public function setBuildType($buildtype){
         $this->buildtype = $buildtype;
         return $this;
     }
-
+    
+    /**
+     * ビルド種類を返す
+     *
+     * @return string ビルド種類 (local|staging|production)
+     */
     public function getBuildType(){
         return $this->buildtype;
     }

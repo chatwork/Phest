@@ -39,14 +39,20 @@ function plugin_button_s3deploy(array $params, Phest $phest){
     if (isset($params['prefix'])){
         $prefix = $params['prefix'];
     }
+    
+    if (isset($params['buildtype'])){
+        $buildtype = $params['buildtype'];
+    }else{
+        $buildtype = 'production';
+    }
 
     //$buckets = $s3->listBuckets();
     //print_a($buckets);
 
-    $upload_dir = $phest->getOutputPath($phest->getLang(),'production');
+    $upload_dir = $phest->getOutputPath($phest->getLang(),$buildtype);
 
     if (!is_dir($upload_dir)){
-        $phest->add('s3deployerror','productionでビルドされたファイルが存在しません');
+        $phest->add('s3deployerror',$buildtype.'でビルドされたファイルが存在しません');
         return false;
     }
 
