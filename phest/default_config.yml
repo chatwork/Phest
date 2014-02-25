@@ -1,6 +1,7 @@
 # デフォルト設定
 home:
   local:
+  staging:
   production: http://www.example.com
 #起点となるテンプレート
 basetpl: _base.tpl
@@ -10,6 +11,8 @@ leftdelimiter: "{"
 rightdelimiter: "}"
 #出力する文字エンコード
 encode:
+#ステージング環境を有効にするか
+enablestaging: 0
 #outputディレクトリをbuild時に中身を削除するか
 buildclear: 1
 #sitemap.xmlをつくるか
