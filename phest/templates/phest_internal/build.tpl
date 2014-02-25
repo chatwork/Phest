@@ -71,6 +71,12 @@ $(function(){
     document.location.href = create_query('production');
   });
 
+  $('#buildStaging').click(function(){
+    $('.btn').addClass('disabled');
+    $('#result').fadeOut();
+    document.location.href = create_query('staging');
+  });
+
   var do_plugin = function(plugin_idx){
     $('.btn').addClass('disabled');
     $('#result').fadeOut();
@@ -238,6 +244,7 @@ $(function(){
    <td>
     <button id="buildLocal" class="btn btn-primary">Local</button>
     <button id="buildLocalWatch" class="btn btn-primary"><span id="watchIcon" class="glyphicon glyphicon-refresh"></span> <span id="watchText">Local watch</span></button>
+    {if $enablestaging}<button id="buildStaging" class="btn btn-warning"><span class="glyphicon glyphicon-road"></span> Staging</button>{/if}
     <button id="buildProduction" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Production</button>
    </td>
   </tr>
