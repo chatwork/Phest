@@ -394,12 +394,13 @@
 			$smarty->assign('_time',$current_time);
 			$smarty->assign('_home',$home);
 			$smarty->assign('_path',$_path);
-			$smarty->assign('_folder',$_folder);
 			if ($_folder){
 				$_top = rtrim(str_repeat('../',substr_count($_folder, '/') + 1),'/');
 			}else{
 				$_top = '.';
+				$_folder = '.'; //folderが空の場合は、. を入れる
 			}
+			$smarty->assign('_folder',$_folder);
 			$smarty->assign('_top',$_top);
 			$smarty->assign('_content_tpl',$content_tpl);
 
