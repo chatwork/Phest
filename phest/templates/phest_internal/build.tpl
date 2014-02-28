@@ -36,6 +36,11 @@ a {
 .newSite {
   font-size:12px;
 }
+
+.pluginButton {
+  padding: 3px;
+  display: inline-block
+}
 </style>
 <script type="text/javascript">
 $(function(){
@@ -248,14 +253,20 @@ $(function(){
     <button id="buildProduction" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Production</button>
    </td>
   </tr>
+   {if $description}
+  <tr style="text-align:left">
+    <td colspan="{if $lang}3{else}2{/if}">{$description|nl2br}</td>
+  </tr>
+   {/if}
+  
    {if $extra_buttons}
-  <tr style="text-align:center">
+  <tr>
     <td colspan="{if $lang}3{else}2{/if}">プラグイン</td>
   </tr>
   <tr style="text-align:center">
     <td colspan="{if $lang}3{else}2{/if}">
     {foreach $extra_buttons as $idx => $btn_dat}
-     <button class="_pluginButtons btn {if isset($btn_dat.type)}btn-{$btn_dat.type}{/if}" data-plugin-idx="{$idx}"{if !empty($btn_dat.confirm)} data-confirm="1"{/if}>{if isset($btn_dat.icon)}<span class="glyphicon glyphicon-{$btn_dat.icon}"></span> {/if}{$btn_dat.label}</button>
+     <span class="pluginButton"><button class="_pluginButtons btn {if isset($btn_dat.type)}btn-{$btn_dat.type}{/if}" data-plugin-idx="{$idx}"{if !empty($btn_dat.confirm)} data-confirm="1"{/if}>{if isset($btn_dat.icon)}<span class="glyphicon glyphicon-{$btn_dat.icon}"></span> {/if}{$btn_dat.label}</button></span>
     {/foreach}
     </td>
   </tr>

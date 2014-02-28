@@ -1,7 +1,8 @@
 home:
-  local: "http://localhost/Phest/sites/sample_plugin/output/local"
-  production: "http://www.sample_plugin.com"
-basetpl: "_base.tpl"
+  local: http://localhost/Phest/sites/sample_plugin/output/local
+  production: http://www.sample_plugin.com
+basetpl: _base.tpl
+description: プラグインを活用したサイトサンプル
 buildclear: 1
 sitemap: 1
 robotstxt: 1
@@ -9,11 +10,11 @@ compilejs: 1
 compilecss: 1
 plugins:
   - concat:
-      output: "all.js"
+      output: all.js
       sources:[ "test.js", "test2.js" ]
   - copydir:
-      from: "cptest1"
-      to: "cptest2"
+      from: cptest1
+      to: cptest2
   -
      s3deploy:
        _button:

@@ -147,9 +147,10 @@ contents:
       下記の内容がデフォルトで入っています。
 
           home:
-            local: "http://localhost/Phest/sites/sample/output/local"
-            production: "http://www.sample.com"
-          basetpl: "_base.tpl"
+            local: http://localhost/Phest/sites/sample/output/local
+            production: http://www.sample.com
+          description: 
+          basetpl: _base.tpl
           buildclear: 1
           sitemap: 1
           robotstxt: 1
@@ -159,8 +160,10 @@ contents:
       `home` には、ローカル環境時と本番環境時のブラウザから見たルートパスを設定します。
       この設定値は、`{$_home}` としてテンプレート変数として自動でアサインされるため、`<a href="{$_home}/test.html"></a>` など、
       パスとして使用したい場合に便利です。
+      
+      `description` は、サイトの説明文を設定することができます。ここで設定した説明文は、Phestの操作画面上に表示されます。(デフォルト:)
 
-      `basetpl` は、レイアウトのベースとなるテンプレートファイル名を指定します。(デフォルト:_base.tpl)
+      `basetpl` は、レイアウトのベースとなるテンプレートファイル名を指定します。正規表現を使って、ベーステンプレートを切り替えることもできます。※高度な設定を参照(デフォルト:_base.tpl)
 
       `buildclear` は、ビルド時に `output/` の中身をすべて削除するかどうかのオプションです。
       1 ですべて削除し、0 を指定すると削除しません。(デフォルト:1)
@@ -184,6 +187,8 @@ contents:
     title: config.yml の高度な設定方法
     content:|
       下記のオプションはconfig.ymlにあらかじめ入っていませんが、追記することで設定できます。
+      
+      `enablestaging` は1を指定するとステージング用のビルド環境を使用できるようになります。(デフォルト:0)
 
       `leftdelimiter` はSmartyの左デリミタの文字を指定できます。(デフォルト:"{")
 
@@ -214,7 +219,18 @@ contents:
       `ignorecompilejs` はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、`regex: test/.*\.css` などの記法で正規表現での指定も可能です。　(デフォルト：[ ])
 
       `ignorecompilecss` はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、`regex: test/.*\.js` などの記法で正規表現での指定も可能です。(デフォルト：[ ])
-
+      
+      `basetpl`の高度な設定
+      
+          basetpl:
+            -
+              tpl: _base_html.tpl
+              regex: .*\.tpl$ # *.tpl はHTMLメール
+            -
+              tpl: _base_txt.tpl
+              regex: .*\.tpl\.txt$ # *.tpl.txt はテキストメール
+      
+      このような形で、正規表現にマッチした場合にどのベーステンプレートにするかを切り替えることができます。
   variables:
     title: vars.yml の設定方法
     content: |
@@ -422,6 +438,34 @@ contents:
     title: 実行にあたってのご注意
     content: |
       デプロイされるファイルはpublic-read権限でアップロードされ、すべてのユーザーが閲覧できるので注意してください。
+  s3deploy_protectpattern:
+    title: "[高度な設定]特定のオブジェクトキーを削除しないようにする"
+    content: |
+      PhestのS3デプロイプラグインでは、S3側に存在してローカルにないファイルは自動で削除します。
+      一つのバケットで複数のサイトを運用している場合などで、削除されると困る場合は設定で削除しないようにできます。
+      
+      設定例：
+      
+            -
+               s3deploy: #S3へデプロイする
+                 _button:
+                   label: デプロイ
+                   type: success
+                   icon: cloud-upload
+                   confirm: true
+                 dryrun: true
+                 prefix:
+                 bucket: mybuketname
+                 region: tokyo
+                 protectpatterns:
+                   - ja/.*
+                   - de/.*
+                 key: myaccesskey
+                 secret: mysecretkey
+      
+      `protectpatterns` というキーで、削除しないオブジェクトキーの正規表現を設定できます。
+      
+      このパターンにマッチしたファイルは実行すると **保持** と表示され、削除されません。
   s3deploy_credential:
     title: "[高度な設定] 認証ファイルを別のパスで管理する"
     content: |

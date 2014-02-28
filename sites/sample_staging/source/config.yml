@@ -1,8 +1,9 @@
 home:
-  local: "http://localhost/Phest/sites/sample_staging/output/local"
-  staging: "http://staging.sample_staging.com"
-  production: "http://www.sample_staging.com"
-basetpl: "_base.tpl"
+  local: http://localhost/Phest/sites/sample_staging/output/local
+  staging: http://staging.sample_staging.com
+  production: http://www.sample_staging.com
+basetpl: _base.tpl
+description: ステージング環境を有効にしたサイトサンプル。
 enablestaging: 1
 buildclear: 1
 sitemap: 1

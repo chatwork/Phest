@@ -1,6 +1,7 @@
 home:
-  local:"../sites/phest_document/output/local"
+  local: "../sites/phest_document/output/local"
   production: "http://localhost/phest/sites/phest_document"
+description: Phestのドキュメントを生成します。
 basetpl: "_base.tpl"
 buildclear: 1
 sitemap: 0

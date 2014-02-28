@@ -1,8 +1,11 @@
-# デフォルト設定
+#デフォルト設定
+#サイトのトップへのパス {$_home}の値となる
 home:
   local:
   staging:
   production: http://www.example.com
+#サイトの説明
+description: 
 #起点となるテンプレート
 basetpl: _base.tpl
 #Smartyの左デリミタ

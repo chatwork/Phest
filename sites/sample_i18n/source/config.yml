@@ -1,7 +1,8 @@
 home:
-  local: "http://localhost/Phest/sites/sample_i18n/output/local"
-  production: "http://www.sample_i18n.com"
-basetpl: "_base.tpl"
+  local: http://localhost/Phest/sites/sample_i18n/output/local
+  production: http://www.sample_i18n.com
+basetpl: _base.tpl
+description: 国際化対応サイトのサンプル
 buildclear: 1
 sitemap: 1
 robotstxt: 1
