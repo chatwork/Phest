@@ -32,7 +32,7 @@
     <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="changelogs.html">変更履歴 (2/06)<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (2/28)<i class="icoFontArrowChevronRight"></i></a></li>
  </ul>
 </div>
     <div id="_mainContent" class="mainContent">
@@ -42,9 +42,10 @@
   <h2>config.yml の設定方法</h2>  <p><p>下記の内容がデフォルトで入っています。</p>
 
 <pre><code>home:
-  local: "http://localhost/Phest/sites/sample/output/local"
-  production: "http://www.sample.com"
-basetpl: "_base.tpl"
+  local: http://localhost/Phest/sites/sample/output/local
+  production: http://www.sample.com
+description:
+basetpl: _base.tpl
 buildclear: 1
 sitemap: 1
 robotstxt: 1
@@ -56,7 +57,9 @@ compilecss: 1
 この設定値は、<code>{$_home}</code> としてテンプレート変数として自動でアサインされるため、<code>&lt;a href="{$_home}/test.html"&gt;&lt;/a&gt;</code> など、
 パスとして使用したい場合に便利です。</p>
 
-<p><code>basetpl</code> は、レイアウトのベースとなるテンプレートファイル名を指定します。(デフォルト:_base.tpl)</p>
+<p><code>description</code> は、サイトの説明文を設定することができます。ここで設定した説明文は、Phestの操作画面上に表示されます。(デフォルト:)</p>
+
+<p><code>basetpl</code> は、レイアウトのベースとなるテンプレートファイル名を指定します。正規表現を使って、ベーステンプレートを切り替えることもできます。※高度な設定を参照(デフォルト:_base.tpl)</p>
 
 <p><code>buildclear</code> は、ビルド時に <code>output/</code> の中身をすべて削除するかどうかのオプションです。
 1 ですべて削除し、0 を指定すると削除しません。(デフォルト:1)</p>
@@ -128,6 +131,8 @@ path:
   <div class="contentSection">
   <h2>config.yml の高度な設定方法</h2>  <p><p>下記のオプションはconfig.ymlにあらかじめ入っていませんが、追記することで設定できます。</p>
 
+<p><code>enablestaging</code> は1を指定するとステージング用のビルド環境を使用できるようになります。(デフォルト:0)</p>
+
 <p><code>leftdelimiter</code> はSmartyの左デリミタの文字を指定できます。(デフォルト:"{")</p>
 
 <p><code>rightdelimiter</code> はSmartyの右デリミタの文字を指定できます。(デフォルト:"}")</p>
@@ -157,6 +162,19 @@ path:
 <p><code>ignorecompilejs</code> はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、<code>regex: test/.*\.css</code> などの記法で正規表現での指定も可能です。　(デフォルト：[ ])</p>
 
 <p><code>ignorecompilecss</code> はsitemap.xmlに含めないファイルパスを指定できます。配列で定義することができ、文字列でパス名を指定できますが、<code>regex: test/.*\.js</code> などの記法で正規表現での指定も可能です。(デフォルト：[ ])</p>
+
+<p><code>basetpl</code>の高度な設定</p>
+
+<pre><code>basetpl:
+  -
+    tpl: _base_html.tpl
+    regex: .*\.tpl$ # *.tpl はHTMLメール
+  -
+    tpl: _base_txt.tpl
+    regex: .*\.tpl\.txt$ # *.tpl.txt はテキストメール
+</code></pre>
+
+<p>このような形で、正規表現にマッチした場合にどのベーステンプレートにするかを切り替えることができます。</p>
 </p>
  </div>
  
