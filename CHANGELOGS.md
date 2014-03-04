@@ -1,3 +1,15 @@
+### 2014年2月28日
+
+**v0.9.5** $_folder はトップディレクトリの場合、空文字列ではなく . が入るように。ステージング環境を有効にできるenablestagingオプションを追加。サイトの説明を表示するdescriptionオプションを追加。basetplを正規表現で切り替えることができる設定方法を追加。S3へのデプロイ時にS3側のオブジェクトを正規表現で削除させないパス設定が可能に。
+
+### 2014年2月06日
+
+**v0.9.4** leftdelimiter, rightdelimiter オプションを追加
+
+### 2014年2月04日
+
+**v0.9.3** scssphpをアップデート、productionビルド時にエラーメッセージが出る場合があるのを抑制
+
 ### 2014年1月30日
 
 **v0.9.2** ignorecompilejs, ignorecompilecss, credential オプションを追加
@@ -30,3 +42,5 @@ SmartBuilderからPhestに名称変更
 
 [俺聞け6 in Tokyo](http://www.msng.info/archives/2013/09/orekike6-schedule.php)にて[プレビュー公開](http://www.slideshare.net/mskmasaki/web-26886030)(旧名：SmartBuilder)
 
+
+Phest v0.9.5

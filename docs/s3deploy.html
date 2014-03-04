@@ -32,7 +32,7 @@
     <li class="select"><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="changelogs.html">変更履歴 (1/30)<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (2/28)<i class="icoFontArrowChevronRight"></i></a></li>
  </ul>
 </div>
     <div id="_mainContent" class="mainContent">
@@ -84,6 +84,35 @@ Amazon S3へのデプロイはPhestのプラグインとして実装されてお
  </div>
   <div class="contentSection">
   <h2>実行にあたってのご注意</h2>  <p><p>デプロイされるファイルはpublic-read権限でアップロードされ、すべてのユーザーが閲覧できるので注意してください。</p>
+</p>
+ </div>
+  <div class="contentSection">
+  <h2>[高度な設定]特定のオブジェクトキーを削除しないようにする</h2>  <p><p>PhestのS3デプロイプラグインでは、S3側に存在してローカルにないファイルは自動で削除します。
+一つのバケットで複数のサイトを運用している場合などで、削除されると困る場合は設定で削除しないようにできます。</p>
+
+<p>設定例：</p>
+
+<pre><code>  -
+     s3deploy: #S3へデプロイする
+       _button:
+         label: デプロイ
+         type: success
+         icon: cloud-upload
+         confirm: true
+       dryrun: true
+       prefix:
+       bucket: mybuketname
+       region: tokyo
+       protectpatterns:
+         - ja/.*
+         - de/.*
+       key: myaccesskey
+       secret: mysecretkey
+</code></pre>
+
+<p><code>protectpatterns</code> というキーで、削除しないオブジェクトキーの正規表現を設定できます。</p>
+
+<p>このパターンにマッチしたファイルは実行すると <strong>保持</strong> と表示され、削除されません。</p>
 </p>
  </div>
   <div class="contentSection">
