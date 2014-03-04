@@ -1,5 +1,8 @@
 changelogs:
   -
+    date: 2014-02-28
+    title: "**v0.9.5** $_folder はトップディレクトリの場合、空文字列ではなく . が入るように。ステージング環境を有効にできるenablestagingオプションを追加。サイトの説明を表示するdescriptionオプションを追加。basetplを正規表現で切り替えることができる設定方法を追加。S3へのデプロイ時にS3側のオブジェクトを正規表現で削除させないパス設定が可能に。"
+  -
     date: 2014-02-06
     title: "**v0.9.4** leftdelimiter, rightdelimiter オプションを追加"
   -

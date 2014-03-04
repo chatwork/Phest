@@ -64,16 +64,21 @@ class Phest {
     }
 
     /**
-     * ビルド種類 (local|production) をセット
+     * ビルド種類 (local|staging|production) をセット
      *
      * @method setBuildType
-     * @param ｓ
+     * @param string $buildtype
      */
     public function setBuildType($buildtype){
         $this->buildtype = $buildtype;
         return $this;
     }
-
+    
+    /**
+     * ビルド種類を返す
+     *
+     * @return string ビルド種類 (local|staging|production)
+     */
     public function getBuildType(){
         return $this->buildtype;
     }
@@ -425,6 +430,24 @@ class Phest {
                         '/home/bin',
                         '/bin',
                         );
+                    
+                    if (isset($_ENV['USER'])){
+                        //NVMをスキャン
+                        $dir_user = '/Users/'.$_ENV['USER'];
+                        if (is_dir($dir_user.'/.nvm')){
+                            $version_list = array();
+                            foreach (glob($dir_user.'/.nvm/v*') as $dirname){
+                                if (is_dir($dirname)){
+                                    $version_list[] = $dirname.'/bin';
+                                }
+                            }
+                            
+                            //バージョン番号が高い順にソート
+                            natsort($version_list);
+                            $command_path = array_merge($command_path,array_reverse($version_list));
+                        }
+                    }
+                    
                     break;
                 case 'WIN32':
                 case 'WINNT':

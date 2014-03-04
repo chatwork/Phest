@@ -1,0 +1,10 @@
+home:
+  local: http://localhost/Phest/sites/sample_yaml/output/local
+  production: http://www.sample_yaml.com
+basetpl: _base.tpl
+description: YAMLによる変数をつかったサンプル。YAML記法の参考に。
+buildclear: 1
+sitemap: 1
+robotstxt: 1
+compilejs: 1
+compilecss: 1

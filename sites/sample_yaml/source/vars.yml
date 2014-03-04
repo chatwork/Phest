@@ -1,0 +1,7 @@
+common:
+local:
+production:
+includes: [ contents.yml ] #外部のYAMLファイルをインクルード
+path:
+  index.html:
+    title: "Page Title"

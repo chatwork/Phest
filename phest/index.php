@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 
-	$ver = 'v0.9.4';
+	$ver = 'v0.9.5';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -98,12 +98,18 @@
 
 	$build = true;
 	$build_class = '';
+	$finalize = false;
 	switch ($buildtype){
 		case 'local':
 			$build_class = 'text-primary';
 			break;
+		case 'staging':
+			$build_class = 'text-success';
+			$finalize = true;
+			break;
 		case 'production':
 			$build_class = 'text-success';
+			$finalize = true;
 			break;
 		case 'plugin':
 			$build_class = 'text-primary';
@@ -174,6 +180,18 @@
 					$extra_buttons[$idx] = $plugin_params['_button'];
 				}
 			}
+		}
+		
+		//basetpl設定の読み込み
+		$basetpl_pattern = array();
+		if (is_array($config_yaml['basetpl'])){
+			foreach ($config_yaml['basetpl'] as $btpl_dat){
+				if (isset($btpl_dat['tpl']) and isset($btpl_dat['regex'])){
+					$basetpl_pattern[$btpl_dat['regex']] = $btpl_dat['tpl'];
+				}
+			}
+		}else{
+			$basetpl_pattern['.*'] = $config_yaml['basetpl'];
 		}
 
 		//言語設定
@@ -388,12 +406,13 @@
 			$smarty->assign('_time',$current_time);
 			$smarty->assign('_home',$home);
 			$smarty->assign('_path',$_path);
-			$smarty->assign('_folder',$_folder);
 			if ($_folder){
 				$_top = rtrim(str_repeat('../',substr_count($_folder, '/') + 1),'/');
 			}else{
 				$_top = '.';
+				$_folder = '.'; //folderが空の場合は、. を入れる
 			}
+			$smarty->assign('_folder',$_folder);
 			$smarty->assign('_top',$_top);
 			$smarty->assign('_content_tpl',$content_tpl);
 
@@ -458,7 +477,19 @@
 				$filepath = ltrim($dirname.'/'.$pagepath['filename'].'.html','/');
 
 				try {
-					$output_html = $smarty->fetch($config_yaml['basetpl']);
+					$basetpl = '';
+					foreach ($basetpl_pattern as $pattern => $tpl){
+						if (preg_match('/'.str_replace('/','\\/',$pattern).'/', $content_tpl)){
+							$basetpl = $tpl;
+							break;
+						}
+					}
+					
+					if (!$basetpl){
+						throw new \Exception('basetplの設定でベーステンプレートが見つかりません $content_tpl='.$content_tpl);
+					}
+					
+					$output_html = $smarty->fetch($basetpl);
 
 					if (!empty($config_yaml['encode'])){
 						$output_html = mb_convert_encoding($output_html, $config_yaml['encode']);
@@ -593,7 +624,7 @@
 				//js
 				if ($is_js){
 					//本番環境かつcompilejs=1なら圧縮
-					if ($buildtype == 'production' and !empty($config_yaml['compilejs'])){
+					if ($finalize and !empty($config_yaml['compilejs'])){
 
 						//ignorecomilejsオプションで、コンパイルしないjsを検証
 						if (!check_path_match($filepath,$config_yaml['ignorecompilejs'])){
@@ -626,7 +657,7 @@
 				//css
 				if ($is_css){
 					//本番環境かつcompilecss=1なら圧縮
-					if ($buildtype == 'production' and !empty($config_yaml['compilecss'])){
+					if ($finalize and !empty($config_yaml['compilecss'])){
 						if (!check_path_match($filepath,$config_yaml['ignorecompilecss'])){
 							$source = CssMin::minify($source);
 							$create_option .= ' (minified)';
@@ -726,6 +757,8 @@
 		$bsmarty->assign('site_list',$site_list);
 		$bsmarty->assign('lang',$lang);
 		$bsmarty->assign('lang_list',$lang_list);
+		$bsmarty->assign('description',$config_yaml['description']);
+		$bsmarty->assign('enablestaging',$config_yaml['enablestaging']);
 		$bsmarty->display('phest_internal/build.tpl');
 	}
 

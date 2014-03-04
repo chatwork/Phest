@@ -14,6 +14,7 @@
  * @param  enum    $params.region リージョン
  * @param  string  [$params.prefix] アップロードするキー名につけるPrefix
  * @param  string  $params.bucket バケット名
+ * @param  array   [$params.protectpatterns] 削除しないキー名の正規表現を配列で指定
  * @param  string  $params.key AWSのアクセスキー
  * @param  string  $params.secret AWSのシークレットキー
  * @param  Phest   $phest Phestオブジェクト
@@ -39,14 +40,35 @@ function plugin_button_s3deploy(array $params, Phest $phest){
     if (isset($params['prefix'])){
         $prefix = $params['prefix'];
     }
+    
+    if (isset($params['buildtype'])){
+        $buildtype = $params['buildtype'];
+    }else{
+        $buildtype = 'production';
+    }
+    
+    $protectpatterns = array();
+    if (isset($params['protectpatterns']) and is_array($params['protectpatterns'])){
+        $protectpatterns = $params['protectpatterns'];
+    }
+    
+    if (!is_array($protectpatterns)){
+        $protectpatterns = array();
+    }
+    
+    //ignore check
+    $protect_req_list = array();
+    foreach ($protectpatterns as $pattern){
+        $protect_req_list[] = '/'.str_replace('/','\\/',$pattern).'/';
+    }
 
     //$buckets = $s3->listBuckets();
     //print_a($buckets);
 
-    $upload_dir = $phest->getOutputPath($phest->getLang(),'production');
+    $upload_dir = $phest->getOutputPath($phest->getLang(),$buildtype);
 
     if (!is_dir($upload_dir)){
-        $phest->add('s3deployerror','productionでビルドされたファイルが存在しません');
+        $phest->add('s3deployerror',$buildtype.'でビルドされたファイルが存在しません');
         return false;
     }
 
@@ -88,7 +110,7 @@ function plugin_button_s3deploy(array $params, Phest $phest){
     $region = constant('\Aws\Common\Enum\Region::'.$region_key);
     $access_key = $params['key'];
     $secret_key = $params['secret'];
-    $phest->add('s3deploy','リージョン: '.$region.' バケット: '.$bucket);
+    $phest->add('s3deploy','リージョン: '.$region.' バケット: '.$bucket.' ビルド: '.$buildtype);
     try {
         $s3 = S3Client::factory(array(
             'key' => $access_key,
@@ -126,15 +148,19 @@ function plugin_button_s3deploy(array $params, Phest $phest){
     $file_list = File::getFileList($upload_dir);
     foreach ($file_list as $filepath){
         $key = strtr(ltrim(substr($filepath,strlen($upload_dir)),'\\/'),'\\','/');
-
+        
         //upload
         $keyname = $prefix.$key;
+        
         try {
             if (!$dryrun){
+                //何か出力しないとブラウザ側でタイムアウトするので空白を出力
+                echo '<span></span>';@flush();@ob_flush();
+                
                 $result = $s3->putObject(array(
                     'Bucket' => $bucket,
                     'Key' => $keyname,
-                    'Body' => EntityBody::factory(fopen($filepath,'r+')),
+                    'Body' => EntityBody::factory(fopen($filepath,'r')),
                     'ACL' => CannedAcl::PUBLIC_READ,
                     ));
             }
@@ -146,9 +172,9 @@ function plugin_button_s3deploy(array $params, Phest $phest){
                 $phest->add('s3deploy','追加: '.$keyname.$message_option);
             }
         } catch (S3Exception $e){
-            $phest->add('s3deployerror',$e->getMessage());
+            $phest->add('s3deployerror','PutObject: '.$e->getMessage());
         } catch (\Exception $e){
-            $phest->add('s3deployerror',$e->getMessage());
+            $phest->add('s3deployerror','PutObject: '.$e->getMessage());
             return false;
         }
     }
@@ -157,9 +183,20 @@ function plugin_button_s3deploy(array $params, Phest $phest){
     foreach (array_chunk(array_keys($object_flag),1000) as $chunked_key_list){
         $key_list = array();
         foreach ($chunked_key_list as $key){
+            //ignore check
+            foreach ($protect_req_list as $pattern){
+                if (preg_match($pattern,$key)){
+                    $phest->add('s3deploy','保持: '.$key.$message_option);
+                    continue 2;
+                }
+            }
+            
             $key_list[] = array('Key' => $key);
         }
-
+        
+        if (!$key_list){
+            continue;
+        }
         try {
             if (!$dryrun){
                 $result = $s3->deleteObjects(array(
@@ -168,13 +205,13 @@ function plugin_button_s3deploy(array $params, Phest $phest){
                     ));
             }
 
-            foreach ($chunked_key_list as $key){
-                $phest->add('s3deploy','削除: '.$key.$message_option);
+            foreach ($key_list as $item){
+                $phest->add('s3deploy','削除: '.current($item).$message_option);
             }
         } catch (S3Exception $e){
-            $phest->add('s3deployerror',$e->getMessage());
+            $phest->add('s3deployerror','DeleteObject: '.$e->getMessage());
         } catch (\Exception $e){
-            $phest->add('s3deployerror',$e->getMessage());
+            $phest->add('s3deployerror','DeleteObject: '.$e->getMessage());
             return false;
         }
     }

@@ -1,6 +1,7 @@
 home:
   local:"../sites/sample/output/local"
   production:"http://www.sample.com"
+description: Phestの動作がわかるベーシックなサンプルです。{$_top}などの変数がどうセットされるのか、ナビゲーションメニューにおいて現在のメニュー位置にclassをあてる方法など参考にしてみてください。
 basetpl: "_base.tpl"
 buildclear:1
 sitemap:1

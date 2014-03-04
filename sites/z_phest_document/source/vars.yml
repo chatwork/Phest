@@ -26,7 +26,7 @@ path:
     content_keys: [ smartyintro, assignedvars, templatefuncs ]
   s3deploy.html:
     title: "Amazon S3へのデプロイ"
-    content_keys: [ s3deploy, s3deploy_detail, s3deploy_credential ]
+    content_keys: [ s3deploy, s3deploy_detail, s3deploy_protectpattern, s3deploy_credential ]
   i18n.html:
     title: "多言語対応"
     content_keys: [ i18n ]

@@ -1,0 +1,1 @@
+{include file=$_content_tpl}

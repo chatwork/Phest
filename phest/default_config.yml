@@ -1,7 +1,11 @@
-# デフォルト設定
+#デフォルト設定
+#サイトのトップへのパス {$_home}の値となる
 home:
   local:
+  staging:
   production: http://www.example.com
+#サイトの説明
+description: 
 #起点となるテンプレート
 basetpl: _base.tpl
 #Smartyの左デリミタ
@@ -10,6 +14,8 @@ leftdelimiter: "{"
 rightdelimiter: "}"
 #出力する文字エンコード
 encode:
+#ステージング環境を有効にするか
+enablestaging: 0
 #outputディレクトリをbuild時に中身を削除するか
 buildclear: 1
 #sitemap.xmlをつくるか

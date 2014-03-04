@@ -1,7 +1,8 @@
 home:
-  local: "http://localhost/Phest/sites/{{site}}/output/local"
-  production: "http://www.{{site}}.com"
-basetpl: "_base.tpl"
+  local: http://localhost/Phest/sites/{{site}}/output/local
+  production: http://www.{{site}}.com
+description: 
+basetpl: _base.tpl
 buildclear: 1
 sitemap: 1
 robotstxt: 1

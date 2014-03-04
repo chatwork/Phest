@@ -1,0 +1,40 @@
+# YAMLの書き方サンプル
+contents:
+  # 文字列
+  string1: phest
+  string2: "Phest" #ダブルクォーテーションは省略可能
+
+  # 数値
+  int1: 123
+
+  # 複数行の文字列
+  # 改行コードは維持される
+  # 文字列の先頭のインデントを揃えること
+  multistring: |
+    Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです。
+    (Phest = PHP Easy Static Site Generator)
+
+  # 配列
+  array1:
+    - phest
+    - "Phest"
+    - 123
+
+  # 違う表記もできる
+  array2: [phest, "Phest", 123]
+
+  # ハッシュの配列
+  array3:
+    -
+      string1: abc
+      string2: ABC
+    -
+      int1: 123
+      int2: 345
+
+  # ネスト
+  # インデントをつけることで階層構造をつくることができる
+  nest1:
+    nest2:
+      nest3:
+        nest4: ABC

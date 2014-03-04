@@ -1,8 +1,16 @@
 home:
-  local:"http://localhost/Phest/sites/sample_htmlmail/output/local"
-  production:"http://www.sample.com"
-basetpl: "_base.tpl"
-encode:"jis"
+  local: http://localhost/Phest/sites/sample_htmlmail/output/local
+  production: http://www.sample.com
+description: HTMLメールを生成するサンプル。代替テキストメールも生成する。
+# 拡張子によりベーステンプレートを切り替える
+basetpl:
+  -
+    tpl: _base_html.tpl
+    regex: .*\.tpl$ #.tpl はHTMLメール
+  -
+    tpl: _base_txt.tpl
+    regex: .*\.tpl\.txt$ #.tpl.txt はテキストメール
+encode: jis
 buildclear:1
 sitemap:0
 robotstxt:0
