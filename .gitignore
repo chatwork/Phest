@@ -1,8 +1,8 @@
 phest/cache
-sites/phest_document/output
 sites/sample/output
 sites/sample_htmlmail/output
 sites/sample_i18n/output
 sites/sample_plugin/output
 sites/sample_staging/output
 sites/sample_yaml/output
+sites/z_phest_document/output

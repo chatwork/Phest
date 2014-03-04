@@ -1,0 +1,17 @@
+home:
+  local: "../sites/z_phest_document/output/local"
+  production: "http://chatwork.github.io/Phest"
+description: Phestのドキュメントサイトを生成します。GitHub用のREADME.mdもあわせて生成するため、コンテンツは一元管理するためYAMLに記述されています。
+basetpl: "_base.tpl"
+buildclear: 1
+sitemap: 0
+robotstxt: 0
+compilejs: 1
+compilecss: 1
+plugins:
+  -
+    publish:　#README.md をコピーし、 docs/ フォルダを更新
+      _button:
+        label: 公開用にコピー
+        type: primary
+        icon: ok-circle
