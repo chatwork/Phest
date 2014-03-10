@@ -6,3 +6,4 @@ sites/sample_plugin/output
 sites/sample_staging/output
 sites/sample_yaml/output
 sites/z_phest_document/output
+phest/lib/vendor/smarty/smarty/.svn

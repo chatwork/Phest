@@ -18,7 +18,7 @@
 
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
-
+	
 	$ver = 'v0.9.5';
 
 	error_reporting(E_ALL);
@@ -263,8 +263,25 @@
 		}
 		$home_local = '../sites/'.$site.$phest->getBuildDirName();
 
-		$phest->registerSection('create','作成したファイル',array('type' => 'info','sort' => true));
-
+		$phest->registerSection('create','作成したファイル',array('type' => 'info','sort' => true,'subsection' => array('page' => 'ページ','image' => '画像','cssjs' => 'JavaScript/CSS','etc' => 'その他')));
+		$create_subsection_pattern = array(
+			'html' => 'page',
+			'jpg' => 'image',
+			'png' => 'image',
+			'gif' => 'image',
+			'jpeg' => 'image',
+			'bmp' => 'image',
+			'ico' => 'image',
+			'svg' => 'image',
+			'js' => 'cssjs',
+			'coffee' => 'cssjs',
+			'css' => 'cssjs',
+			'less' => 'cssjs',
+			'scss' => 'cssjs',
+			'styl' => 'cssjs',
+			'style' => 'cssjs',
+			);
+		
 		//Smarty
 		$smarty = new Smarty;
 		$smarty->template_dir = array($dir_content,DIR_PHEST.'/templates');
@@ -495,7 +512,8 @@
 						$output_html = mb_convert_encoding($output_html, $config_yaml['encode']);
 					}
 					File::buildPutFile($dir_output.'/'.$filepath,$output_html);
-					$phest->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
+					
+					$phest->add('create','page','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
 				} catch (\Exception $e){
 					$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 					continue;
@@ -561,11 +579,16 @@
 			$filepart = explode('.',$filepath);
 			$filebase = '';
 			$extensions = array();
+			$last_extension = '';
 			for ($i = 0;$i < count($filepart);$i++){
 				if ($i == 0){
 					$filebase = $filepart[0];
 				}else{
 					$extensions[$filepart[$i]] = true;
+					
+					if ($i == (count($filepart) - 1)){
+						$last_extension = $filepart[$i];
+					}
 				}
 			}
 
@@ -694,7 +717,20 @@
 			if ($create_option){
 				$create_option = ' <code>'.trim($create_option).'</code>';
 			}
-			$phest->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
+			
+			$subsection_key = 'etc';
+			if (isset($create_subsection_pattern[$last_extension])){
+				$subsection_key = $create_subsection_pattern[$last_extension];
+			}
+			
+			$anchortext = '';
+			if ($subsection_key == 'image'){
+				$anchortext = '<img src="'.$home_local.'/'.$filepath.'" style="width:30px;height:30px;" /> '.$filepath;
+			}else{
+				$anchortext = $filepath;
+			}
+			
+			$phest->add('create',$subsection_key,'<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$anchortext.'</a>'.$create_option);
 		}
 
 		//Smarty処理して生成したファイルを削除
@@ -707,14 +743,14 @@
 			$smarty->assign('_urls',$urls);
 			$filepath = '/sitemap.xml';
 			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/sitemap_xml.tpl'));
-			$phest->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
+			$phest->add('create','etc','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 
 		//robots.txt
 		if (!empty($config_yaml['robotstxt'])){
 			$filepath = '/robots.txt';
 			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/robots_txt.tpl'));
-			$phest->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
+			$phest->add('create','etc','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 
 		//フィニッシュプラグインの実行

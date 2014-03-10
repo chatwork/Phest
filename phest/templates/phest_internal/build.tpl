@@ -278,6 +278,8 @@ $(function(){
 <div id="watchStatus" style="padding:5px;display:none"><img src="./assets/image/ajax-loader.gif" style="width:25px;height:25px"/>更新をチェック中....</div>
 <section id="result" class="resultSection"></section>
 
+<div style="height:200px"></div>
+
 <script id="messageListTemplate" type="text/template">
  <% _.each(message_list,function(section_dat){ %>
   <div class="panel panel-<%= section_dat.type %>">
@@ -285,11 +287,35 @@ $(function(){
     <h3 class="panel-title"><%= section_dat.title %></h3>
    </div>
    <div class="panel-body">
-    <ul>
-     <% _.each(section_dat.list,function(msg){ %>
-      <li><%= msg %></li>
-     <% }); %>
-    </ul>
+    <% if (section_dat.subsection) { %>
+     <ul class="nav nav-tabs">
+     <% for (var i = 0;i < section_dat.subsection_list.length;i++){ var subsection = section_dat.subsection_list[i]; %>
+      <% if (section_dat.sublist[subsection]) { %>
+      <li<% if (i == 0) { %> class="active"<% } %>><a href="#<%= section_dat.id %>-<%= subsection %>" data-toggle="tab"><%= section_dat.subsection[subsection] %> (<%= section_dat.sublist[subsection].length %>)</a></li>
+      <% } %>
+     <% }; %>
+     </ul>
+     
+     <div class="tab-content">
+      <% for (var i = 0;i < section_dat.subsection_list.length;i++){ var subsection = section_dat.subsection_list[i]; %>
+       <div class="tab-pane<% if (i == 0) { %> active<% } %>" id="<%= section_dat.id%>-<%= subsection %>">
+        <p class="text-left">
+         <ul>
+          <% _.each(section_dat.sublist[subsection],function(msg){ %>
+           <li><%= msg %></li>
+          <% }); %>
+         </ul>
+        </p>
+       </div>
+      <% } %>
+     </div>
+    <% } else { %>
+     <ul>
+      <% _.each(section_dat.list,function(msg){ %>
+       <li><%= msg %></li>
+      <% }); %>
+     </ul>
+    <% } %>
    </div>
   </div>
  <% }); %>
