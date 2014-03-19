@@ -24,8 +24,6 @@ function plugin_button_s3deploy(array $params, Phest $phest){
     $phest->registerSection('s3deploy','デプロイ完了');
     $phest->registerSection('s3deployerror','デプロイエラー',array('type' => 'danger'));
 
-    require(DIR_PHEST.'/lib/vendor/aws/aws.phar');
-
     if ($phest->hasError()){
         $phest->add('s3deployerror','エラーが発生しているためデプロイしません');
         return false;
