@@ -22,7 +22,7 @@ class Compiler {
         }
 
         if (!class_exists($classname)){
-            require(dirname(__FILE__).'/Compiler/'.$classname.'.php');
+            require(__DIR__.'/'.$classname.'.php');
         }
 
         $classname = '\\ChatWork\\Phest\\'.$classname;

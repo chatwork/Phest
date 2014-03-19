@@ -1,15 +1,13 @@
 <?php
     namespace ChatWork\Phest;
 
-    require(DIR_PHEST.'/lib/vendor/lessphp/lessc.inc.php');
-    use \lessc;
-
 class CompilerLess extends CompilerBase {
     public function compile($source,$pathname){
-        $less = new lessc;
-        $less->setImportDir(dirname($pathname));
-
-        return $less->compile($source);
+        $less = new \Less_Parser;
+        $less->SetImportDirs(array(dirname($pathname) => './'));
+        $less->parse($source);
+        
+        return $less->getCss();
     }
 
     public function getSectionKey(){

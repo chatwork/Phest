@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),
+    'Phest\\' => array($baseDir . '/lib'),
     'Netcarver\\Textile' => array($vendorDir . '/netcarver/textile/src'),
     'Michelf' => array($vendorDir . '/michelf/php-markdown'),
     'Less' => array($vendorDir . '/oyejorge/less.php/lib'),

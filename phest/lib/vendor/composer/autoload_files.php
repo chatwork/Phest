@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    $vendorDir . '/oodle/krumo/class.krumo.php',
+    $vendorDir . '/raulfraile/ladybug-themes/Ladybug/Plugin/Extra/Resources/php/helpers.php',
 );

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "d59a88f7b062b3fa25bc26ec7fc195b0",
+    "hash": "90cb16d6f297fd96dfba3ecd9caa0dbc",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -215,12 +215,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/leafo/scssphp.git",
-                "reference": "870ec8629457588ca6031cdd7d9acc2693bd5ce6"
+                "reference": "d56bbeedd45f02a672c4be14ff34f7977822cd56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp/zipball/870ec8629457588ca6031cdd7d9acc2693bd5ce6",
-                "reference": "870ec8629457588ca6031cdd7d9acc2693bd5ce6",
+                "url": "https://api.github.com/repos/leafo/scssphp/zipball/d56bbeedd45f02a672c4be14ff34f7977822cd56",
+                "reference": "d56bbeedd45f02a672c4be14ff34f7977822cd56",
                 "shasum": ""
             },
             "require": {
@@ -253,7 +253,7 @@
             ],
             "description": "scssphp is a compiler for SCSS written in PHP.",
             "homepage": "http://leafo.net/scssphp/",
-            "time": "2014-01-16 14:20:38"
+            "time": "2014-03-13 18:39:44"
         },
         {
             "name": "michelf/php-markdown",
@@ -402,70 +402,17 @@
             "time": "2014-01-02 09:39:06"
         },
         {
-            "name": "oodle/krumo",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/oodle/krumo.git",
-                "reference": "48239769290e267fd7d6ddd1c37e08f96b87221e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/oodle/krumo/zipball/48239769290e267fd7d6ddd1c37e08f96b87221e",
-                "reference": "48239769290e267fd7d6ddd1c37e08f96b87221e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.17"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "class.krumo.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL"
-            ],
-            "authors": [
-                {
-                    "name": "Kaloyan K. Tsvetkov",
-                    "email": "kaloyan@kaloyan.info"
-                },
-                {
-                    "name": "Matthew J. Mucklo",
-                    "email": "mmucklo@corp.oodle.com"
-                },
-                {
-                    "name": "Stefan Thomas",
-                    "email": "moon@justmoon.de"
-                }
-            ],
-            "description": "KRUMO - version 2.0 of print_r(); and var_dump(); (with new updates)",
-            "keywords": [
-                "debug",
-                "debugging",
-                "krumo",
-                "pretty",
-                "print",
-                "print_r",
-                "var_dump"
-            ],
-            "time": "2014-02-26 21:10:16"
-        },
-        {
             "name": "oyejorge/less.php",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oyejorge/less.php.git",
-                "reference": "cf37ede150bc810ef215414df65895733bce82f4"
+                "reference": "05144b5692e43173e92f7681da980d9a198c286a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oyejorge/less.php/zipball/cf37ede150bc810ef215414df65895733bce82f4",
-                "reference": "cf37ede150bc810ef215414df65895733bce82f4",
+                "url": "https://api.github.com/repos/oyejorge/less.php/zipball/05144b5692e43173e92f7681da980d9a198c286a",
+                "reference": "05144b5692e43173e92f7681da980d9a198c286a",
                 "shasum": ""
             },
             "require": {
@@ -511,15 +458,15 @@
                 "php",
                 "stylesheet"
             ],
-            "time": "2014-03-06 17:01:06"
+            "time": "2014-03-18 05:54:49"
         },
         {
             "name": "smarty/smarty",
-            "version": "dev-trunk",
+            "version": "v3.1.17",
             "source": {
                 "type": "svn",
                 "url": "http://smarty-php.googlecode.com/svn",
-                "reference": "/trunk/@4815"
+                "reference": "/tags/v3.1.17/@4818"
             },
             "require": {
                 "php": ">=5.2"
@@ -555,7 +502,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-02-17 19:21:31"
+            "time": "2014-03-12 20:51:46"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -673,13 +620,11 @@
     "stability-flags": {
         "symfony/yaml": 20,
         "coffeescript/coffeescript": 20,
-        "smarty/smarty": 20,
         "natxet/cssmin": 20,
         "michelf/php-markdown": 20,
         "leafo/scssphp": 20,
         "netcarver/textile": 20,
-        "oyejorge/less.php": 20,
-        "oodle/krumo": 20
+        "oyejorge/less.php": 20
     },
     "platform": [
 

@@ -1,7 +1,6 @@
 <?php
     namespace ChatWork\Phest;
 
-    require(DIR_PHEST.'/lib/vendor/scssphp/scss.inc.php');
     use \scssc;
 
 class CompilerSass extends CompilerBase {

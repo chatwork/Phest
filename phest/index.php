@@ -27,22 +27,22 @@
 	set_time_limit(600);
 
 	require(DIR_PHEST.'/lib/function.php');
-	require(DIR_PHEST.'/lib/Phest.php');
-	require(DIR_PHEST.'/lib/Compiler.php');
-	require(DIR_PHEST.'/lib/LanguageBuilder.php');
-
-	require(DIR_PHEST.'/lib/File.php');
-	use \ChatWork\Utility\File;
-
-	require(DIR_PHEST.'/lib/vendor/smarty/Smarty.class.php');
-	use \Smarty;
-	require(DIR_PHEST.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
-	use \CssMin;
-
+	require(DIR_PHEST.'/lib/src/Phest.php');
+	require(DIR_PHEST.'/lib/src/Compiler/Compiler.php');
+	require(DIR_PHEST.'/lib/src/LanguageBuilder.php');
+	require(DIR_PHEST.'/lib/src/Utility/File.php');
+	
 	require(DIR_PHEST.'/lib/vendor/debuglib.php');
-	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
+	require(DIR_PHEST.'/lib/vendor/autoload.php');
+	
+	use \ChatWork\Utility\File;
+	use \Smarty;
+	use \CssMin;
+	use \Symfony\Component\Yaml\Parser;
+	use \Symfony\Component\Yaml\Exception\ParseException;
 
 	$phest = Phest::getInstance();
+	$yamlp = new Parser();
 	$current_time = time();
 
 	$site_list = array();
@@ -148,7 +148,12 @@
 		if (!file_exists($dir_content)){
 			die('contentフォルダが見つかりません。path='.$dir_content);
 		}
-		$config_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_config.yml'),spyc_load_file($path_config_yml));
+		
+		try {
+			$config_yaml = array_merge($yamlp->parse(file_get_contents(DIR_PHEST.'/default_config.yml')),$yamlp->parse(file_get_contents($path_config_yml)));
+		} catch (ParseException $e){
+			die('config.yml の解析に失敗しました。エラー: '.$e->getMessage());
+		}
 
 		//認証情報の読み込み
 		if (!empty($config_yaml['credential'])){
@@ -244,8 +249,14 @@
 		$dir_output = $phest->getOutputPath();
 
 		File::buildMakeDir($dir_output);
-		$default_vars_yaml = spyc_load_file(DIR_PHEST.'/default_vars.yml');
-		$source_vars_yaml = spyc_load_file($path_vars_yml);
+		$default_vars_yaml = $yamlp->parse(file_get_contents(DIR_PHEST.'/default_vars.yml'));
+		
+		try {
+			$source_vars_yaml = $yamlp->parse(file_get_contents($path_vars_yml));
+		} catch (ParseException $e){
+			die('vars.yml の解析に失敗しました。エラー: '.$e->getMessage());
+		}
+		
 		$vars_yaml = array_merge_recursive_distinct($default_vars_yaml,$source_vars_yaml);
 
 		if (!isset($vars_yaml['common']) or !is_array($vars_yaml['common'])){
@@ -354,7 +365,12 @@
 
 		//vars.ymlのincludesを処理
 		foreach ($include_vars_list as $ipath){
-			$inc_yaml = spyc_load_file($ipath);
+			try {
+				$inc_yaml = $yamlp->parse(file_get_contents($ipath));
+			} catch (ParseException $e){
+				$phest->add('builderror',basename($ipath).' の解析に失敗しました。エラー: '.$e->getMessage());
+				$inc_yaml = array();
+			}
 			$core_vars_yaml = array_merge_recursive_distinct($core_vars_yaml,$inc_yaml);
 		}
 
@@ -785,7 +801,7 @@
 	}else{
 		$bsmarty = new Smarty;
 		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
-
+		
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$phest->getMessageData());
 		$bsmarty->assign('extra_buttons',$extra_buttons);
