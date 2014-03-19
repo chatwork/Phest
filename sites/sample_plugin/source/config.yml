@@ -11,7 +11,7 @@ compilecss: 1
 plugins:
   - concat:
       output: all.js
-      sources:[ "test.js", "test2.js" ]
+      sources: [ "test.js", "test2.js" ]
   - copydir:
       from: cptest1
       to: cptest2

@@ -1,7 +1,7 @@
 common:
   sitename: "Phest ドキュメント"
   description: "Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです"
-  navigations:[ index.html, install.html, newsite.html, configurations.html, assets.html, smarty.html, s3deploy.html, i18n.html, plugins.html ]
+  navigations: [ index.html, install.html, newsite.html, configurations.html, assets.html, smarty.html, s3deploy.html, i18n.html, plugins.html ]
 local:
 production:
 includes: [ contents.yml, changelogs.yml ]

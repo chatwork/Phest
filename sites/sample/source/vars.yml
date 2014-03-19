@@ -1,24 +1,24 @@
 common:
-  test:"ABC"
-  title:"no title"
+  test: "ABC"
+  title: "no title"
   contents:
     -
-      title:タイトル1
-      content:コンテンツ1
+      title: タイトル1
+      content: コンテンツ1
     -
-      title:タイトル2
-      content:|
+      title: タイトル2
+      content: |
         コンテンツ2
         **コンテンツ2**
         コンテンツ2
 local:
-  title:'local'
+  title: 'local'
 production:
-  title:'production'
+  title: 'production'
 path:
   index.html:
-    title:"index page"
+    title: "index page"
   feature/:
-    test:"DEF"
+    test: "DEF"
   feature/index.html:
-    title:"feature page"
+    title: "feature page"
