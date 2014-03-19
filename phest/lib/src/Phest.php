@@ -2,6 +2,8 @@
     namespace ChatWork\Phest;
 
     use \ChatWork\Utility\File;
+    use \Symfony\Component\Yaml\Parser;
+    use \Symfony\Component\Yaml\Exception\ParseException;
 
 /**
  * Phestの様々な処理を行う
@@ -180,7 +182,13 @@ class Phest {
      * @return bool 成功したか
      */
     public function loadCredential($yaml_path){
-        $this->credentials = spyc_load_file($yaml_path);
+        $yamlp = new Parser();
+        
+        try {
+            $this->credentials = $yamlp->parse(file_get_contents($yaml_path));
+        } catch (ParseException $e){
+            $phest->add('builderror',basename($yaml_path).' の解析に失敗しました。エラー: '.$e->getMessage());
+        }
     }
 
     /**

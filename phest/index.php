@@ -38,6 +38,7 @@
 	use \ChatWork\Utility\File;
 	use \Smarty;
 	use \CssMin;
+	use \Devize\ClosureCompiler\ClosureCompiler;
 	use \Symfony\Component\Yaml\Parser;
 	use \Symfony\Component\Yaml\Exception\ParseException;
 
@@ -140,19 +141,19 @@
 
 		//yaml load
 		if (!file_exists($path_config_yml)){
-			die('config.ymlが見つかりません。path='.$path_config_yml);
+			die('['.$site.'] config.ymlが見つかりません。path='.$path_config_yml);
 		}
 		if (!file_exists($path_vars_yml)){
-			die('vars.ymlが見つかりません。path='.$path_vars_yml);
+			die('['.$site.'] vars.ymlが見つかりません。path='.$path_vars_yml);
 		}
 		if (!file_exists($dir_content)){
-			die('contentフォルダが見つかりません。path='.$dir_content);
+			die('['.$site.'] contentフォルダが見つかりません。path='.$dir_content);
 		}
 		
 		try {
 			$config_yaml = array_merge($yamlp->parse(file_get_contents(DIR_PHEST.'/default_config.yml')),$yamlp->parse(file_get_contents($path_config_yml)));
 		} catch (ParseException $e){
-			die('config.yml の解析に失敗しました。エラー: '.$e->getMessage());
+			die('['.$site.'] config.yml の解析に失敗しました。エラー: '.$e->getMessage());
 		}
 
 		//認証情報の読み込み
@@ -568,6 +569,9 @@
 			}
 		}
 
+		$gccomiler = new ClosureCompiler();
+		$gccomiler->setSourceBaseDir($dir_output);
+		$gccomiler->setTargetBaseDir($dir_output);
 		foreach ($assets_list as $path_dat){
 			$create_option = '';
 			$pathname = $path_dat['pathname'];
@@ -671,20 +675,27 @@
 							echo '<span></span>';@flush();@ob_flush();
 
 							//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
+							$tmp_filename = $filepath.'.tmp';
+							$source_tmp = $dir_output.'/'.$tmp_filename;
 							$output_to = $dir_output.'/'.$filepath;
-							$source_tmp = $dir_output.'/'.$filepath.'.tmp';
 							File::buildPutFile($source_tmp,$source);
 
 							//コンパイル
-							compile($source_tmp,$output_to);
+							$gccomiler->setSourceFiles(array($tmp_filename));
+							$gccomiler->setTargetFile($filepath);
+							$gccomiler->compile();
+							
+							$org_filesize = filesize($pathname);
+							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
+								$phest->add('jscompileerror',"コンパイルに失敗しました: <strong>".$filepath.'</strong>');
+								continue;
+							}
+							
 							//完了したらテンポラリファイルを削除
 							unlink($source_tmp);
 
 							$org_filesize = filesize($pathname);
-							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
-								$phest->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
-								continue;
-							}
+							
 							$is_output = false;
 							$create_option .= ' (minified)';
 						}else{

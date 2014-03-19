@@ -1,4 +1,7 @@
 <?php
+    use \Symfony\Component\Yaml\Parser;
+    use \Symfony\Component\Yaml\Exception\ParseException;
+    
 function smarty_block_vars($params, $content, $template, &$repeat)
 {
     if(!$repeat){
@@ -10,7 +13,13 @@ function smarty_block_vars($params, $content, $template, &$repeat)
             $vars = array();
             switch ($params['type']){
                 case 'yaml':
-                    $vars = spyc_load($content);
+                    $yamlp = new Parser();
+                    
+                    try {
+                        $this->credentials = $yamlp->parse($content);
+                    } catch (ParseException $e){
+                        throw new Exception('Smarty Plugin Error: {vars} yaml parse error '.$e->getMessage());
+                    }
                     break;
                 case 'json':
                     $vars = json_decode($content, true);
@@ -40,7 +49,7 @@ function smarty_block_vars($params, $content, $template, &$repeat)
                     }
 
                     if ($json_error){
-                        throw new Exception('Smarty Plugin Error: {vars} json parse error'.$json_error);
+                        throw new Exception('Smarty Plugin Error: {vars} json parse error '.$json_error);
                     }
                     break;
                 default:

@@ -11,6 +11,7 @@
         "michelf/php-markdown": "1.4.*@dev",
         "leafo/scssphp": "dev-master",
         "netcarver/textile": "3.5.*@dev",
-        "oyejorge/less.php": "dev-master"
+        "oyejorge/less.php": "dev-master",
+        "devize/closure-compiler": "dev-master"
     }
 }

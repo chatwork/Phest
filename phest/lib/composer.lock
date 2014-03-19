@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "90cb16d6f297fd96dfba3ecd9caa0dbc",
+    "hash": "15e9d9d84d695cfd86e34f9d3d9855a1",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -116,6 +116,43 @@
                 "javascript"
             ],
             "time": "2012-12-18 03:52:51"
+        },
+        {
+            "name": "devize/closure-compiler",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/devize/closure-compiler.git",
+                "reference": "adf9a5bdef3c404e3066ab095bd0fae0368aa814"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/devize/closure-compiler/zipball/adf9a5bdef3c404e3066ab095bd0fae0368aa814",
+                "reference": "adf9a5bdef3c404e3066ab095bd0fae0368aa814",
+                "shasum": ""
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "*",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Peter Breuls",
+                    "email": "breuls@devize.nl"
+                }
+            ],
+            "description": "Google's Closure Compiler for use in PHP-based projects",
+            "time": "2013-08-14 11:53:34"
         },
         {
             "name": "guzzle/guzzle",
@@ -624,7 +661,8 @@
         "michelf/php-markdown": 20,
         "leafo/scssphp": 20,
         "netcarver/textile": 20,
-        "oyejorge/less.php": 20
+        "oyejorge/less.php": 20,
+        "devize/closure-compiler": 20
     },
     "platform": [
 

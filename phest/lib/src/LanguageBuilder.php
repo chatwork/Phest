@@ -1,6 +1,9 @@
 <?php
 	namespace ChatWork\Phest;
 
+    use \Symfony\Component\Yaml\Parser;
+    use \Symfony\Component\Yaml\Exception\ParseException;
+    
 /**
  * 多言語処理を行うクラス
  */
@@ -26,7 +29,13 @@ class LanguageBuilder {
 	 * @param string $yaml_path 言語が定義されたYAMLパス
 	 */
 	public function process($yaml_path){
-		$lang_dat = spyc_load_file($yaml_path);
+        $yamlp = new Parser();
+        
+        try {
+            $lang_dat = $yamlp->parse(file_get_contents($yaml_path));
+        } catch (ParseException $e){
+            $this->$bmsg->add('langerror',basename($yaml_path).' の解析に失敗しました。エラー: '.$e->getMessage());
+        }
 
 		//言語内参照を解決する
 		$error_list = array();
