@@ -9,7 +9,7 @@
  * https://github.com/chatwork/Phest/blob/master/LICENSE
  *
  * @link https://github.com/chatwork/Phest
- * @copyright 2013 ChatWork Inc
+ * @copyright 2014 ChatWork Inc
  * @author Masaki Yamamoto (https://chatwork.com/cw_masaki)
  */
 	use \RecursiveDirectoryIterator;
