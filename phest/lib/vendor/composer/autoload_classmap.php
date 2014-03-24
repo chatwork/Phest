@@ -64,8 +64,6 @@ return array(
     'CssVariablesMinifierFilter' => $vendorDir . '/natxet/CssMin/src/CssMin.php',
     'CssVariablesMinifierPlugin' => $vendorDir . '/natxet/CssMin/src/CssMin.php',
     'CssWhitesmithsFormatter' => $vendorDir . '/natxet/CssMin/src/CssMin.php',
-    'Devize\\ClosureCompiler\\ClosureCompiler' => $vendorDir . '/devize/closure-compiler/src/ClosureCompiler/ClosureCompiler.php',
-    'Devize\\ClosureCompiler\\CompilerException' => $vendorDir . '/devize/closure-compiler/src/ClosureCompiler/CompilerException.php',
     'Smarty' => $vendorDir . '/smarty/smarty/distribution/libs/Smarty.class.php',
     'SmartyBC' => $vendorDir . '/smarty/smarty/distribution/libs/SmartyBC.class.php',
     'SmartyCompilerException' => $vendorDir . '/smarty/smarty/distribution/libs/Smarty.class.php',

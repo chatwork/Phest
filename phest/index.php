@@ -38,7 +38,6 @@
 	use \ChatWork\Utility\File;
 	use \Smarty;
 	use \CssMin;
-	use \Devize\ClosureCompiler\ClosureCompiler;
 	use \Symfony\Component\Yaml\Parser;
 	use \Symfony\Component\Yaml\Exception\ParseException;
 
@@ -569,9 +568,6 @@
 			}
 		}
 
-		$gccomiler = new ClosureCompiler();
-		$gccomiler->setSourceBaseDir($dir_output);
-		$gccomiler->setTargetBaseDir($dir_output);
 		foreach ($assets_list as $path_dat){
 			$create_option = '';
 			$pathname = $path_dat['pathname'];
@@ -675,27 +671,20 @@
 							echo '<span></span>';@flush();@ob_flush();
 
 							//コマンドラインで処理するために、一度テンポラリファイルとして書き出す
-							$tmp_filename = $filepath.'.tmp';
-							$source_tmp = $dir_output.'/'.$tmp_filename;
 							$output_to = $dir_output.'/'.$filepath;
+							$source_tmp = $dir_output.'/'.$filepath.'.tmp';
 							File::buildPutFile($source_tmp,$source);
 
 							//コンパイル
-							$gccomiler->setSourceFiles(array($tmp_filename));
-							$gccomiler->setTargetFile($filepath);
-							$gccomiler->compile();
-							
-							$org_filesize = filesize($pathname);
-							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
-								$phest->add('jscompileerror',"コンパイルに失敗しました: <strong>".$filepath.'</strong>');
-								continue;
-							}
-							
+							compile($source_tmp,$output_to);
 							//完了したらテンポラリファイルを削除
 							unlink($source_tmp);
 
 							$org_filesize = filesize($pathname);
-							
+							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
+								$phest->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
+								continue;
+							}
 							$is_output = false;
 							$create_option .= ' (minified)';
 						}else{
