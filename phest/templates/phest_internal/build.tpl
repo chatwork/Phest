@@ -154,7 +154,7 @@ $(function(){
                       popup.show();
 
                       setTimeout(function(){
-                        popup.close();
+                        popup.cancel();
                       },3000);
                     })();
                     break;
