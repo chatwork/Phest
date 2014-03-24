@@ -682,7 +682,7 @@
 
 							$org_filesize = filesize($pathname);
 							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
-								$phest->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
+								$phest->add('jscompileerror',"コンパイルできませんでした <strong>".$filepath.'</strong>');
 								continue;
 							}
 							$is_output = false;
