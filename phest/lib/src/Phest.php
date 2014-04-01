@@ -184,11 +184,7 @@ class Phest {
     public function loadCredential($yaml_path){
         $yamlp = new Parser();
         
-        try {
-            $this->credentials = $yamlp->parse(file_get_contents($yaml_path));
-        } catch (ParseException $e){
-            $phest->add('builderror',basename($yaml_path).' の解析に失敗しました。エラー: '.$e->getMessage());
-        }
+        $this->credentials = $yamlp->parse(file_get_contents($yaml_path));
     }
 
     /**
@@ -259,7 +255,7 @@ class Phest {
      * @param string $section セクション名
      * @param string $title セクションタイトル
      * @param array [$options] セクション表示オプション
-     * @param enum(success|primary|info|danger) [$option.type=success] 表示種類
+     * @param enum(success|primary|info|warning|danger) [$option.type=success] 表示種類
      * @param bool [$option.sort=false] メッセージをソートするか
      * @chainable
      */
@@ -318,7 +314,7 @@ class Phest {
         $id = 0;
         $msg_data = array();
 
-        $type_list = array('success','danger','primary','info');
+        $type_list = array('success','danger','primary','info','warning');
         
         foreach ($type_list as $type){
             foreach ($this->message_data as $section => $mdat){

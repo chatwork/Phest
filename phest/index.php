@@ -161,7 +161,11 @@
 	        if (!file_exists($path_credential)){
 	            echo 'エラー: config.ymlのcredentailで指定されているファイルが存在しません。path='.$path_credential;
 	        }else{
-				$phest->loadCredential($path_credential);
+        		try {
+					$phest->loadCredential($path_credential);
+		        } catch (ParseException $e){
+					die('['.$site.'] credential.yml の解析に失敗しました。エラー: '.$e->getMessage());
+		        }
 	        }
 		}
 

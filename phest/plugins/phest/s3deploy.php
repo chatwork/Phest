@@ -21,7 +21,6 @@
  * @return bool プラグインの成功判定
  */
 function plugin_button_s3deploy(array $params, Phest $phest){
-    $phest->registerSection('s3deploy','デプロイ完了');
     $phest->registerSection('s3deployerror','デプロイエラー',array('type' => 'danger'));
 
     if ($phest->hasError()){
@@ -32,6 +31,12 @@ function plugin_button_s3deploy(array $params, Phest $phest){
     $dryrun = true;
     if (isset($params['dryrun'])){
         $dryrun = $params['dryrun'];
+    }
+
+    if ($dryrun){
+        $phest->registerSection('s3deploy','デプロイ完了 [dryrun]', array('type' => 'warning'));
+    }else{
+        $phest->registerSection('s3deploy','デプロイ完了');
     }
 
     $prefix = '';
@@ -141,7 +146,7 @@ function plugin_button_s3deploy(array $params, Phest $phest){
     if ($dryrun){
         $message_option = ' <code>[dryrun]</code>';
     }
-
+    
     //ローカルファイルをスキャンしてアップロード
     $file_list = File::getFileList($upload_dir);
     foreach ($file_list as $filepath){
