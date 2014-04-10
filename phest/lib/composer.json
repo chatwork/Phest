@@ -1,0 +1,16 @@
+{
+    "autoload": {
+        "psr-0": {"Phest\\":"lib"}
+    },
+    "require": {
+        "aws/aws-sdk-php": "2.*",
+        "symfony/yaml": "2.3.*@dev",
+        "coffeescript/coffeescript": "dev-master",
+        "smarty/smarty": "3.1.*",
+        "natxet/CssMin": "dev-master",
+        "michelf/php-markdown": "1.4.*@dev",
+        "leafo/scssphp": "dev-master",
+        "netcarver/textile": "3.5.*@dev",
+        "oyejorge/less.php": "dev-master"
+    }
+}

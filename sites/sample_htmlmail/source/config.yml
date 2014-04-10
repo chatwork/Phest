@@ -11,8 +11,8 @@ basetpl:
     tpl: _base_txt.tpl
     regex: .*\.tpl\.txt$ #.tpl.txt はテキストメール
 encode: jis
-buildclear:1
-sitemap:0
-robotstxt:0
-compilejs:0
-compilecss:0
+buildclear: 1
+sitemap: 0
+robotstxt: 0
+compilejs: 0
+compilecss: 0
