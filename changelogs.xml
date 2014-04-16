@@ -7,11 +7,23 @@
  <channel>
   <docs>http://blogs.law.harvard.edu/tech/rss</docs>
   <title>Phest ドキュメント - 変更履歴</title>
-  <link>http://localhost/phest/sites/phest_document/changelogs.html</link>
+  <link>http://chatwork.github.io/Phest/changelogs.html</link>
   <copyright>ChatWork Inc</copyright>
   <description>Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです</description>
-  <pubDate>Mon, 03 Feb 2014 13:37:48 +0900</pubDate>
-  <generator>Phest v0.9.2</generator>
+  <pubDate>Wed, 16 Apr 2014 20:27:46 +0900</pubDate>
+  <generator>Phest v.0.10.0</generator>
+    <item>
+   <title>  v0.10.0  使用しているライブラリを刷新。YAMLの記法がより厳密になり、記法エラーの詳細がエラー表示されるように。ビルド結果がファイル種類別に分類されるように。 
+</title>   <pubDate>Thu, 10 Apr 2014 00:00:00 +0900</pubDate>     </item>
+    <item>
+   <title>  v0.9.5  $_folder はトップディレクトリの場合、空文字列ではなく . が入るように。ステージング環境を有効にできるenablestagingオプションを追加。サイトの説明を表示するdescriptionオプションを追加。basetplを正規表現で切り替えることができる設定方法を追加。S3へのデプロイ時にS3側のオブジェクトを正規表現で削除させないパス設定が可能に。 
+</title>   <pubDate>Fri, 28 Feb 2014 00:00:00 +0900</pubDate>     </item>
+    <item>
+   <title>  v0.9.4  leftdelimiter, rightdelimiter オプションを追加 
+</title>   <pubDate>Thu, 06 Feb 2014 00:00:00 +0900</pubDate>     </item>
+    <item>
+   <title>  v0.9.3  scssphpをアップデート、productionビルド時にエラーメッセージが出る場合があるのを抑制 
+</title>   <pubDate>Tue, 04 Feb 2014 00:00:00 +0900</pubDate>     </item>
     <item>
    <title>  v0.9.2  ignorecompilejs, ignorecompilecss, credential オプションを追加 
 </title>   <pubDate>Thu, 30 Jan 2014 00:00:00 +0900</pubDate>     </item>
