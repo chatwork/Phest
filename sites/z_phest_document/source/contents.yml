@@ -3,7 +3,7 @@ contents:
     title: Phestとは
     content: |
       Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです。
-      (Phest = **PH**P **E**asy **St**atic Site Generator)
+      (Phest = <strong>PH</strong>P <strong>E</strong>asy <strong>St</strong>atic Site Generator)
       
       静的サイトジェネレーターとは、テンプレートなどプログラム的な処理を実行し、HTMLファイルとして書き出すツールのことです。
       [Amazon S3](http://aws.amazon.com/jp/s3/)でのホスティングやGitHub Pagesなど、静的ページしか使えないような環境向けのサイト作りに便利です。
