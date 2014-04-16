@@ -54,14 +54,16 @@ function compile($source_from,$output_to){
 	if (file_exists($output_to)){
 		unlink($output_to);
 	}
-
-	$compile_command = 'java -jar "'.DIR_PHEST.'/lib/vendor/closurecompiler/compiler.jar" --compilation_level SIMPLE_OPTIMIZATIONS --js "'.$source_from.'" --js_output_file "'.$output_to.'"';
+	$java_path = rtrim(shell_exec('which java'));
+	$compile_command = $java_path.' -jar "'.DIR_PHEST.'/lib/vendor/closurecompiler/compiler.jar" --compilation_level SIMPLE_OPTIMIZATIONS --js "'.$source_from.'" --js_output_file "'.$output_to.'" 2>&1';
 
 	$compile_output = array();
 	if ($os == 'mac'){
 		$compile_command = 'export DYLD_LIBRARY_PATH="";'.$compile_command;
 	}
 	exec($compile_command,$compile_output);
+	//echo $compile_command.'<br />';
+	//print_a($compile_output);
 
 	if (file_exists($output_to)){
 		chmod($output_to,0777);

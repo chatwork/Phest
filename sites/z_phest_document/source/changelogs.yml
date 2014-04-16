@@ -1,5 +1,8 @@
 changelogs:
   -
+    date: 2014-04-10
+    title: "**v0.10.0** 使用しているライブラリを刷新。YAMLの記法がより厳密になり、記法エラーの詳細がエラー表示されるように。ビルド結果がファイル種類別に分類されるように。"
+  -
     date: 2014-02-28
     title: "**v0.9.5** $_folder はトップディレクトリの場合、空文字列ではなく . が入るように。ステージング環境を有効にできるenablestagingオプションを追加。サイトの説明を表示するdescriptionオプションを追加。basetplを正規表現で切り替えることができる設定方法を追加。S3へのデプロイ時にS3側のオブジェクトを正規表現で削除させないパス設定が可能に。"
   -
@@ -13,13 +16,13 @@ changelogs:
     title: "**v0.9.2** ignorecompilejs, ignorecompilecss, credential オプションを追加"
   -
     date: 2014-01-05
-    title: **v0.8.9** removedirプラグインを追加。LESSコンパイラでエラー検知できないメッセージがあるのに対応。
+    title: "**v0.8.9** removedirプラグインを追加。LESSコンパイラでエラー検知できないメッセージがあるのに対応。"
   -
     date: 2013-12-06
-    title: **v0.8.7** LESS、Sass、CoffeeScriptで公式コンパイラを使用できるように。デフォルトでは自動検知する。
+    title: "**v0.8.7** LESS、Sass、CoffeeScriptで公式コンパイラを使用できるように。デフォルトでは自動検知する。"
   -
     date: 2013-12-05
-    title: **v0.8.5** Linuxで動作するように対応。ただしJavaScript構文チェックは動作しない。
+    title: "**v0.8.5** Linuxで動作するように対応。ただしJavaScript構文チェックは動作しない。"
   -
     date: 2013-12-04
     title: "**v0.8.4** {$_top}変数を追加。相対的にトップフォルダを指定できます。"
@@ -28,7 +31,7 @@ changelogs:
     title: "[ChatWork Creator's Note](http://c-note.chatwork.com/post/68781816704/phest-php-easy-static-site-generator)にてPhestの正式公開開始"
   -
     date: 2013-11-20
-    title: SmartBuilderからPhestに名称変更
+    title: "SmartBuilderからPhestに名称変更"
   -
     date: 2013-10-05
     title: "[俺聞け6 in Tokyo](http://www.msng.info/archives/2013/09/orekike6-schedule.php)にて[プレビュー公開](http://www.slideshare.net/mskmasaki/web-26886030)(旧名：SmartBuilder)"

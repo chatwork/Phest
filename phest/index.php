@@ -9,7 +9,7 @@
  * https://github.com/chatwork/Phest/blob/master/LICENSE
  *
  * @link https://github.com/chatwork/Phest
- * @copyright 2013 ChatWork Inc
+ * @copyright 2014 ChatWork Inc
  * @author Masaki Yamamoto (https://chatwork.com/cw_masaki)
  */
 	use \RecursiveDirectoryIterator;
@@ -18,8 +18,8 @@
 
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
-
-	$ver = 'v0.9.6';
+	
+	$ver = 'v.0.10.0';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -27,22 +27,22 @@
 	set_time_limit(600);
 
 	require(DIR_PHEST.'/lib/function.php');
-	require(DIR_PHEST.'/lib/Phest.php');
-	require(DIR_PHEST.'/lib/Compiler.php');
-	require(DIR_PHEST.'/lib/LanguageBuilder.php');
-
-	require(DIR_PHEST.'/lib/File.php');
-	use \ChatWork\Utility\File;
-
-	require(DIR_PHEST.'/lib/vendor/smarty/Smarty.class.php');
-	use \Smarty;
-	require(DIR_PHEST.'/lib/vendor/cssmin/cssmin-v3.0.1.php');
-	use \CssMin;
-
+	require(DIR_PHEST.'/lib/src/Phest.php');
+	require(DIR_PHEST.'/lib/src/Compiler/Compiler.php');
+	require(DIR_PHEST.'/lib/src/LanguageBuilder.php');
+	require(DIR_PHEST.'/lib/src/Utility/File.php');
+	
 	require(DIR_PHEST.'/lib/vendor/debuglib.php');
-	require(DIR_PHEST.'/lib/vendor/spyc/spyc.php');
+	require(DIR_PHEST.'/lib/vendor/autoload.php');
+	
+	use \ChatWork\Utility\File;
+	use \Smarty;
+	use \CssMin;
+	use \Symfony\Component\Yaml\Parser;
+	use \Symfony\Component\Yaml\Exception\ParseException;
 
 	$phest = Phest::getInstance();
+	$yamlp = new Parser();
 	$current_time = time();
 
 	$site_list = array();
@@ -140,15 +140,20 @@
 
 		//yaml load
 		if (!file_exists($path_config_yml)){
-			die('config.ymlが見つかりません。path='.$path_config_yml);
+			die('['.$site.'] config.ymlが見つかりません。path='.$path_config_yml);
 		}
 		if (!file_exists($path_vars_yml)){
-			die('vars.ymlが見つかりません。path='.$path_vars_yml);
+			die('['.$site.'] vars.ymlが見つかりません。path='.$path_vars_yml);
 		}
 		if (!file_exists($dir_content)){
-			die('contentフォルダが見つかりません。path='.$dir_content);
+			die('['.$site.'] contentフォルダが見つかりません。path='.$dir_content);
 		}
-		$config_yaml = array_merge(spyc_load_file(DIR_PHEST.'/default_config.yml'),spyc_load_file($path_config_yml));
+		
+		try {
+			$config_yaml = array_merge($yamlp->parse(file_get_contents(DIR_PHEST.'/default_config.yml')),$yamlp->parse(file_get_contents($path_config_yml)));
+		} catch (ParseException $e){
+			die('['.$site.'] config.yml の解析に失敗しました。エラー: '.$e->getMessage());
+		}
 
 		//認証情報の読み込み
 		if (!empty($config_yaml['credential'])){
@@ -156,7 +161,11 @@
 	        if (!file_exists($path_credential)){
 	            echo 'エラー: config.ymlのcredentailで指定されているファイルが存在しません。path='.$path_credential;
 	        }else{
-				$phest->loadCredential($path_credential);
+        		try {
+					$phest->loadCredential($path_credential);
+		        } catch (ParseException $e){
+					die('['.$site.'] credential.yml の解析に失敗しました。エラー: '.$e->getMessage());
+		        }
 	        }
 		}
 
@@ -244,8 +253,14 @@
 		$dir_output = $phest->getOutputPath();
 
 		File::buildMakeDir($dir_output);
-		$default_vars_yaml = spyc_load_file(DIR_PHEST.'/default_vars.yml');
-		$source_vars_yaml = spyc_load_file($path_vars_yml);
+		$default_vars_yaml = $yamlp->parse(file_get_contents(DIR_PHEST.'/default_vars.yml'));
+		
+		try {
+			$source_vars_yaml = $yamlp->parse(file_get_contents($path_vars_yml));
+		} catch (ParseException $e){
+			die('vars.yml の解析に失敗しました。エラー: '.$e->getMessage());
+		}
+		
 		$vars_yaml = array_merge_recursive_distinct($default_vars_yaml,$source_vars_yaml);
 
 		if (!isset($vars_yaml['common']) or !is_array($vars_yaml['common'])){
@@ -263,8 +278,25 @@
 		}
 		$home_local = '../sites/'.$site.$phest->getBuildDirName();
 
-		$phest->registerSection('create','作成したファイル',array('type' => 'info','sort' => true));
-
+		$phest->registerSection('create','作成したファイル',array('type' => 'info','sort' => true,'subsection' => array('page' => 'ページ','image' => '画像','cssjs' => 'JavaScript/CSS','etc' => 'その他')));
+		$create_subsection_pattern = array(
+			'html' => 'page',
+			'jpg' => 'image',
+			'png' => 'image',
+			'gif' => 'image',
+			'jpeg' => 'image',
+			'bmp' => 'image',
+			'ico' => 'image',
+			'svg' => 'image',
+			'js' => 'cssjs',
+			'coffee' => 'cssjs',
+			'css' => 'cssjs',
+			'less' => 'cssjs',
+			'scss' => 'cssjs',
+			'styl' => 'cssjs',
+			'style' => 'cssjs',
+			);
+		
 		//Smarty
 		$smarty = new Smarty;
 		$smarty->template_dir = array($dir_content,DIR_PHEST.'/templates');
@@ -337,7 +369,12 @@
 
 		//vars.ymlのincludesを処理
 		foreach ($include_vars_list as $ipath){
-			$inc_yaml = spyc_load_file($ipath);
+			try {
+				$inc_yaml = $yamlp->parse(file_get_contents($ipath));
+			} catch (ParseException $e){
+				$phest->add('builderror',basename($ipath).' の解析に失敗しました。エラー: '.$e->getMessage());
+				$inc_yaml = array();
+			}
 			$core_vars_yaml = array_merge_recursive_distinct($core_vars_yaml,$inc_yaml);
 		}
 
@@ -495,7 +532,8 @@
 						$output_html = mb_convert_encoding($output_html, $config_yaml['encode']);
 					}
 					File::buildPutFile($dir_output.'/'.$filepath,$output_html);
-					$phest->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
+					
+					$phest->add('create','page','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
 				} catch (\Exception $e){
 					$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
 					continue;
@@ -561,11 +599,16 @@
 			$filepart = explode('.',$filepath);
 			$filebase = '';
 			$extensions = array();
+			$last_extension = '';
 			for ($i = 0;$i < count($filepart);$i++){
 				if ($i == 0){
 					$filebase = $filepart[0];
 				}else{
 					$extensions[$filepart[$i]] = true;
+					
+					if ($i == (count($filepart) - 1)){
+						$last_extension = $filepart[$i];
+					}
 				}
 			}
 
@@ -643,7 +686,7 @@
 
 							$org_filesize = filesize($pathname);
 							if (!file_exists($output_to) or !($org_filesize and filesize($output_to))){
-								$phest->add('jscompileerror',"Couldn't compile: <strong>".$filepath.'</strong>');
+								$phest->add('jscompileerror',"コンパイルできませんでした <strong>".$filepath.'</strong>');
 								continue;
 							}
 							$is_output = false;
@@ -694,7 +737,20 @@
 			if ($create_option){
 				$create_option = ' <code>'.trim($create_option).'</code>';
 			}
-			$phest->add('create','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>'.$create_option);
+			
+			$subsection_key = 'etc';
+			if (isset($create_subsection_pattern[$last_extension])){
+				$subsection_key = $create_subsection_pattern[$last_extension];
+			}
+			
+			$anchortext = '';
+			if ($subsection_key == 'image'){
+				$anchortext = '<img src="'.$home_local.'/'.$filepath.'" style="width:30px;height:30px;" /> '.$filepath;
+			}else{
+				$anchortext = $filepath;
+			}
+			
+			$phest->add('create',$subsection_key,'<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$anchortext.'</a>'.$create_option);
 		}
 
 		//Smarty処理して生成したファイルを削除
@@ -707,14 +763,14 @@
 			$smarty->assign('_urls',$urls);
 			$filepath = '/sitemap.xml';
 			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/sitemap_xml.tpl'));
-			$phest->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
+			$phest->add('create','etc','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 
 		//robots.txt
 		if (!empty($config_yaml['robotstxt'])){
 			$filepath = '/robots.txt';
 			file_put_contents($dir_output.$filepath,$smarty->fetch('phest_internal/robots_txt.tpl'));
-			$phest->add('create','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
+			$phest->add('create','etc','<a href="'.$home.$filepath.'" target="_blank">'.$filepath.'</a>');
 		}
 
 		//フィニッシュプラグインの実行
@@ -749,7 +805,7 @@
 	}else{
 		$bsmarty = new Smarty;
 		$bsmarty->compile_dir = DIR_PHEST.'/cache/templates_c';
-
+		
 		$bsmarty->assign('ver',$ver);
 		$bsmarty->assign('message_list',$phest->getMessageData());
 		$bsmarty->assign('extra_buttons',$extra_buttons);

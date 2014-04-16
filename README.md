@@ -1,6 +1,6 @@
 <img src="https://raw.github.com/chatwork/Phest/master/docs/image/common/logo/logo_phest_white.png"/>
 
-Phest v0.9.5
+Phest v.0.10.0
 ============
 
 Phest (フェスト) はPHPでできた、デザイナ向けの静的サイトジェネレーターです。
@@ -18,7 +18,6 @@ ChatWork社内で実際にサイト制作に使用しているツールである
 特徴
 ============
 
-### 黒い画面不要！デザイナ向けのツールです。
 
 <img src="https://raw.github.com/chatwork/Phest/master/docs/image/ja/capture/phest_gui.png" style="width:80%;height:80%" />
 
@@ -27,34 +26,27 @@ PhestはPHPさえ動けば、ブラウザによるGUI操作が可能でターミ
 ファイルの自動更新検知もコマンドを実行する必要はなく、ブラウザ側から実行でき、更新をブラウザのデスクトップ通知でリアルタイムに通知します。
 (※デスクトップ通知は対応しているブラウザのみ。Chrome/Firefox/Safari/Opera など)
 
-### Smartyのテンプレートから静的HTMLファイルを生成できる
 Smartyの `{include file=""}` や `{if}` `{foreach}` をはじめとした強力で柔軟なテンプレート構文が使用できます。
 共通ヘッダやフッタなどを簡単に記述可能です。
 `index.tpl` をファイル作成すると、`index.html` として生成されるイメージです。(フォルダ構造も自由に作成可能)
 
-### CSS/JSプリプロセッサ、minifyを実行可能
 静的ファイルの書き出しにともなって、LESS/SCSS/CoffeScriptなどのコンパイル、圧縮処理(minify)を実行できます。
 JavaScriptファイルは自動で構文チェックが行われ、セミコロン忘れ、オブジェクト要素の最後のカンマなどを指摘してくれます。
 なお、圧縮処理は時間がかかるため本番環境用ビルドでのみ実行されます。
 
-### YAMLで記述した変数定義を使用することが可能
 簡易なデータ記述言語である[YAML](http://ja.wikipedia.org/wiki/YAML)で変数を定義することができます。
 ベースレイアウトを記述したテンプレートの、`<title>` タグの中身をページごとに変更したり、
 フォルダ階層ごとにレイアウトを変えたり、配列を定義してSmartyの `{foreach}` で回して一括展開することも可能です。
 
-### sitemap.xmlを自動生成
 ページ一覧を記述した検索エンジン用のsitemap.xmlを自動生成します。
 また、sitemap.xmlのパスを記述したrobots.txtも自動生成します。
 
-### Amazon S3へ簡単にデプロイ可能
 ビルドしたファイルをAmazon S3の特定バケットに一括デプロイ(リリース)できる仕組みがあります。
 S3側にアップされていて、ローカルにないファイルはS3側から自動で削除するなどファイルの同期も可能です。
 
-### ローカル環境用と、本番環境用で別々に生成が可能
 ローカル環境時はドメインをlocalhostにして、本番用にはドメインを本番サーバーにしたバージョンで生成など、
 環境に応じたファイル生成が柔軟に可能。watch機能によりファイルの変更を検知して自動でビルドを実行することもできます。
 
-### HTMLメールの生成などにも便利
 encodeオプションでJISコードに文字コード変換して生成させることもできます。
 
 インストール
@@ -86,4 +78,5 @@ LICENSE
 ============
 
 Licensed under MIT,  see [LICENSE](https://github.com/chatwork/Phest/blob/master/LICENSE)
+
 

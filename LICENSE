@@ -39,7 +39,7 @@ Smarty http://www.smarty.net/
 /**
  * Project:     Smarty: the PHP compiling template engine
  * File:        Smarty.class.php
- * SVN:         $Id: Smarty.class.php 4742 2013-06-17 13:30:49Z Uwe.Tews@googlemail.com $
+ * SVN:         $Id: Smarty.class.php 4814 2014-02-16 18:34:08Z Uwe.Tews@googlemail.com $
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -172,34 +172,43 @@ cssmin https://code.google.com/p/cssmin/
  * THE SOFTWARE.
  * --
  *
- * @package		CssMin
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package     CssMin
+ * @link        http://code.google.com/p/cssmin/
+ * @author      Joe Scylla <joe.scylla@gmail.com>
+ * @copyright   2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license     http://opensource.org/licenses/mit-license.php MIT License
+ * @version     3.0.1
  */
 
 CoffeeScript PHP https://github.com/alxlit/coffeescript-php
 -----------------------------------------------------------
-/**
- * @package   CoffeeScript
- * @author    Alex Little
- * @license   MIT
- * @homepage  http://github.com/alxlit/coffeescript-php
- */
+Copyright (c) 2011 Jeremy Ashkenas, Alex Little
 
-lessphp http://leafo.net/lessphp/
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+
+less.php https://github.com/Mordred/less.php
 -----------------------------------------------------------
-/**
- * lessphp v0.4.0
- * http://leafo.net/lessphp
- *
- * LESS CSS compiler, adapted from http://lesscss.org
- *
- * Copyright 2013, Leaf Corcoran <leafot@gmail.com>
- * Licensed under MIT or GPLv3, see LICENSE
- */
+less.php was originally ported to php by [Matt Agar](https://github.com/agar) and then updated by [Martin Jantošovič](https://github.com/Mordred).
 
 scssphp http://leafo.net/scssphp/
 -----------------------------------------------------------
@@ -255,49 +264,44 @@ software, even if advised of the possibility of such damage.
 
 PHP Textile http://txstyle.org/article/36/textile-versions
 -----------------------------------------------------------
+Copyright (c) 2003-2004, Dean Allen <dean@textism.com>
+All rights reserved.
 
-/**
- * Textile - A Humane Web Text Generator
- *
- * Copyright (c) 2003-2004, Dean Allen <dean@textism.com>
- * All rights reserved.
- *
- * Thanks to Carlo Zottmann <carlo@g-blog.net> for refactoring
- * Textile's procedural code into a class framework
- *
- * Additions and fixes Copyright (c) 2006    Alex Shiels       http://thresholdstate.com/
- * Additions and fixes Copyright (c) 2010    Stef Dawson       http://stefdawson.com/
- * Additions and fixes Copyright (c) 2010-13 Netcarver         http://github.com/netcarver
- * Additions and fixes Copyright (c) 2011    Jeff Soo          http://ipsedixit.net
- * Additions and fixes Copyright (c) 2012    Robert Wetzlmayr  http://wetzlmayr.com/
- * Additions and fixes Copyright (c) 2012-13 Jukka Svahn       http://rahforum.biz/
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- *
- * * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * * Neither the name Textile nor the names of its contributors may be used to
- * endorse or promote products derived from this software without specific
- * prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+Thanks to Carlo Zottmann <carlo@g-blog.net> for refactoring
+Textile's procedural code into a class framework.
+
+Additions and fixes Copyright (c) 2006    Alex Shiels       https://twitter.com/tellyworth
+Additions and fixes Copyright (c) 2010    Stef Dawson       http://stefdawson.com/
+Additions and fixes Copyright (c) 2010-13 Netcarver         https://github.com/netcarver
+Additions and fixes Copyright (c) 2011    Jeff Soo          http://ipsedixit.net/
+Additions and fixes Copyright (c) 2012    Robert Wetzlmayr  http://wetzlmayr.com/
+Additions and fixes Copyright (c) 2012-13 Jukka Svahn       http://rahforum.biz/
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+
+    * Neither the name of the Textile nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 debuglib for PHP5 http://phpdebuglib.de
 -----------------------------------------------------------
@@ -331,18 +335,28 @@ debuglib for PHP5 http://phpdebuglib.de
 */
 
 
-Spyc http://code.google.com/p/spyc/
+Symfony Yaml Component https://github.com/symfony/Yaml
 -----------------------------------------------------------
-/**
- * Spyc -- A Simple PHP YAML Class
- * @version 0.5
- * @author Vlad Andersen <vlad.andersen@gmail.com>
- * @author Chris Wanstrath <chris@ozmm.org>
- * @link http://code.google.com/p/spyc/
- * @copyright Copyright 2005-2006 Chris Wanstrath, 2006-2011 Vlad Andersen
- * @license http://www.opensource.org/licenses/mit-license.php MIT License
- * @package Spyc
- */
+Copyright (c) 2004-2014 Fabien Potencier
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
 
 AWS SDK for PHP 2 http://docs.aws.amazon.com/aws-sdk-php/guide/latest/index.html
 -----------------------------------------------------------

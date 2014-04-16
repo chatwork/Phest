@@ -1,7 +1,7 @@
 <?php
-    require_once(DIR_PHEST.'/lib/vendor/textile/classTextile.php');
-    
+    use Netcarver\Textile\Parser;
+        
 function smarty_modifier_textile($string){
-	$parser = new Textile();
+	$parser = new Parser();
 	return $parser->textileThis($string);
 }
