@@ -32,7 +32,7 @@
     <li><a href="s3deploy.html">Amazon S3へのデプロイ<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="i18n.html">多言語対応<i class="icoFontArrowChevronRight"></i></a></li>
     <li><a href="plugins.html">プラグイン<i class="icoFontArrowChevronRight"></i></a></li>
-    <li><a href="changelogs.html">変更履歴 (2/28)<i class="icoFontArrowChevronRight"></i></a></li>
+    <li><a href="changelogs.html">変更履歴 (4/10)<i class="icoFontArrowChevronRight"></i></a></li>
  </ul>
 </div>
     <div id="_mainContent" class="mainContent">
@@ -44,7 +44,7 @@
 <pre><code>home:
   local: http://localhost/Phest/sites/sample/output/local
   production: http://www.sample.com
-description:
+description: 
 basetpl: _base.tpl
 buildclear: 1
 sitemap: 1
@@ -98,18 +98,18 @@ path:
 <p>例えば、</p>
 
 <pre><code>common:
-  title:"no title"
+  title: "no title"
 local:
-  title:"local"
+  title: "local"
 production:
-  title:"production"
+  title: "production"
 path:
   index.html:
-    title:"index page"
+    title: "index page"
   feature/:
-      title:"feature page"
+      title: "feature page"
   feature/index.html:
-    title:"feature index page"
+    title: "feature index page"
 </code></pre>
 
 <p>と定義した場合は、<code>{$title}</code> というテンプレート変数が、</p>

@@ -1,3 +1,7 @@
+### 2014年4月10日
+
+**v0.10.0** 使用しているライブラリを刷新。YAMLの記法がより厳密になり、記法エラーの詳細がエラー表示されるように。ビルド結果がファイル種類別に分類されるように。
+
 ### 2014年2月28日
 
 **v0.9.5** $_folder はトップディレクトリの場合、空文字列ではなく . が入るように。ステージング環境を有効にできるenablestagingオプションを追加。サイトの説明を表示するdescriptionオプションを追加。basetplを正規表現で切り替えることができる設定方法を追加。S3へのデプロイ時にS3側のオブジェクトを正規表現で削除させないパス設定が可能に。
@@ -43,4 +47,4 @@ SmartBuilderからPhestに名称変更
 [俺聞け6 in Tokyo](http://www.msng.info/archives/2013/09/orekike6-schedule.php)にて[プレビュー公開](http://www.slideshare.net/mskmasaki/web-26886030)(旧名：SmartBuilder)
 
 
-Phest v0.9.5
+Phest v.0.10.0

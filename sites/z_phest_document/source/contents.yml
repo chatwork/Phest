@@ -249,18 +249,18 @@ contents:
       例えば、
       
           common:
-            title:"no title"
+            title: "no title"
           local:
-            title:"local"
+            title: "local"
           production:
-            title:"production"
+            title: "production"
           path:
             index.html:
-              title:"index page"
+              title: "index page"
             feature/:
-                title:"feature page"
+                title: "feature page"
             feature/index.html:
-              title:"feature index page"
+              title: "feature index page"
               
       と定義した場合は、`{$title}` というテンプレート変数が、
       
@@ -578,7 +578,7 @@ contents:
             -
                concat: #test.jsとtest2.jsを結合してall.jsを生成
                  output: "all.js"
-                 sources:[ "test.js",  "test2.js" ]
+                 sources: [ "test.js",  "test2.js" ]
             -
                copydir: #cptest1/ を cptest2 にコピー
                  from: "cptest1"
