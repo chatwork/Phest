@@ -34,14 +34,15 @@ class Credentials implements CredentialsInterface, FromConfigInterface
     const ENV_KEY = 'AWS_ACCESS_KEY_ID';
     const ENV_SECRET = 'AWS_SECRET_KEY';
     const ENV_SECRET_ACCESS_KEY = 'AWS_SECRET_ACCESS_KEY';
+    const ENV_PROFILE = 'AWS_PROFILE';
 
-    /** @var string AWS Access key ID */
+    /** @var string AWS Access Key ID */
     protected $key;
 
-    /** @var string AWS Secret access key */
+    /** @var string AWS Secret Access Key */
     protected $secret;
 
-    /** @var string Security token */
+    /** @var string AWS Security Token */
     protected $token;
 
     /** @var int Time to die of token */
@@ -59,6 +60,7 @@ class Credentials implements CredentialsInterface, FromConfigInterface
             Options::SECRET                => null,
             Options::TOKEN                 => null,
             Options::TOKEN_TTD             => null,
+            Options::PROFILE               => null,
             Options::CREDENTIALS_CACHE     => null,
             Options::CREDENTIALS_CACHE_KEY => null,
             Options::CREDENTIALS_CLIENT    => null
@@ -112,6 +114,50 @@ class Credentials implements CredentialsInterface, FromConfigInterface
         }
 
         return $credentials;
+    }
+
+    /**
+     * Create credentials from the credentials ini file in the HOME directory.
+     *
+     * @param string|null $profile  Pass a specific profile to use. If no
+     *                              profile is specified we will attempt to use
+     *                              the value specified in the AWS_PROFILE
+     *                              environment variable. If AWS_PROFILE is not
+     *                              set, the "default" profile is used.
+     * @param string|null $filename Pass a string to specify the location of the
+     *                              credentials files. If null is passed, the
+     *                              SDK will attempt to find the configuration
+     *                              file at in your HOME directory at
+     *                              ~/.aws/credentials.
+     * @return CredentialsInterface
+     * @throws \RuntimeException if the file cannot be found, if the file is
+     *                           invalid, or if the profile is invalid.
+     */
+    public static function fromIni($profile = null, $filename = null)
+    {
+        if (!$filename) {
+            $filename = self::getHomeDir() . '/.aws/credentials';
+        }
+
+        if (!$profile) {
+            $profile = self::getEnvVar(self::ENV_PROFILE) ?: 'default';
+        }
+
+        if (!file_exists($filename) || !($data = parse_ini_file($filename, true))) {
+            throw new \RuntimeException("Invalid AWS credentials file: {$filename}.");
+        }
+
+        if (empty($data[$profile])) {
+            throw new \RuntimeException("Invalid AWS credentials profile {$profile} in {$filename}.");
+        }
+
+        return new self(
+            $data[$profile]['aws_access_key_id'],
+            $data[$profile]['aws_secret_access_key'],
+            isset($data[$profile]['aws_security_token'])
+                ? $data[$profile]['aws_security_token']
+                : null
+        );
     }
 
     /**
@@ -213,33 +259,29 @@ class Credentials implements CredentialsInterface, FromConfigInterface
      */
     private static function createFromEnvironment($config)
     {
-        $envKey = isset($_SERVER[self::ENV_KEY])
-            ? $_SERVER[self::ENV_KEY]
-            : getenv(self::ENV_KEY);
-
-        $envSecret = isset($_SERVER[self::ENV_SECRET])
-            ? $_SERVER[self::ENV_SECRET]
-            : getenv(self::ENV_SECRET);
-
-        // Use AWS_SECRET_ACCESS_KEY if AWS_SECRET_KEY was not set.
-        if (!$envSecret) {
-            $envSecret = isset($_SERVER[self::ENV_SECRET_ACCESS_KEY])
-                ? $_SERVER[self::ENV_SECRET_ACCESS_KEY]
-                : getenv(self::ENV_SECRET_ACCESS_KEY);
+        // Get key and secret from ENV variables
+        $envKey = self::getEnvVar(self::ENV_KEY);
+        if (!($envSecret = self::getEnvVar(self::ENV_SECRET))) {
+            // Use AWS_SECRET_ACCESS_KEY if AWS_SECRET_KEY was not set.
+            $envSecret = self::getEnvVar(self::ENV_SECRET_ACCESS_KEY);
         }
 
+        // Use credentials from the environment variables if available
         if ($envKey && $envSecret) {
-            // Use credentials set in the environment variables
-            $credentials = new static($envKey, $envSecret);
-        } else {
-            // Use instance profile credentials (available on EC2 instances)
-            $credentials = new RefreshableInstanceProfileCredentials(
-                new static('', '', '', 1),
-                $config[Options::CREDENTIALS_CLIENT]
-            );
+            return new static($envKey, $envSecret);
         }
 
-        return $credentials;
+        // Use credentials from the ini file in HOME directory if available
+        $home = self::getHomeDir();
+        if ($home && file_exists("{$home}/.aws/credentials")) {
+            return self::fromIni($config[Options::PROFILE], "{$home}/.aws/credentials");
+        }
+
+        // Use instance profile credentials (available on EC2 instances)
+        return new RefreshableInstanceProfileCredentials(
+            new static('', '', '', 1),
+            $config[Options::CREDENTIALS_CLIENT]
+        );
     }
 
     private static function createCache(CredentialsInterface $credentials, $cache, $cacheKey)
@@ -265,5 +307,31 @@ class Credentials implements CredentialsInterface, FromConfigInterface
 
         // Decorate the credentials with a cache
         return new CacheableCredentials($credentials, $cache, $cacheKey);
+    }
+
+    private static function getHomeDir()
+    {
+        // On Linux/Unix-like systems, use the HOME environment variable
+        if ($homeDir = self::getEnvVar('HOME')) {
+            return $homeDir;
+        }
+
+        // Get the HOMEDRIVE and HOMEPATH values for Windows hosts
+        $homeDrive = self::getEnvVar('HOMEDRIVE');
+        $homePath = self::getEnvVar('HOMEPATH');
+
+        return ($homeDrive && $homePath) ? $homeDrive . $homePath : null;
+    }
+
+    /**
+     * Fetches the value of an environment variable by checking $_SERVER and getenv().
+     *
+     * @param string $var Name of the environment variable
+     *
+     * @return mixed|null
+     */
+    private static function getEnvVar($var)
+    {
+        return isset($_SERVER[$var]) ? $_SERVER[$var] : getenv($var);
     }
 }

@@ -104,6 +104,21 @@ Find any issues? I'd love to fix them for you, post about them on [the issues tr
 <div id="changelog"></div>
 ## Changelog
 
+* **0.0.13** -- July 7, 2014
+  * handle If-None-Match in client request, and send ETag in response (NSmithUK)
+* **0.0.12** -- July 6, 2014
+  * revert erroneous import-partials-fix (smuuf)
+  * handle If-Modified-Since in client request, and send Last-Modified in response (braver)
+  * add hhvm to travis-ci testing
+* **0.0.11** -- July 5, 2014
+  * support multi-line continuation character (backslash)per CSS2.1 and CSS3 spec (caiosm1005)
+  * imported partials should not be compiled (squarestar)
+  * add setVariables() and unsetVariable() to interface (leafo/lessphp)
+  * micro-optimizing is_null() (Yahasana)
+* **0.0.10** -- April 14, 2014
+  * fix media query merging (timonbaetz)
+  * inline if should treat null as false (wonderslug)
+  * optimizing toHSL() (jfsullivan)
 * **0.0.9** -- December 23, 2013
   * fix @for/@while inside @content block (sergeylukin)
   * fix functions in mixin_content (timonbaetz)

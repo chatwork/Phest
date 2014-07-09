@@ -148,6 +148,7 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'CompletedPart',
                         'type' => 'object',
                         'sentAs' => 'Part',
                         'properties' => array(
@@ -179,6 +180,14 @@ return array (
             'responseClass' => 'CopyObjectOutput',
             'responseType' => 'model',
             'documentationUrl' => 'http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectCOPY.html',
+            'data' => array(
+                'xmlRoot' => array(
+                    'name' => 'CopyObjectRequest',
+                    'namespaces' => array(
+                        'http://s3.amazonaws.com/doc/2006-03-01/',
+                    ),
+                ),
+            ),
             'parameters' => array(
                 'ACL' => array(
                     'type' => 'string',
@@ -222,12 +231,7 @@ return array (
                     'sentAs' => 'x-amz-copy-source',
                 ),
                 'CopySourceIfMatch' => array(
-                    'type' => array(
-                        'object',
-                        'string',
-                        'integer',
-                    ),
-                    'format' => 'date-time-http',
+                    'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-copy-source-if-match',
                 ),
@@ -242,12 +246,7 @@ return array (
                     'sentAs' => 'x-amz-copy-source-if-modified-since',
                 ),
                 'CopySourceIfNoneMatch' => array(
-                    'type' => array(
-                        'object',
-                        'string',
-                        'integer',
-                    ),
-                    'format' => 'date-time-http',
+                    'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-copy-source-if-none-match',
                 ),
@@ -325,6 +324,36 @@ return array (
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-website-redirect-location',
+                ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKey' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
+                ),
+                'CopySourceSSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-copy-source-server-side-encryption-customer-algorithm',
+                ),
+                'CopySourceSSECustomerKey' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-copy-source-server-side-encryption-customer-key',
+                ),
+                'CopySourceSSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-copy-source-server-side-encryption-customer-key-MD5',
                 ),
                 'ACP' => array(
                     'type' => 'object',
@@ -416,6 +445,14 @@ return array (
             'responseClass' => 'CreateMultipartUploadOutput',
             'responseType' => 'model',
             'documentationUrl' => 'http://docs.aws.amazon.com/AmazonS3/latest/API/mpUploadInitiate.html',
+            'data' => array(
+                'xmlRoot' => array(
+                    'name' => 'CreateMultipartUploadRequest',
+                    'namespaces' => array(
+                        'http://s3.amazonaws.com/doc/2006-03-01/',
+                    ),
+                ),
+            ),
             'parameters' => array(
                 'ACL' => array(
                     'type' => 'string',
@@ -511,6 +548,21 @@ return array (
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-website-redirect-location',
+                ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKey' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
                 'ACP' => array(
                     'type' => 'object',
@@ -675,6 +727,7 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'ObjectIdentifier',
                         'type' => 'object',
                         'sentAs' => 'Object',
                         'properties' => array(
@@ -1000,6 +1053,21 @@ return array (
                     'location' => 'query',
                     'sentAs' => 'versionId',
                 ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKey' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
+                ),
                 'SaveAs' => array(
                     'location' => 'response_body',
                 ),
@@ -1152,6 +1220,21 @@ return array (
                     'type' => 'string',
                     'location' => 'query',
                     'sentAs' => 'versionId',
+                ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKey' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
             ),
             'errorResponses' => array(
@@ -1504,6 +1587,7 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'CORSRule',
                         'type' => 'object',
                         'sentAs' => 'CORSRule',
                         'properties' => array(
@@ -1513,6 +1597,7 @@ return array (
                                     'xmlFlattened' => true,
                                 ),
                                 'items' => array(
+                                    'name' => 'AllowedHeader',
                                     'type' => 'string',
                                     'sentAs' => 'AllowedHeader',
                                 ),
@@ -1523,6 +1608,7 @@ return array (
                                     'xmlFlattened' => true,
                                 ),
                                 'items' => array(
+                                    'name' => 'AllowedMethod',
                                     'type' => 'string',
                                     'sentAs' => 'AllowedMethod',
                                 ),
@@ -1533,6 +1619,7 @@ return array (
                                     'xmlFlattened' => true,
                                 ),
                                 'items' => array(
+                                    'name' => 'AllowedOrigin',
                                     'type' => 'string',
                                     'sentAs' => 'AllowedOrigin',
                                 ),
@@ -1543,6 +1630,7 @@ return array (
                                     'xmlFlattened' => true,
                                 ),
                                 'items' => array(
+                                    'name' => 'ExposeHeader',
                                     'type' => 'string',
                                     'sentAs' => 'ExposeHeader',
                                 ),
@@ -1585,6 +1673,7 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'Rule',
                         'type' => 'object',
                         'sentAs' => 'Rule',
                         'properties' => array(
@@ -1631,6 +1720,25 @@ return array (
                                     ),
                                     'StorageClass' => array(
                                         'type' => 'string',
+                                    ),
+                                ),
+                            ),
+                            'NoncurrentVersionTransition' => array(
+                                'type' => 'object',
+                                'properties' => array(
+                                    'NoncurrentDays' => array(
+                                        'type' => 'numeric',
+                                    ),
+                                    'StorageClass' => array(
+                                        'type' => 'string',
+                                    ),
+                                ),
+                            ),
+                            'NoncurrentVersionExpiration' => array(
+                                'type' => 'object',
+                                'properties' => array(
+                                    'NoncurrentDays' => array(
+                                        'type' => 'numeric',
                                     ),
                                 ),
                             ),
@@ -1756,6 +1864,14 @@ return array (
             'responseClass' => 'PutBucketPolicyOutput',
             'responseType' => 'model',
             'documentationUrl' => 'http://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTpolicy.html',
+            'data' => array(
+                'xmlRoot' => array(
+                    'name' => 'PutBucketPolicyRequest',
+                    'namespaces' => array(
+                        'http://s3.amazonaws.com/doc/2006-03-01/',
+                    ),
+                ),
+            ),
             'parameters' => array(
                 'Bucket' => array(
                     'required' => true,
@@ -1828,7 +1944,6 @@ return array (
                     'location' => 'xml',
                     'items' => array(
                         'name' => 'Tag',
-                        'required' => true,
                         'type' => 'object',
                         'properties' => array(
                             'Key' => array(
@@ -1873,6 +1988,7 @@ return array (
                 'MFADelete' => array(
                     'type' => 'string',
                     'location' => 'xml',
+                    'sentAs' => 'MfaDelete',
                 ),
                 'Status' => array(
                     'type' => 'string',
@@ -1986,6 +2102,14 @@ return array (
             'responseClass' => 'PutObjectOutput',
             'responseType' => 'model',
             'documentationUrl' => 'http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectPUT.html',
+            'data' => array(
+                'xmlRoot' => array(
+                    'name' => 'PutObjectRequest',
+                    'namespaces' => array(
+                        'http://s3.amazonaws.com/doc/2006-03-01/',
+                    ),
+                ),
+            ),
             'parameters' => array(
                 'ACL' => array(
                     'type' => 'string',
@@ -2101,6 +2225,21 @@ return array (
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-website-redirect-location',
+                ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKey' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
                 'ACP' => array(
                     'type' => 'object',
@@ -2280,6 +2419,14 @@ return array (
             'responseClass' => 'UploadPartOutput',
             'responseType' => 'model',
             'documentationUrl' => 'http://docs.aws.amazon.com/AmazonS3/latest/API/mpUploadUploadPart.html',
+            'data' => array(
+                'xmlRoot' => array(
+                    'name' => 'UploadPartRequest',
+                    'namespaces' => array(
+                        'http://s3.amazonaws.com/doc/2006-03-01/',
+                    ),
+                ),
+            ),
             'parameters' => array(
                 'Body' => array(
                     'type' => array(
@@ -2326,6 +2473,21 @@ return array (
                     'location' => 'query',
                     'sentAs' => 'uploadId',
                 ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKey' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
+                ),
             ),
         ),
         'UploadPartCopy' => array(
@@ -2335,6 +2497,14 @@ return array (
             'responseClass' => 'UploadPartCopyOutput',
             'responseType' => 'model',
             'documentationUrl' => 'http://docs.aws.amazon.com/AmazonS3/latest/API/mpUploadUploadPartCopy.html',
+            'data' => array(
+                'xmlRoot' => array(
+                    'name' => 'UploadPartCopyRequest',
+                    'namespaces' => array(
+                        'http://s3.amazonaws.com/doc/2006-03-01/',
+                    ),
+                ),
+            ),
             'parameters' => array(
                 'Bucket' => array(
                     'required' => true,
@@ -2348,12 +2518,7 @@ return array (
                     'sentAs' => 'x-amz-copy-source',
                 ),
                 'CopySourceIfMatch' => array(
-                    'type' => array(
-                        'object',
-                        'string',
-                        'integer',
-                    ),
-                    'format' => 'date-time-http',
+                    'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-copy-source-if-match',
                 ),
@@ -2368,12 +2533,7 @@ return array (
                     'sentAs' => 'x-amz-copy-source-if-modified-since',
                 ),
                 'CopySourceIfNoneMatch' => array(
-                    'type' => array(
-                        'object',
-                        'string',
-                        'integer',
-                    ),
-                    'format' => 'date-time-http',
+                    'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-copy-source-if-none-match',
                 ),
@@ -2412,6 +2572,36 @@ return array (
                     'location' => 'query',
                     'sentAs' => 'uploadId',
                 ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKey' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
+                ),
+                'CopySourceSSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-copy-source-server-side-encryption-customer-algorithm',
+                ),
+                'CopySourceSSECustomerKey' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-copy-source-server-side-encryption-customer-key',
+                ),
+                'CopySourceSSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-copy-source-server-side-encryption-customer-key-MD5',
+                ),
                 'command.expects' => array(
                     'static' => true,
                     'default' => 'application/xml',
@@ -2434,11 +2624,15 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
+                'Location' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
                 'Bucket' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'ETag' => array(
+                'Key' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -2447,11 +2641,7 @@ return array (
                     'location' => 'header',
                     'sentAs' => 'x-amz-expiration',
                 ),
-                'Key' => array(
-                    'type' => 'string',
-                    'location' => 'xml',
-                ),
-                'Location' => array(
+                'ETag' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -2483,20 +2673,30 @@ return array (
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'CopySourceVersionId' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-copy-source-version-id',
-                ),
                 'Expiration' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-expiration',
                 ),
+                'CopySourceVersionId' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-copy-source-version-id',
+                ),
                 'ServerSideEncryption' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-server-side-encryption',
+                ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
                 'RequestId' => array(
                     'location' => 'header',
@@ -2531,14 +2731,24 @@ return array (
                     'type' => 'string',
                     'location' => 'xml',
                 ),
+                'UploadId' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
                 'ServerSideEncryption' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-server-side-encryption',
                 ),
-                'UploadId' => array(
+                'SSECustomerAlgorithm' => array(
                     'type' => 'string',
-                    'location' => 'xml',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
                 'RequestId' => array(
                     'location' => 'header',
@@ -2637,18 +2847,19 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'DeletedObject',
                         'type' => 'object',
                         'properties' => array(
-                            'DeleteMarker' => array(
-                                'type' => 'boolean',
-                            ),
-                            'DeleteMarkerVersionId' => array(
-                                'type' => 'string',
-                            ),
                             'Key' => array(
                                 'type' => 'string',
                             ),
                             'VersionId' => array(
+                                'type' => 'string',
+                            ),
+                            'DeleteMarker' => array(
+                                'type' => 'boolean',
+                            ),
+                            'DeleteMarkerVersionId' => array(
                                 'type' => 'string',
                             ),
                         ),
@@ -2662,19 +2873,20 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'Error',
                         'type' => 'object',
                         'sentAs' => 'Error',
                         'properties' => array(
-                            'Code' => array(
-                                'type' => 'string',
-                            ),
                             'Key' => array(
                                 'type' => 'string',
                             ),
-                            'Message' => array(
+                            'VersionId' => array(
                                 'type' => 'string',
                             ),
-                            'VersionId' => array(
+                            'Code' => array(
+                                'type' => 'string',
+                            ),
+                            'Message' => array(
                                 'type' => 'string',
                             ),
                         ),
@@ -2690,6 +2902,18 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
+                'Owner' => array(
+                    'type' => 'object',
+                    'location' => 'xml',
+                    'properties' => array(
+                        'DisplayName' => array(
+                            'type' => 'string',
+                        ),
+                        'ID' => array(
+                            'type' => 'string',
+                        ),
+                    ),
+                ),
                 'Grants' => array(
                     'type' => 'array',
                     'location' => 'xml',
@@ -2730,18 +2954,6 @@ return array (
                         ),
                     ),
                 ),
-                'Owner' => array(
-                    'type' => 'object',
-                    'location' => 'xml',
-                    'properties' => array(
-                        'DisplayName' => array(
-                            'type' => 'string',
-                        ),
-                        'ID' => array(
-                            'type' => 'string',
-                        ),
-                    ),
-                ),
                 'RequestId' => array(
                     'location' => 'header',
                     'sentAs' => 'x-amz-request-id',
@@ -2760,6 +2972,7 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'CORSRule',
                         'type' => 'object',
                         'sentAs' => 'CORSRule',
                         'properties' => array(
@@ -2770,6 +2983,7 @@ return array (
                                     'xmlFlattened' => true,
                                 ),
                                 'items' => array(
+                                    'name' => 'AllowedHeader',
                                     'type' => 'string',
                                     'sentAs' => 'AllowedHeader',
                                 ),
@@ -2781,6 +2995,7 @@ return array (
                                     'xmlFlattened' => true,
                                 ),
                                 'items' => array(
+                                    'name' => 'AllowedMethod',
                                     'type' => 'string',
                                     'sentAs' => 'AllowedMethod',
                                 ),
@@ -2792,6 +3007,7 @@ return array (
                                     'xmlFlattened' => true,
                                 ),
                                 'items' => array(
+                                    'name' => 'AllowedOrigin',
                                     'type' => 'string',
                                     'sentAs' => 'AllowedOrigin',
                                 ),
@@ -2803,6 +3019,7 @@ return array (
                                     'xmlFlattened' => true,
                                 ),
                                 'items' => array(
+                                    'name' => 'ExposeHeader',
                                     'type' => 'string',
                                     'sentAs' => 'ExposeHeader',
                                 ),
@@ -2831,6 +3048,7 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'Rule',
                         'type' => 'object',
                         'sentAs' => 'Rule',
                         'properties' => array(
@@ -2865,6 +3083,25 @@ return array (
                                     ),
                                     'StorageClass' => array(
                                         'type' => 'string',
+                                    ),
+                                ),
+                            ),
+                            'NoncurrentVersionTransition' => array(
+                                'type' => 'object',
+                                'properties' => array(
+                                    'NoncurrentDays' => array(
+                                        'type' => 'numeric',
+                                    ),
+                                    'StorageClass' => array(
+                                        'type' => 'string',
+                                    ),
+                                ),
+                            ),
+                            'NoncurrentVersionExpiration' => array(
+                                'type' => 'object',
+                                'properties' => array(
+                                    'NoncurrentDays' => array(
+                                        'type' => 'numeric',
                                     ),
                                 ),
                             ),
@@ -3034,13 +3271,14 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
-                'MFADelete' => array(
-                    'type' => 'string',
-                    'location' => 'xml',
-                ),
                 'Status' => array(
                     'type' => 'string',
                     'location' => 'xml',
+                ),
+                'MFADelete' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                    'sentAs' => 'MfaDelete',
                 ),
                 'RequestId' => array(
                     'location' => 'header',
@@ -3052,11 +3290,14 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
-                'ErrorDocument' => array(
+                'RedirectAllRequestsTo' => array(
                     'type' => 'object',
                     'location' => 'xml',
                     'properties' => array(
-                        'Key' => array(
+                        'HostName' => array(
+                            'type' => 'string',
+                        ),
+                        'Protocol' => array(
                             'type' => 'string',
                         ),
                     ),
@@ -3070,14 +3311,11 @@ return array (
                         ),
                     ),
                 ),
-                'RedirectAllRequestsTo' => array(
+                'ErrorDocument' => array(
                     'type' => 'object',
                     'location' => 'xml',
                     'properties' => array(
-                        'HostName' => array(
-                            'type' => 'string',
-                        ),
-                        'Protocol' => array(
+                        'Key' => array(
                             'type' => 'string',
                         ),
                     ),
@@ -3134,15 +3372,54 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
+                'Body' => array(
+                    'type' => 'string',
+                    'instanceOf' => 'Guzzle\\Http\\EntityBody',
+                    'location' => 'body',
+                ),
+                'DeleteMarker' => array(
+                    'type' => 'boolean',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-delete-marker',
+                ),
                 'AcceptRanges' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'accept-ranges',
                 ),
-                'Body' => array(
+                'Expiration' => array(
                     'type' => 'string',
-                    'instanceOf' => 'Guzzle\\Http\\EntityBody',
-                    'location' => 'body',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-expiration',
+                ),
+                'Restore' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-restore',
+                ),
+                'LastModified' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'Last-Modified',
+                ),
+                'ContentLength' => array(
+                    'type' => 'numeric',
+                    'location' => 'header',
+                    'sentAs' => 'Content-Length',
+                ),
+                'ETag' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                ),
+                'MissingMeta' => array(
+                    'type' => 'numeric',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-missing-meta',
+                ),
+                'VersionId' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-version-id',
                 ),
                 'CacheControl' => array(
                     'type' => 'string',
@@ -3164,38 +3441,24 @@ return array (
                     'location' => 'header',
                     'sentAs' => 'Content-Language',
                 ),
-                'ContentLength' => array(
-                    'type' => 'numeric',
-                    'location' => 'header',
-                    'sentAs' => 'Content-Length',
-                ),
                 'ContentType' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'Content-Type',
                 ),
-                'DeleteMarker' => array(
-                    'type' => 'boolean',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-delete-marker',
-                ),
-                'ETag' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                ),
-                'Expiration' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-expiration',
-                ),
                 'Expires' => array(
                     'type' => 'string',
                     'location' => 'header',
                 ),
-                'LastModified' => array(
+                'WebsiteRedirectLocation' => array(
                     'type' => 'string',
                     'location' => 'header',
-                    'sentAs' => 'Last-Modified',
+                    'sentAs' => 'x-amz-website-redirect-location',
+                ),
+                'ServerSideEncryption' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption',
                 ),
                 'Metadata' => array(
                     'type' => 'object',
@@ -3205,30 +3468,15 @@ return array (
                         'type' => 'string',
                     ),
                 ),
-                'MissingMeta' => array(
-                    'type' => 'numeric',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-missing-meta',
-                ),
-                'Restore' => array(
+                'SSECustomerAlgorithm' => array(
                     'type' => 'string',
                     'location' => 'header',
-                    'sentAs' => 'x-amz-restore',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
                 ),
-                'ServerSideEncryption' => array(
+                'SSECustomerKeyMD5' => array(
                     'type' => 'string',
                     'location' => 'header',
-                    'sentAs' => 'x-amz-server-side-encryption',
-                ),
-                'VersionId' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-version-id',
-                ),
-                'WebsiteRedirectLocation' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-website-redirect-location',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
                 'RequestId' => array(
                     'location' => 'header',
@@ -3240,6 +3488,18 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
+                'Owner' => array(
+                    'type' => 'object',
+                    'location' => 'xml',
+                    'properties' => array(
+                        'DisplayName' => array(
+                            'type' => 'string',
+                        ),
+                        'ID' => array(
+                            'type' => 'string',
+                        ),
+                    ),
+                ),
                 'Grants' => array(
                     'type' => 'array',
                     'location' => 'xml',
@@ -3280,18 +3540,6 @@ return array (
                         ),
                     ),
                 ),
-                'Owner' => array(
-                    'type' => 'object',
-                    'location' => 'xml',
-                    'properties' => array(
-                        'DisplayName' => array(
-                            'type' => 'string',
-                        ),
-                        'ID' => array(
-                            'type' => 'string',
-                        ),
-                    ),
-                ),
                 'RequestId' => array(
                     'location' => 'header',
                     'sentAs' => 'x-amz-request-id',
@@ -3327,10 +3575,49 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
+                'DeleteMarker' => array(
+                    'type' => 'boolean',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-delete-marker',
+                ),
                 'AcceptRanges' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'accept-ranges',
+                ),
+                'Expiration' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-expiration',
+                ),
+                'Restore' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-restore',
+                ),
+                'LastModified' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'Last-Modified',
+                ),
+                'ContentLength' => array(
+                    'type' => 'numeric',
+                    'location' => 'header',
+                    'sentAs' => 'Content-Length',
+                ),
+                'ETag' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                ),
+                'MissingMeta' => array(
+                    'type' => 'numeric',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-missing-meta',
+                ),
+                'VersionId' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-version-id',
                 ),
                 'CacheControl' => array(
                     'type' => 'string',
@@ -3352,38 +3639,24 @@ return array (
                     'location' => 'header',
                     'sentAs' => 'Content-Language',
                 ),
-                'ContentLength' => array(
-                    'type' => 'numeric',
-                    'location' => 'header',
-                    'sentAs' => 'Content-Length',
-                ),
                 'ContentType' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'Content-Type',
                 ),
-                'DeleteMarker' => array(
-                    'type' => 'boolean',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-delete-marker',
-                ),
-                'ETag' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                ),
-                'Expiration' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-expiration',
-                ),
                 'Expires' => array(
                     'type' => 'string',
                     'location' => 'header',
                 ),
-                'LastModified' => array(
+                'WebsiteRedirectLocation' => array(
                     'type' => 'string',
                     'location' => 'header',
-                    'sentAs' => 'Last-Modified',
+                    'sentAs' => 'x-amz-website-redirect-location',
+                ),
+                'ServerSideEncryption' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption',
                 ),
                 'Metadata' => array(
                     'type' => 'object',
@@ -3393,30 +3666,15 @@ return array (
                         'type' => 'string',
                     ),
                 ),
-                'MissingMeta' => array(
-                    'type' => 'numeric',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-missing-meta',
-                ),
-                'Restore' => array(
+                'SSECustomerAlgorithm' => array(
                     'type' => 'string',
                     'location' => 'header',
-                    'sentAs' => 'x-amz-restore',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
                 ),
-                'ServerSideEncryption' => array(
+                'SSECustomerKeyMD5' => array(
                     'type' => 'string',
                     'location' => 'header',
-                    'sentAs' => 'x-amz-server-side-encryption',
-                ),
-                'VersionId' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-version-id',
-                ),
-                'WebsiteRedirectLocation' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-website-redirect-location',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
                 'RequestId' => array(
                     'location' => 'header',
@@ -3436,10 +3694,10 @@ return array (
                         'type' => 'object',
                         'sentAs' => 'Bucket',
                         'properties' => array(
-                            'CreationDate' => array(
+                            'Name' => array(
                                 'type' => 'string',
                             ),
-                            'Name' => array(
+                            'CreationDate' => array(
                                 'type' => 'string',
                             ),
                         ),
@@ -3471,43 +3729,15 @@ return array (
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'CommonPrefixes' => array(
-                    'type' => 'array',
-                    'location' => 'xml',
-                    'data' => array(
-                        'xmlFlattened' => true,
-                    ),
-                    'items' => array(
-                        'type' => 'object',
-                        'properties' => array(
-                            'Prefix' => array(
-                                'type' => 'string',
-                            ),
-                        ),
-                    ),
-                ),
-                'EncodingType' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'Encoding-Type',
-                ),
-                'IsTruncated' => array(
-                    'type' => 'boolean',
-                    'location' => 'xml',
-                ),
                 'KeyMarker' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'MaxUploads' => array(
-                    'type' => 'numeric',
-                    'location' => 'xml',
-                ),
-                'NextKeyMarker' => array(
+                'UploadIdMarker' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'NextUploadIdMarker' => array(
+                'NextKeyMarker' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -3515,8 +3745,16 @@ return array (
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'UploadIdMarker' => array(
+                'NextUploadIdMarker' => array(
                     'type' => 'string',
+                    'location' => 'xml',
+                ),
+                'MaxUploads' => array(
+                    'type' => 'numeric',
+                    'location' => 'xml',
+                ),
+                'IsTruncated' => array(
+                    'type' => 'boolean',
                     'location' => 'xml',
                 ),
                 'Uploads' => array(
@@ -3527,24 +3765,20 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'MultipartUpload',
                         'type' => 'object',
                         'sentAs' => 'Upload',
                         'properties' => array(
+                            'UploadId' => array(
+                                'type' => 'string',
+                            ),
+                            'Key' => array(
+                                'type' => 'string',
+                            ),
                             'Initiated' => array(
                                 'type' => 'string',
                             ),
-                            'Initiator' => array(
-                                'type' => 'object',
-                                'properties' => array(
-                                    'DisplayName' => array(
-                                        'type' => 'string',
-                                    ),
-                                    'ID' => array(
-                                        'type' => 'string',
-                                    ),
-                                ),
-                            ),
-                            'Key' => array(
+                            'StorageClass' => array(
                                 'type' => 'string',
                             ),
                             'Owner' => array(
@@ -3558,14 +3792,39 @@ return array (
                                     ),
                                 ),
                             ),
-                            'StorageClass' => array(
-                                'type' => 'string',
+                            'Initiator' => array(
+                                'type' => 'object',
+                                'properties' => array(
+                                    'ID' => array(
+                                        'type' => 'string',
+                                    ),
+                                    'DisplayName' => array(
+                                        'type' => 'string',
+                                    ),
+                                ),
                             ),
-                            'UploadId' => array(
+                        ),
+                    ),
+                ),
+                'CommonPrefixes' => array(
+                    'type' => 'array',
+                    'location' => 'xml',
+                    'data' => array(
+                        'xmlFlattened' => true,
+                    ),
+                    'items' => array(
+                        'name' => 'CommonPrefix',
+                        'type' => 'object',
+                        'properties' => array(
+                            'Prefix' => array(
                                 'type' => 'string',
                             ),
                         ),
                     ),
+                ),
+                'EncodingType' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
                 ),
                 'RequestId' => array(
                     'location' => 'header',
@@ -3577,17 +3836,69 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
-                'CommonPrefixes' => array(
+                'IsTruncated' => array(
+                    'type' => 'boolean',
+                    'location' => 'xml',
+                ),
+                'KeyMarker' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
+                'VersionIdMarker' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
+                'NextKeyMarker' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
+                'NextVersionIdMarker' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
+                'Versions' => array(
                     'type' => 'array',
                     'location' => 'xml',
+                    'sentAs' => 'Version',
                     'data' => array(
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'ObjectVersion',
                         'type' => 'object',
+                        'sentAs' => 'Version',
                         'properties' => array(
-                            'Prefix' => array(
+                            'ETag' => array(
                                 'type' => 'string',
+                            ),
+                            'Size' => array(
+                                'type' => 'numeric',
+                            ),
+                            'StorageClass' => array(
+                                'type' => 'string',
+                            ),
+                            'Key' => array(
+                                'type' => 'string',
+                            ),
+                            'VersionId' => array(
+                                'type' => 'string',
+                            ),
+                            'IsLatest' => array(
+                                'type' => 'boolean',
+                            ),
+                            'LastModified' => array(
+                                'type' => 'string',
+                            ),
+                            'Owner' => array(
+                                'type' => 'object',
+                                'properties' => array(
+                                    'DisplayName' => array(
+                                        'type' => 'string',
+                                    ),
+                                    'ID' => array(
+                                        'type' => 'string',
+                                    ),
+                                ),
                             ),
                         ),
                     ),
@@ -3600,18 +3911,10 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'DeleteMarkerEntry',
                         'type' => 'object',
                         'sentAs' => 'DeleteMarker',
                         'properties' => array(
-                            'IsLatest' => array(
-                                'type' => 'boolean',
-                            ),
-                            'Key' => array(
-                                'type' => 'string',
-                            ),
-                            'LastModified' => array(
-                                'type' => 'string',
-                            ),
                             'Owner' => array(
                                 'type' => 'object',
                                 'properties' => array(
@@ -3623,38 +3926,22 @@ return array (
                                     ),
                                 ),
                             ),
+                            'Key' => array(
+                                'type' => 'string',
+                            ),
                             'VersionId' => array(
+                                'type' => 'string',
+                            ),
+                            'IsLatest' => array(
+                                'type' => 'boolean',
+                            ),
+                            'LastModified' => array(
                                 'type' => 'string',
                             ),
                         ),
                     ),
                 ),
-                'EncodingType' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'Encoding-Type',
-                ),
-                'IsTruncated' => array(
-                    'type' => 'boolean',
-                    'location' => 'xml',
-                ),
-                'KeyMarker' => array(
-                    'type' => 'string',
-                    'location' => 'xml',
-                ),
-                'MaxKeys' => array(
-                    'type' => 'numeric',
-                    'location' => 'xml',
-                ),
                 'Name' => array(
-                    'type' => 'string',
-                    'location' => 'xml',
-                ),
-                'NextKeyMarker' => array(
-                    'type' => 'string',
-                    'location' => 'xml',
-                ),
-                'NextVersionIdMarker' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -3662,55 +3949,29 @@ return array (
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'VersionIdMarker' => array(
-                    'type' => 'string',
+                'MaxKeys' => array(
+                    'type' => 'numeric',
                     'location' => 'xml',
                 ),
-                'Versions' => array(
+                'CommonPrefixes' => array(
                     'type' => 'array',
                     'location' => 'xml',
-                    'sentAs' => 'Version',
                     'data' => array(
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'CommonPrefix',
                         'type' => 'object',
-                        'sentAs' => 'Version',
                         'properties' => array(
-                            'ETag' => array(
-                                'type' => 'string',
-                            ),
-                            'IsLatest' => array(
-                                'type' => 'boolean',
-                            ),
-                            'Key' => array(
-                                'type' => 'string',
-                            ),
-                            'LastModified' => array(
-                                'type' => 'string',
-                            ),
-                            'Owner' => array(
-                                'type' => 'object',
-                                'properties' => array(
-                                    'DisplayName' => array(
-                                        'type' => 'string',
-                                    ),
-                                    'ID' => array(
-                                        'type' => 'string',
-                                    ),
-                                ),
-                            ),
-                            'Size' => array(
-                                'type' => 'string',
-                            ),
-                            'StorageClass' => array(
-                                'type' => 'string',
-                            ),
-                            'VersionId' => array(
+                            'Prefix' => array(
                                 'type' => 'string',
                             ),
                         ),
                     ),
+                ),
+                'EncodingType' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
                 ),
                 'RequestId' => array(
                     'location' => 'header',
@@ -3722,20 +3983,17 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
-                'CommonPrefixes' => array(
-                    'type' => 'array',
+                'IsTruncated' => array(
+                    'type' => 'boolean',
                     'location' => 'xml',
-                    'data' => array(
-                        'xmlFlattened' => true,
-                    ),
-                    'items' => array(
-                        'type' => 'object',
-                        'properties' => array(
-                            'Prefix' => array(
-                                'type' => 'string',
-                            ),
-                        ),
-                    ),
+                ),
+                'Marker' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
+                'NextMarker' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
                 ),
                 'Contents' => array(
                     'type' => 'array',
@@ -3744,15 +4002,22 @@ return array (
                         'xmlFlattened' => true,
                     ),
                     'items' => array(
+                        'name' => 'Object',
                         'type' => 'object',
                         'properties' => array(
-                            'ETag' => array(
-                                'type' => 'string',
-                            ),
                             'Key' => array(
                                 'type' => 'string',
                             ),
                             'LastModified' => array(
+                                'type' => 'string',
+                            ),
+                            'ETag' => array(
+                                'type' => 'string',
+                            ),
+                            'Size' => array(
+                                'type' => 'numeric',
+                            ),
+                            'StorageClass' => array(
                                 'type' => 'string',
                             ),
                             'Owner' => array(
@@ -3766,25 +4031,14 @@ return array (
                                     ),
                                 ),
                             ),
-                            'Size' => array(
-                                'type' => 'numeric',
-                            ),
-                            'StorageClass' => array(
-                                'type' => 'string',
-                            ),
                         ),
                     ),
                 ),
-                'EncodingType' => array(
+                'Name' => array(
                     'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'Encoding-Type',
-                ),
-                'IsTruncated' => array(
-                    'type' => 'boolean',
                     'location' => 'xml',
                 ),
-                'Marker' => array(
+                'Prefix' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -3792,15 +4046,23 @@ return array (
                     'type' => 'numeric',
                     'location' => 'xml',
                 ),
-                'Name' => array(
-                    'type' => 'string',
+                'CommonPrefixes' => array(
+                    'type' => 'array',
                     'location' => 'xml',
+                    'data' => array(
+                        'xmlFlattened' => true,
+                    ),
+                    'items' => array(
+                        'name' => 'CommonPrefix',
+                        'type' => 'object',
+                        'properties' => array(
+                            'Prefix' => array(
+                                'type' => 'string',
+                            ),
+                        ),
+                    ),
                 ),
-                'NextMarker' => array(
-                    'type' => 'string',
-                    'location' => 'xml',
-                ),
-                'Prefix' => array(
+                'EncodingType' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -3818,33 +4080,68 @@ return array (
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'Initiator' => array(
-                    'type' => 'object',
-                    'location' => 'xml',
-                    'properties' => array(
-                        'DisplayName' => array(
-                            'type' => 'string',
-                        ),
-                        'ID' => array(
-                            'type' => 'string',
-                        ),
-                    ),
-                ),
-                'IsTruncated' => array(
-                    'type' => 'boolean',
-                    'location' => 'xml',
-                ),
                 'Key' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'MaxParts' => array(
+                'UploadId' => array(
+                    'type' => 'string',
+                    'location' => 'xml',
+                ),
+                'PartNumberMarker' => array(
                     'type' => 'numeric',
                     'location' => 'xml',
                 ),
                 'NextPartNumberMarker' => array(
                     'type' => 'numeric',
                     'location' => 'xml',
+                ),
+                'MaxParts' => array(
+                    'type' => 'numeric',
+                    'location' => 'xml',
+                ),
+                'IsTruncated' => array(
+                    'type' => 'boolean',
+                    'location' => 'xml',
+                ),
+                'Parts' => array(
+                    'type' => 'array',
+                    'location' => 'xml',
+                    'sentAs' => 'Part',
+                    'data' => array(
+                        'xmlFlattened' => true,
+                    ),
+                    'items' => array(
+                        'name' => 'Part',
+                        'type' => 'object',
+                        'sentAs' => 'Part',
+                        'properties' => array(
+                            'PartNumber' => array(
+                                'type' => 'numeric',
+                            ),
+                            'LastModified' => array(
+                                'type' => 'string',
+                            ),
+                            'ETag' => array(
+                                'type' => 'string',
+                            ),
+                            'Size' => array(
+                                'type' => 'numeric',
+                            ),
+                        ),
+                    ),
+                ),
+                'Initiator' => array(
+                    'type' => 'object',
+                    'location' => 'xml',
+                    'properties' => array(
+                        'ID' => array(
+                            'type' => 'string',
+                        ),
+                        'DisplayName' => array(
+                            'type' => 'string',
+                        ),
+                    ),
                 ),
                 'Owner' => array(
                     'type' => 'object',
@@ -3858,41 +4155,7 @@ return array (
                         ),
                     ),
                 ),
-                'PartNumberMarker' => array(
-                    'type' => 'numeric',
-                    'location' => 'xml',
-                ),
-                'Parts' => array(
-                    'type' => 'array',
-                    'location' => 'xml',
-                    'sentAs' => 'Part',
-                    'data' => array(
-                        'xmlFlattened' => true,
-                    ),
-                    'items' => array(
-                        'type' => 'object',
-                        'sentAs' => 'Part',
-                        'properties' => array(
-                            'ETag' => array(
-                                'type' => 'string',
-                            ),
-                            'LastModified' => array(
-                                'type' => 'string',
-                            ),
-                            'PartNumber' => array(
-                                'type' => 'numeric',
-                            ),
-                            'Size' => array(
-                                'type' => 'numeric',
-                            ),
-                        ),
-                    ),
-                ),
                 'StorageClass' => array(
-                    'type' => 'string',
-                    'location' => 'xml',
-                ),
-                'UploadId' => array(
                     'type' => 'string',
                     'location' => 'xml',
                 ),
@@ -4006,14 +4269,14 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
-                'ETag' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                ),
                 'Expiration' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-expiration',
+                ),
+                'ETag' => array(
+                    'type' => 'string',
+                    'location' => 'header',
                 ),
                 'ServerSideEncryption' => array(
                     'type' => 'string',
@@ -4024,6 +4287,16 @@ return array (
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-version-id',
+                ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
                 'RequestId' => array(
                     'location' => 'header',
@@ -4057,14 +4330,24 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
-                'ETag' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                ),
                 'ServerSideEncryption' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-server-side-encryption',
+                ),
+                'ETag' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
                 'RequestId' => array(
                     'location' => 'header',
@@ -4076,6 +4359,11 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
+                'CopySourceVersionId' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-copy-source-version-id',
+                ),
                 'ETag' => array(
                     'type' => 'string',
                     'location' => 'xml',
@@ -4084,15 +4372,20 @@ return array (
                     'type' => 'string',
                     'location' => 'xml',
                 ),
-                'CopySourceVersionId' => array(
-                    'type' => 'string',
-                    'location' => 'header',
-                    'sentAs' => 'x-amz-copy-source-version-id',
-                ),
                 'ServerSideEncryption' => array(
                     'type' => 'string',
                     'location' => 'header',
                     'sentAs' => 'x-amz-server-side-encryption',
+                ),
+                'SSECustomerAlgorithm' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-algorithm',
+                ),
+                'SSECustomerKeyMD5' => array(
+                    'type' => 'string',
+                    'location' => 'header',
+                    'sentAs' => 'x-amz-server-side-encryption-customer-key-MD5',
                 ),
                 'RequestId' => array(
                     'location' => 'header',

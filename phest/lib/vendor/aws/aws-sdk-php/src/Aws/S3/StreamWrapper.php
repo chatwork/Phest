@@ -72,7 +72,6 @@ use Guzzle\Service\Command\CommandInterface;
  * Stream context options:
  *
  * - "seekable": Set to true to create a seekable "r" (read only) stream by using a php://temp stream buffer
- * - "throw_exceptions": Set to true to throw exceptions instead of trigger_errors
  * - For "unlink" only: Any option that can be passed to the DeleteObject operation
  */
 class StreamWrapper
@@ -400,14 +399,27 @@ class StreamWrapper
         $params = $this->getParams($path);
         if (!$params['Bucket']) {
             return $this->triggerError('You cannot delete s3://. Please specify a bucket.');
-        } elseif ($params['Key']) {
-            return $this->triggerError('rmdir() only supports bucket deletion');
         }
 
         try {
-            self::$client->deleteBucket(array('Bucket' => $params['Bucket']));
-            $this->clearStatInfo($path);
-            return true;
+
+            if (!$params['Key']) {
+                self::$client->deleteBucket(array('Bucket' => $params['Bucket']));
+                $this->clearStatInfo($path);
+                return true;
+            }
+
+            $result = self::$client->listObjects(array(
+                'Bucket'  => $params['Bucket'],
+                // Use a key that adds a trailing slash if needed.
+                'Prefix'  => rtrim($params['Key'], '/') . '/',
+                'MaxKeys' => 1
+            ));
+
+            return $result['Contents'] || $result['CommonPrefixes']
+                ? $this->triggerError('Pseudo directory is not empty')
+                : $this->unlink(rtrim($path, '/') . '/');
+
         } catch (\Exception $e) {
             return $this->triggerError($e->getMessage());
         }
@@ -619,7 +631,6 @@ class StreamWrapper
 
         $params = $this->getOptions();
         unset($params['seekable']);
-        unset($params['throw_exceptions']);
 
         return array(
             'Bucket' => $parts[0],
@@ -712,13 +723,18 @@ class StreamWrapper
      */
     protected function triggerError($errors, $flags = null)
     {
-        if ($flags != STREAM_URL_STAT_QUIET) {
-            if ($this->getOption('throw_exceptions')) {
-                throw new RuntimeException(implode("\n", (array) $errors));
-            } else {
-                trigger_error(implode("\n", (array) $errors), E_USER_WARNING);
-            }
+        if ($flags & STREAM_URL_STAT_QUIET) {
+          // This is triggered with things like file_exists()
+          
+          if ($flags & STREAM_URL_STAT_LINK) {
+            // This is triggered for things like is_link()
+            return $this->formatUrlStat(false);
+          }
+          return false;
         }
+
+        // This is triggered when doing things like lstat() or stat()
+        trigger_error(implode("\n", (array) $errors), E_USER_WARNING);
 
         return false;
     }
@@ -752,7 +768,7 @@ class StreamWrapper
         $type = gettype($result);
 
         // Determine what type of data is being cached
-        if (!$result || $type == 'string') {
+        if ($type == 'NULL' || $type == 'string') {
             // Directory with 0777 access - see "man 2 stat".
             $stat['mode'] = $stat[2] = 0040777;
         } elseif ($type == 'array' && isset($result['LastModified'])) {
@@ -760,8 +776,6 @@ class StreamWrapper
             $stat['mtime'] = $stat[9] = $stat['ctime'] = $stat[10] = strtotime($result['LastModified']);
             $stat['size'] = $stat[7] = (isset($result['ContentLength']) ? $result['ContentLength'] : $result['Size']);
             // Regular file with 0777 access - see "man 2 stat".
-            $stat['mode'] = $stat[2] = 0100777;
-        } else {
             $stat['mode'] = $stat[2] = 0100777;
         }
 

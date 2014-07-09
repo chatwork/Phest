@@ -24,6 +24,13 @@ use Aws\S3\Sync\KeyConverter;
  */
 class ChangedFilesIteratorTest extends \Guzzle\Tests\GuzzleTestCase
 {
+    public function setUp()
+    {
+        if (in_array(PHP_VERSION_ID, array(50429, 50513, 50600))) {
+            $this->markTestSkipped('TODO: Remove once PHPUnit is tagged.');
+        }
+    }
+
     public function testRetrievesAndCachesTargetData()
     {
         $ctime = strtotime('January 1, 2013');

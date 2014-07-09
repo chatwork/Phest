@@ -37,13 +37,13 @@ class DynamoDb_20120810_Test extends \Aws\Tests\IntegrationTestCase
         // Delete the errors table if it exists
         try {
             $client->deleteTable(array('TableName' => 'errors'));
-            $client->waitUntilTableNotExists(array('TableName' => 'errors'));
+            $client->waitUntil('TableNotExists', array('TableName' => 'errors'));
         } catch (\Exception $e) {}
 
         // Delete the Orders table if it exists
         try {
             $client->deleteTable(array('TableName' => 'Orders'));
-            $client->waitUntilTableNotExists(array('TableName' => 'Orders'));
+            $client->waitUntil('TableNotExists', array('TableName' => 'Orders'));
         } catch (\Exception $e) {}
     }
 
@@ -102,7 +102,7 @@ class DynamoDb_20120810_Test extends \Aws\Tests\IntegrationTestCase
         // @begin
 
         // Wait until the table is created and active
-        $client->waitUntilTableExists(array(
+        $client->waitUntil('TableExists', array(
             'TableName' => 'errors'
         ));
     }
@@ -129,7 +129,7 @@ class DynamoDb_20120810_Test extends \Aws\Tests\IntegrationTestCase
         ));
 
         // Wait until the table is active again after updating
-        $client->waitUntilTableExists(array(
+        $client->waitUntil('TableExists', array(
             'TableName' => 'errors'
         ));
     }
@@ -386,7 +386,9 @@ class DynamoDb_20120810_Test extends \Aws\Tests\IntegrationTestCase
         $client = $this->client;
         // @begin
 
-        $iterator = new ItemIterator($client->getScanIterator(array('TableName' => 'errors')));
+        $iterator = new ItemIterator($client->getIterator('Scan', array(
+            'TableName' => 'errors'
+        )));
 
         // Each item will contain the attributes we added
         foreach ($iterator as $item) {
@@ -531,7 +533,7 @@ class DynamoDb_20120810_Test extends \Aws\Tests\IntegrationTestCase
         $this->assertEquals(count($keys), count($items));
 
         // Also check the iterator to make sure it works the same
-        $iterator = $client->getBatchGetItemIterator(array(
+        $iterator = $client->getIterator('BatchGetItem', array(
             'RequestItems' => array(
                 $tableName => array(
                     'Keys' => $keys
@@ -582,7 +584,7 @@ class DynamoDb_20120810_Test extends \Aws\Tests\IntegrationTestCase
             'TableName' => 'errors'
         ));
 
-        $client->waitUntilTableNotExists(array(
+        $client->waitUntil('TableNotExists', array(
             'TableName' => 'errors'
         ));
     }
@@ -627,7 +629,7 @@ class DynamoDb_20120810_Test extends \Aws\Tests\IntegrationTestCase
             )
         ));
 
-        $client->waitUntilTableExists(array('TableName' => 'Orders'));
+        $client->waitUntil('TableExists', array('TableName' => 'Orders'));
     }
 
     /**

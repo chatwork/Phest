@@ -53,6 +53,19 @@ return array(
             'class'   => 'Aws\CloudSearch\CloudSearchClient'
         ),
 
+        'cloudsearch_20110201' => array(
+            'extends' => 'cloudsearch',
+            'params' => array(
+                'version' => '2011-02-01'
+            )
+        ),
+
+        'cloudsearchdomain' => array(
+            'alias'   => 'CloudSearchDomain',
+            'extends' => 'default_settings',
+            'class'   => 'Aws\CloudSearchDomain\CloudSearchDomainClient'
+        ),
+
         'cloudtrail' => array(
             'alias'   => 'CloudTrail',
             'extends' => 'default_settings',

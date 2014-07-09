@@ -2,7 +2,7 @@
 /**
  * Project:     Smarty: the PHP compiling template engine
  * File:        Smarty.class.php
- * SVN:         $Id: Smarty.class.php 4814 2014-02-16 18:34:08Z Uwe.Tews@googlemail.com $
+ * SVN:         $Id: Smarty.class.php 4836 2014-04-19 11:42:11Z Uwe.Tews@googlemail.com $
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -113,7 +113,7 @@ class Smarty extends Smarty_Internal_TemplateBase
     /**
      * smarty version
      */
-    const SMARTY_VERSION = 'Smarty-3.1-DEV';
+    const SMARTY_VERSION = 'Smarty-3.1.19-dev';
 
     /**
      * define variable scopes
@@ -1220,11 +1220,11 @@ class Smarty extends Smarty_Internal_TemplateBase
      */
     public function createTemplate($template, $cache_id = null, $compile_id = null, $parent = null, $do_clone = true)
     {
-        if (!empty($cache_id) && (is_object($cache_id) || is_array($cache_id))) {
+        if ($cache_id !== null && (is_object($cache_id) || is_array($cache_id))) {
             $parent = $cache_id;
             $cache_id = null;
         }
-        if (!empty($parent) && is_array($parent)) {
+        if ($parent !== null && is_array($parent)) {
             $data = $parent;
             $parent = null;
         } else {

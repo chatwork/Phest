@@ -22,8 +22,6 @@ Using Composer             ``require '/path/to/vendor/autoload.php';``
 Using the Phar             ``require '/path/to/aws.phar';``
 -------------------------- ---------------------------------------------------------------------------------------------
 Using the Zip              ``require '/path/to/aws-autoloader.php';``
--------------------------- ---------------------------------------------------------------------------------------------
-Using PEAR                 ``require 'AWSSDKforPHP/aws.phar';``
 ========================== =============================================================================================
 
 For the remainder of this guide, we will show examples that use the Composer installation method. If you are using a
@@ -42,7 +40,8 @@ Factory method
 ~~~~~~~~~~~~~~
 
 The easiest way to get up and running quickly is to use the web service client's ``factory()`` method and provide your
-AWS **credentials** (e.g., ``key`` and ``secret``).
+**credential profile** (via the ``profile`` option), which identifies the set of credentials you want to use from your
+``~/.aws/credentials`` file (see :ref:`credential_profiles`).
 
 .. code-block:: php
 
@@ -53,17 +52,15 @@ AWS **credentials** (e.g., ``key`` and ``secret``).
 
     use Aws\S3\S3Client;
 
-    // Instantiate the S3 client with your AWS credentials
+    // Instantiate the S3 client using your credential profile
     $s3Client = S3Client::factory(array(
-        'key'    => 'YOUR_AWS_ACCESS_KEY_ID',
-        'secret' => 'YOUR_AWS_SECRET_ACCESS_KEY',
+        'profile' => 'my_profile',
     ));
 
-You can provide your credentials explicitly like in the preceding example, or you can choose to omit them if you are
-relying on **instance profile credentials** provided via `AWS Identity and Access Management (AWS IAM) roles for EC2
-instances <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UsingIAM.html#UsingIAMrolesWithAmazonEC2Instances>`_, or
-**environment credentials** sourced from the ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY``
-environment variables. For more information about credentials, see :doc:`credentials`.
+You can also choose to forgo specifying credentials if you are relying on **instance profile credentials**, provided via
+`AWS Identity and Access Management (AWS IAM) roles for EC2 instances <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UsingIAM.html#UsingIAMrolesWithAmazonEC2Instances>`_,
+or **environment credentials** sourced from the ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY`` environment
+variables. For more information about credentials, see :doc:`credentials`.
 
 .. note::
 
@@ -80,9 +77,8 @@ credentials in the array argument that you provide.
 .. code-block:: php
 
     $ec2Client = \Aws\Ec2\Ec2Client::factory(array(
-        'key'    => 'YOUR_AWS_ACCESS_KEY_ID',
-        'secret' => 'YOUR_AWS_SECRET_ACCESS_KEY',
-        'region' => 'us-east-1',
+        'profile' => 'my_profile',
+        'region'  => 'us-east-1',
     ));
 
 To know if the service client you are using requires a region and to find out which regions are supported by the client,
@@ -102,9 +98,8 @@ Also, every time you fetch a client object from the ``Aws`` object, it will be e
 
     // Create a service locator using a configuration file
     $aws = Aws::factory(array(
-        'key'    => 'YOUR_AWS_ACCESS_KEY_ID',
-        'secret' => 'YOUR_AWS_SECRET_ACCESS_KEY',
-        'region' => 'us-east-1',
+        'profile' => 'my_profile',
+        'region'  => 'us-east-1',
     ));
 
     // Get client instances from the service locator by name
@@ -137,6 +132,7 @@ A simple configuration file should look something like this:
                 'params' => array(
                     'key'    => 'YOUR_AWS_ACCESS_KEY_ID',
                     'secret' => 'YOUR_AWS_SECRET_ACCESS_KEY',
+                    // OR: 'profile' => 'my_profile',
                     'region' => 'us-west-2'
                 )
             )

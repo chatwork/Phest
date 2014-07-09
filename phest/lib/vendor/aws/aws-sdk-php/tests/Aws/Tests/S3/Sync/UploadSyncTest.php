@@ -30,6 +30,10 @@ class UploadSyncTest extends \Guzzle\Tests\GuzzleTestCase
 
     public function setUp()
     {
+        if (in_array(PHP_VERSION_ID, array(50429, 50513, 50600))) {
+            $this->markTestSkipped('TODO: Remove once PHPUnit is tagged.');
+        }
+
         $this->tmpFile = null;
     }
 

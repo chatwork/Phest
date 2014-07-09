@@ -24,6 +24,7 @@ use Aws\Common\Enum\ClientOptions as Options;
 use Aws\Common\Exception\RuntimeException;
 use Aws\Common\Exception\InvalidArgumentException;
 use Aws\Common\Signature\SignatureV4;
+use Aws\Common\Signature\SignatureInterface;
 use Aws\Common\Model\MultipartUpload\AbstractTransfer;
 use Aws\S3\Exception\AccessDeniedException;
 use Aws\S3\Exception\Parser\S3ExceptionParser;
@@ -215,6 +216,9 @@ class S3Client extends AbstractClient
         // Allow for specifying bodies with file paths and file handles
         $client->addSubscriber(new UploadBodyListener(array('PutObject', 'UploadPart')));
 
+        // Ensures that if a SSE-CPK key is provided, the key and md5 are formatted correctly
+        $client->addSubscriber(new SseCpkListener);
+
         // Add aliases for some S3 operations
         $default = CompositeFactory::getDefaultChain($client);
         $default->add(
@@ -255,7 +259,7 @@ class S3Client extends AbstractClient
      *
      * @param $config
      *
-     * @return S3Signature
+     * @return \Aws\Common\Signature\SignatureInterface
      * @throws InvalidArgumentException
      */
     private static function createSignature($config)
@@ -274,17 +278,13 @@ class S3Client extends AbstractClient
             $currentValue = new S3Signature();
         }
 
-        if ($currentValue instanceof S3SignatureInterface) {
-            // A region is require with v4
-            if ($currentValue instanceof SignatureV4 && !isset($config['region'])) {
-                throw new InvalidArgumentException('A region must be specified '
-                    . 'when using signature version 4');
-            }
-            return $currentValue;
+        // A region is require with v4
+        if ($currentValue instanceof SignatureV4 && !isset($config['region'])) {
+            throw new InvalidArgumentException('A region must be specified '
+                . 'when using signature version 4');
         }
 
-        throw new InvalidArgumentException('The provided signature value is '
-            . 'not an instance of S3SignatureInterface');
+        return $currentValue;
     }
 
     /**
@@ -300,12 +300,10 @@ class S3Client extends AbstractClient
     {
         $bucketLen = strlen($bucket);
         if ($bucketLen < 3 || $bucketLen > 63 ||
-            // Cannot start or end with a '.'
-            $bucket[0] == '.' || $bucket[$bucketLen - 1] == '.' ||
             // Cannot look like an IP address
             preg_match('/(\d+\.){3}\d+$/', $bucket) ||
             // Cannot include special characters, must start and end with lower alnum
-            !preg_match('/^[a-z0-9][a-z0-9\-\.]*[a-z0-9]?$/', $bucket)
+            !preg_match('/^[a-z0-9]([a-z0-9\-\.]*[a-z0-9])?$/', $bucket)
         ) {
             return false;
         }

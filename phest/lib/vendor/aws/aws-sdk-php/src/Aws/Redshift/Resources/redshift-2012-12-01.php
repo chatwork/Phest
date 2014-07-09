@@ -96,7 +96,7 @@ return array (
                     'class' => 'ClusterSecurityGroupNotFoundException',
                 ),
                 array(
-                    'reason' => 'The state of the cluster security group is not "available".',
+                    'reason' => 'The state of the cluster security group is not available.',
                     'class' => 'InvalidClusterSecurityGroupStateException',
                 ),
                 array(
@@ -104,7 +104,7 @@ return array (
                     'class' => 'AuthorizationAlreadyExistsException',
                 ),
                 array(
-                    'reason' => 'The authorization quota for the cluster security group has been reached. For information about increasing your quota, go to Limits in Amazon Redshift in the Amazon Redshift Management Guide.',
+                    'reason' => 'The authorization quota for the cluster security group has been reached.',
                     'class' => 'AuthorizationQuotaExceededException',
                 ),
             ),
@@ -151,7 +151,7 @@ return array (
                     'class' => 'AuthorizationAlreadyExistsException',
                 ),
                 array(
-                    'reason' => 'The authorization quota for the cluster security group has been reached. For information about increasing your quota, go to Limits in Amazon Redshift in the Amazon Redshift Management Guide.',
+                    'reason' => 'The authorization quota for the cluster security group has been reached.',
                     'class' => 'AuthorizationQuotaExceededException',
                 ),
             ),
@@ -198,7 +198,7 @@ return array (
                     'class' => 'ClusterSnapshotNotFoundException',
                 ),
                 array(
-                    'reason' => 'The state of the cluster snapshot is not "available", or other accounts are authorized to access the snapshot.',
+                    'reason' => 'The state of the cluster snapshot is not available, or other accounts are authorized to access the snapshot.',
                     'class' => 'InvalidClusterSnapshotStateException',
                 ),
                 array(
@@ -885,7 +885,7 @@ return array (
             ),
             'errorResponses' => array(
                 array(
-                    'reason' => 'The state of the cluster security group is not "available".',
+                    'reason' => 'The state of the cluster security group is not available.',
                     'class' => 'InvalidClusterSecurityGroupStateException',
                 ),
                 array(
@@ -923,7 +923,7 @@ return array (
             ),
             'errorResponses' => array(
                 array(
-                    'reason' => 'The state of the cluster snapshot is not "available", or other accounts are authorized to access the snapshot.',
+                    'reason' => 'The state of the cluster snapshot is not available, or other accounts are authorized to access the snapshot.',
                     'class' => 'InvalidClusterSnapshotStateException',
                 ),
                 array(
@@ -997,6 +997,10 @@ return array (
                 array(
                     'reason' => 'An Amazon Redshift event notification subscription with the specified name does not exist.',
                     'class' => 'SubscriptionNotFoundException',
+                ),
+                array(
+                    'reason' => 'The subscription request is invalid because it is a duplicate request. This subscription request is already in progress.',
+                    'class' => 'InvalidSubscriptionStateException',
                 ),
             ),
         ),
@@ -1819,6 +1823,10 @@ return array (
                     'class' => 'SnapshotCopyAlreadyDisabledException',
                 ),
                 array(
+                    'reason' => 'The specified cluster is not in the available state.',
+                    'class' => 'InvalidClusterStateException',
+                ),
+                array(
                     'reason' => 'Your account is not authorized to perform the requested operation.',
                     'class' => 'UnauthorizedOperationException',
                 ),
@@ -2027,6 +2035,10 @@ return array (
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
+                'NewClusterIdentifier' => array(
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
             ),
             'errorResponses' => array(
                 array(
@@ -2034,7 +2046,7 @@ return array (
                     'class' => 'InvalidClusterStateException',
                 ),
                 array(
-                    'reason' => 'The state of the cluster security group is not "available".',
+                    'reason' => 'The state of the cluster security group is not available.',
                     'class' => 'InvalidClusterSecurityGroupStateException',
                 ),
                 array(
@@ -2058,7 +2070,7 @@ return array (
                     'class' => 'InsufficientClusterCapacityException',
                 ),
                 array(
-                    'reason' => 'An request option was specified that is not supported.',
+                    'reason' => 'A request option was specified that is not supported.',
                     'class' => 'UnsupportedOptionException',
                 ),
                 array(
@@ -2072,6 +2084,10 @@ return array (
                 array(
                     'reason' => 'There is no Amazon Redshift HSM configuration with the specified identifier.',
                     'class' => 'HsmConfigurationNotFoundException',
+                ),
+                array(
+                    'reason' => 'The account already has a cluster with the given identifier.',
+                    'class' => 'ClusterAlreadyExistsException',
                 ),
             ),
         ),
@@ -2297,6 +2313,10 @@ return array (
                     'reason' => 'The specified Amazon Redshift event source could not be found.',
                     'class' => 'SourceNotFoundException',
                 ),
+                array(
+                    'reason' => 'The subscription request is invalid because it is a duplicate request. This subscription request is already in progress.',
+                    'class' => 'InvalidSubscriptionStateException',
+                ),
             ),
         ),
         'ModifySnapshotCopyRetentionPeriod' => array(
@@ -2339,6 +2359,10 @@ return array (
                 array(
                     'reason' => 'Your account is not authorized to perform the requested operation.',
                     'class' => 'UnauthorizedOperationException',
+                ),
+                array(
+                    'reason' => 'The specified cluster is not in the available state.',
+                    'class' => 'InvalidClusterStateException',
                 ),
             ),
         ),
@@ -2562,6 +2586,36 @@ return array (
                     'type' => 'string',
                     'location' => 'aws.query',
                 ),
+                'ClusterParameterGroupName' => array(
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'ClusterSecurityGroups' => array(
+                    'type' => 'array',
+                    'location' => 'aws.query',
+                    'sentAs' => 'ClusterSecurityGroups.member',
+                    'items' => array(
+                        'name' => 'ClusterSecurityGroupName',
+                        'type' => 'string',
+                    ),
+                ),
+                'VpcSecurityGroupIds' => array(
+                    'type' => 'array',
+                    'location' => 'aws.query',
+                    'sentAs' => 'VpcSecurityGroupIds.member',
+                    'items' => array(
+                        'name' => 'VpcSecurityGroupId',
+                        'type' => 'string',
+                    ),
+                ),
+                'PreferredMaintenanceWindow' => array(
+                    'type' => 'string',
+                    'location' => 'aws.query',
+                ),
+                'AutomatedSnapshotRetentionPeriod' => array(
+                    'type' => 'numeric',
+                    'location' => 'aws.query',
+                ),
             ),
             'errorResponses' => array(
                 array(
@@ -2585,7 +2639,7 @@ return array (
                     'class' => 'InsufficientClusterCapacityException',
                 ),
                 array(
-                    'reason' => 'The state of the cluster snapshot is not "available", or other accounts are authorized to access the snapshot.',
+                    'reason' => 'The state of the cluster snapshot is not available, or other accounts are authorized to access the snapshot.',
                     'class' => 'InvalidClusterSnapshotStateException',
                 ),
                 array(
@@ -2631,6 +2685,14 @@ return array (
                 array(
                     'reason' => 'The Elastic IP (EIP) is invalid or cannot be found.',
                     'class' => 'InvalidElasticIpException',
+                ),
+                array(
+                    'reason' => 'The parameter group name does not refer to an existing parameter group.',
+                    'class' => 'ClusterParameterGroupNotFoundException',
+                ),
+                array(
+                    'reason' => 'The cluster security group name does not refer to an existing cluster security group.',
+                    'class' => 'ClusterSecurityGroupNotFoundException',
                 ),
             ),
         ),
@@ -2679,7 +2741,7 @@ return array (
                     'class' => 'AuthorizationNotFoundException',
                 ),
                 array(
-                    'reason' => 'The state of the cluster security group is not "available".',
+                    'reason' => 'The state of the cluster security group is not available.',
                     'class' => 'InvalidClusterSecurityGroupStateException',
                 ),
             ),
@@ -3050,6 +3112,9 @@ return array (
                                 'AutomatedSnapshotRetentionPeriod' => array(
                                     'type' => 'numeric',
                                 ),
+                                'ClusterIdentifier' => array(
+                                    'type' => 'string',
+                                ),
                             ),
                         ),
                         'ClusterVersion' => array(
@@ -3147,6 +3212,9 @@ return array (
                                     'type' => 'string',
                                 ),
                             ),
+                        ),
+                        'ClusterRevisionNumber' => array(
+                            'type' => 'string',
                         ),
                     ),
                 ),
@@ -3796,6 +3864,9 @@ return array (
                                     'AutomatedSnapshotRetentionPeriod' => array(
                                         'type' => 'numeric',
                                     ),
+                                    'ClusterIdentifier' => array(
+                                        'type' => 'string',
+                                    ),
                                 ),
                             ),
                             'ClusterVersion' => array(
@@ -3893,6 +3964,9 @@ return array (
                                         'type' => 'string',
                                     ),
                                 ),
+                            ),
+                            'ClusterRevisionNumber' => array(
+                                'type' => 'string',
                             ),
                         ),
                     ),
@@ -4416,6 +4490,26 @@ return array (
                         'type' => 'string',
                         'sentAs' => 'member',
                     ),
+                ),
+                'AvgResizeRateInMegaBytesPerSecond' => array(
+                    'type' => 'numeric',
+                    'location' => 'xml',
+                ),
+                'TotalResizeDataInMegaBytes' => array(
+                    'type' => 'numeric',
+                    'location' => 'xml',
+                ),
+                'ProgressInMegaBytes' => array(
+                    'type' => 'numeric',
+                    'location' => 'xml',
+                ),
+                'ElapsedTimeInSeconds' => array(
+                    'type' => 'numeric',
+                    'location' => 'xml',
+                ),
+                'EstimatedTimeToCompletionInSeconds' => array(
+                    'type' => 'numeric',
+                    'location' => 'xml',
                 ),
             ),
         ),

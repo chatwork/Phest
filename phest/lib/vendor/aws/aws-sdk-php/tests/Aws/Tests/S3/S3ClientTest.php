@@ -49,7 +49,9 @@ class S3ClientTest extends \Guzzle\Tests\GuzzleTestCase
             array('bucket-name', true),
             array('bucket', true),
             array('my.bucket.com', true),
-            array('test-fooCaps', false)
+            array('test-fooCaps', false),
+            array('w-w', true),
+            array('w------', false)
         );
     }
 
@@ -426,17 +428,6 @@ class S3ClientTest extends \Guzzle\Tests\GuzzleTestCase
         $sig = $this->getMockBuilder('Aws\S3\S3SignatureV4')
             ->disableOriginalConstructor()
             ->getMock();
-        $s3 = S3Client::factory(array(Options::SIGNATURE => $sig));
-        $this->assertSame($sig, $s3->getSignature());
-    }
-
-    /**
-     * @expectedException \Aws\Common\Exception\InvalidArgumentException
-     */
-    public function testEnsuresSignatureImplementsS3Signature()
-    {
-        $sig = $this->getMockBuilder('Aws\Common\Signature\SignatureInterface')
-            ->getMockForAbstractClass();
         $s3 = S3Client::factory(array(Options::SIGNATURE => $sig));
         $this->assertSame($sig, $s3->getSignature());
     }

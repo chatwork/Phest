@@ -20,16 +20,16 @@ class BasicTest extends \PHPUnit_Framework_TestCase
             $class = '\Netcarver\Textile\Parser';
         }
 
+        $textile = new $class;
+
         if (isset($test['doctype'])) {
-            $textile = new $class($test['doctype']);
-        } else {
-            $textile = new $class;
+            $textile->setDocumentType($test['doctype']);
         }
 
         if (isset($test['setup'])) {
             foreach ($test['setup'] as $setup) {
                 foreach ($setup as $method => $value) {
-                    $textile->$method($value);
+                    $textile = $textile->$method($value);
                 }
             }
         }
@@ -37,7 +37,7 @@ class BasicTest extends \PHPUnit_Framework_TestCase
         if (isset($test['method'])) {
             $method = trim($test['method']);
         } else {
-            $method = 'textileThis';
+            $method = 'parse';
         }
 
         $args = array();
@@ -127,7 +127,7 @@ class BasicTest extends \PHPUnit_Framework_TestCase
                 $yaml = Yaml::parse($file);
 
                 foreach ($yaml as $name => $test) {
-                    if (!isset($test['input']) || !isset($test['expect'])) {
+                    if (!is_array($test) || !isset($test['input']) || !isset($test['expect'])) {
                         continue;
                     }
 
@@ -190,5 +190,32 @@ class BasicTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new Textile();
         $this->assertEquals(' <strong>line</strong>', $parser->textileThis(' *line*'));
+    }
+
+    public function testDocumentRoot()
+    {
+        $parser = new Textile();
+        $parser->setDocumentRootDirectory(__DIR__);
+        $this->assertEquals(__DIR__, rtrim($parser->getDocumentRootDirectory(), '\\/'));
+    }
+
+    public function testDisallowImages()
+    {
+        $parser = new Textile();
+        $this->assertFalse($parser->setImages(false)->isImageTagEnabled());
+        $this->assertTrue($parser->setImages(true)->isImageTagEnabled());
+    }
+
+    public function testLinkRelationShip()
+    {
+        $parser = new Textile();
+        $this->assertEquals('test', $parser->setLinkRelationShip('test')->getLinkRelationShip());
+    }
+
+    public function testEnableRestrictedMode()
+    {
+        $parser = new Textile();
+        $this->assertTrue($parser->setRestricted(true)->isRestrictedModeEnabled());
+        $this->assertFalse($parser->setRestricted(false)->isRestrictedModeEnabled());
     }
 }

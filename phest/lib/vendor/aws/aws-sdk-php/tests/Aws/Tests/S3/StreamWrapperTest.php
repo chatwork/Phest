@@ -95,8 +95,8 @@ class StreamWrapperTest extends \Guzzle\Tests\GuzzleTestCase
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage simultaneous reading and writing
+     * @expectedException \PHPUnit_Framework_Error_Warning
+     * @expectedExceptionMessage The Amazon S3 stream wrapper does not allow simultaneous reading and writing.
      */
     public function testCanThrowExceptionsInsteadOfErrors()
     {
@@ -355,15 +355,6 @@ class StreamWrapperTest extends \Guzzle\Tests\GuzzleTestCase
 
     /**
      * @expectedException PHPUnit_Framework_Error_Warning
-     * @expectedExceptionMessage rmdir() only supports bucket deletion
-     */
-    public function testCannotDeleteKeyPrefix()
-    {
-        rmdir('s3://bucket/key');
-    }
-
-    /**
-     * @expectedException PHPUnit_Framework_Error_Warning
      * @expectedExceptionMessage 403 Forbidden
      */
     public function testRmDirWithExceptionTriggersError()
@@ -381,6 +372,30 @@ class StreamWrapperTest extends \Guzzle\Tests\GuzzleTestCase
         $this->assertEquals('DELETE', $requests[0]->getMethod());
         $this->assertEquals('/', $requests[0]->getResource());
         $this->assertEquals('bucket.s3.amazonaws.com', $requests[0]->getHost());
+    }
+
+    public function rmdirProvider()
+    {
+        return array(
+            array('s3://bucket/object/'),
+            array('s3://bucket/object'),
+        );
+    }
+
+    /**
+     * @dataProvider rmdirProvider
+     */
+    public function testCanDeleteObjectWithRmDir($path)
+    {
+        $this->setMockResponse($this->client, array(new Response(200), new Response(204)));
+        $this->assertTrue(rmdir($path));
+        $requests = $this->getMockedRequests();
+        $this->assertEquals(2, count($requests));
+        $this->assertEquals('GET', $requests[0]->getMethod());
+        $this->assertEquals('DELETE', $requests[1]->getMethod());
+        $this->assertEquals('/object/', $requests[1]->getResource());
+        $this->assertEquals('object/', $requests[0]->getQuery()->get('prefix'));
+        $this->assertEquals('bucket.s3.amazonaws.com', $requests[1]->getHost());
     }
 
     /**

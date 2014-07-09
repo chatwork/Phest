@@ -41,7 +41,7 @@ class OutputFilterTrimWhitespaceTests extends PHPUnit_Framework_TestCase
     </textarea> </p> </body> </html>
 EOT;
 
-        $this->assertEquals($expected, $this->smarty->fetch('whitespace.tpl'));
+        $this->assertEquals(str_replace("\t",'    ',$expected), $this->smarty->fetch('whitespace.tpl'));
     }
 
     public function teardown()
