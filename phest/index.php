@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 	
-	$ver = 'v.0.10.0';
+	$ver = 'v.0.10.1';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -555,6 +555,10 @@
 					$filepath = ltrim($dirname.'/'.$basename,'/');
 
 					//拡張子 .tpl を抜いたファイル名で出力する
+
+					if (!empty($config_yaml['encode'])){
+						$source = mb_convert_encoding($source, $config_yaml['encode']);
+					}
 					file_put_contents($pathname, $source);
 
 					$assets_smarty_flag[$pathname] = true;

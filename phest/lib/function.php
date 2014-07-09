@@ -1,6 +1,15 @@
 <?php
 	namespace ChatWork\Phest;
 
+/**
+ * エラーをすべて例外に変換する
+ */
+set_error_handler(function($errno, $errstr, $errfile, $errline){
+	if (!(error_reporting() & $errno)){
+		return;
+	}
+	throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
 
 /**
  * array_merge_recursiveの同じキーを配列化せず上書きするバージョン
