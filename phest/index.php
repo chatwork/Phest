@@ -19,7 +19,7 @@
 	define('DIR_PHEST',dirname(__FILE__));
 	require(DIR_PHEST.'/config.php');
 	
-	$ver = 'v.0.10.1';
+	$ver = 'v.0.10.2';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors','On');
@@ -534,8 +534,10 @@
 					File::buildPutFile($dir_output.'/'.$filepath,$output_html);
 					
 					$phest->add('create','page','<a href="'.$home_local.'/'.$filepath.'" target="_blank">'.$filepath.'</a>');
-				} catch (\Exception $e){
+				} catch (\SmartyCompilerException $e){
 					$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+				} catch (\Exception $e){
+					$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage().' in '.basename($e->getFile()).' on line '.$e->getLine());
 					continue;
 				}
 			}else{
@@ -546,8 +548,10 @@
 				if (strpos($basename,'.tpl') !== false){
 					try {
 						$source = $smarty->fetch($filepath);
-					} catch (\Exception $e){
+					} catch (\SmartyCompilerException $e){
 						$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage());
+					} catch (\Exception $e){
+						$phest->add('smartyerror','<strong>'.$filepath.'</strong>: '.$e->getMessage().' in '.basename($e->getFile()).' on line '.$e->getLine());
 						continue;
 					}
 					$basename = str_replace('.tpl','',$basename);
